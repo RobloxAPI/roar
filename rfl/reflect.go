@@ -25,11 +25,11 @@ type Member struct {
 }
 
 type Enum struct {
-	Item     map[id.Item]Item `json:"item,omitempty"`
-	Metadata Metadata         `json:"metadata,omitempty"`
+	EnumItem map[id.EnumItem]EnumItem `json:"item,omitempty"`
+	Metadata Metadata                 `json:"metadata,omitempty"`
 }
 
-type Item struct {
+type EnumItem struct {
 	Metadata Metadata `json:"metadata,omitempty"`
 }
 
@@ -126,7 +126,7 @@ func ParseReflectionMetadata(r io.Reader) (root Root, err error) {
 				}
 				enum := Enum{
 					Metadata: make(Metadata, len(ienum.Properties)-1),
-					Item:     make(map[string]Item, len(ienum.Children)),
+					EnumItem: make(map[string]EnumItem, len(ienum.Children)),
 				}
 				enumEmpty := true
 				for prop, value := range ienum.Properties {
@@ -147,7 +147,7 @@ func ParseReflectionMetadata(r io.Reader) (root Root, err error) {
 					if !ok {
 						continue
 					}
-					item := Item{
+					item := EnumItem{
 						Metadata: make(Metadata, len(ienum.Properties)-1),
 					}
 					itemEmpty := true
@@ -162,7 +162,7 @@ func ParseReflectionMetadata(r io.Reader) (root Root, err error) {
 						itemEmpty = false
 					}
 					if !itemEmpty {
-						enum.Item[string(name)] = item
+						enum.EnumItem[string(name)] = item
 						enumEmpty = false
 					}
 				}

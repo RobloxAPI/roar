@@ -5,7 +5,7 @@ type Class = string
 type Member = string
 
 type Enum = string
-type Item = string
+type EnumItem = string
 
 type Type = string
 type TypeCategory = string
@@ -16,7 +16,7 @@ type MemberID = struct {
 	Member Member
 }
 
-type ItemID = struct {
-	Enum Enum
-	Item Item
+type EnumItemID = struct {
+	Enum     Enum
+	EnumItem EnumItem
 }

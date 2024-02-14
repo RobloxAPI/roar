@@ -99,7 +99,7 @@ type Object struct {
 	// Maps enum ID to changes.
 	Enum map[id.Enum][]ChangeID `json:"enum"`
 	// Maps enum item ID to changes.
-	Item map[id.Enum]map[id.Item][]ChangeID `json:"item"`
+	EnumItem map[id.Enum]map[id.EnumItem][]ChangeID `json:"enumItem"`
 	// Maps type ID to changes.
 	Type map[id.Type][]ChangeID `json:"type"`
 }

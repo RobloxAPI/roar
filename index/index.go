@@ -17,10 +17,10 @@ type Root struct {
 }
 
 type Related struct {
-	ClassesByName []id.Class
-	MembersByName []id.MemberID
-	EnumsByName   []id.Enum
-	ItemsByName   []id.ItemID
+	ClassesByName   []id.Class
+	MembersByName   []id.MemberID
+	EnumsByName     []id.Enum
+	EnumItemsByName []id.EnumItemID
 }
 
 type Class struct {
@@ -33,11 +33,11 @@ type Class struct {
 }
 
 type Enum struct {
-	ItemsByName  []id.Item
-	ItemsByValue []id.Item
-	ItemsByIndex []id.Item
-	Removed      bool
-	Related      Related
+	EnumItemsByName  []id.EnumItem
+	EnumItemsByValue []id.EnumItem
+	EnumItemsByIndex []id.EnumItem
+	Removed          bool
+	Related          Related
 }
 
 type Type struct {
