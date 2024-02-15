@@ -90,6 +90,17 @@ func (r Root) LatestEvent() (event Event) {
 	return event
 }
 
+// Sorts a list of change IDs by the corresponding date.
+func (r Root) SortChanges(changes []ChangeID) {
+	sort.SliceStable(changes, func(i, j int) bool {
+		ci := r.Change[changes[i]]
+		cj := r.Change[changes[j]]
+		ei := r.Event[ci.Event]
+		ej := r.Event[cj.Event]
+		return ei.Date.Before(ej.Date)
+	})
+}
+
 // Maps an object to a list of changes that apply to the object.
 type Object struct {
 	// Maps class ID to changes.
