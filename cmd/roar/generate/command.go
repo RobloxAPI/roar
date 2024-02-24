@@ -191,7 +191,7 @@ func (c *Command) Run(opt snek.Options) error {
 	}
 	je := json.NewEncoder(f)
 	je.SetEscapeHTML(false)
-	je.SetIndent("", "")
+	je.SetIndent("", "\t")
 	err = je.Encode(updatedHist)
 	f.Close()
 	if err != nil {
