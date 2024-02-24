@@ -168,17 +168,11 @@ func (c *Command) Run(opt snek.Options) error {
 				os.WriteFile(filepath.Join(filepath.Dir(histPath), "actions_a.txt"), b.Bytes(), 0666)
 
 				b.Reset()
-				je := json.NewEncoder(&b)
-				je.SetEscapeHTML(false)
-				je.SetIndent("", "\t")
-				je.Encode(differ.Prev)
+				rbxdumpjson.Encode(&b, differ.Prev)
 				os.WriteFile(filepath.Join(filepath.Dir(histPath), "prev.json"), b.Bytes(), 0666)
 
 				b.Reset()
-				je = json.NewEncoder(&b)
-				je.SetEscapeHTML(false)
-				je.SetIndent("", "\t")
-				je.Encode(differ.Next)
+				rbxdumpjson.Encode(&b, differ.Next)
 				os.WriteFile(filepath.Join(filepath.Dir(histPath), "next.json"), b.Bytes(), 0666)
 
 				fmt.Println("DIFF")
