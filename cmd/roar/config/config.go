@@ -31,31 +31,40 @@ func Open(path string, stdin io.Reader) (c Config, err error) {
 	// From stdin.
 	if stdin != nil {
 		_, err = toml.NewDecoder(stdin).Decode(&c)
-		return c, err
+		return c.Normalize(), err
 	}
 
 	// From specified file.
 	if path != "" {
 		_, err = toml.DecodeFile(path, &c)
-		return c, err
+		return c.Normalize(), err
 	}
 
 	// From working directory.
 	path = "roar.toml"
 	if _, err = toml.DecodeFile(path, &c); !errors.Is(err, os.ErrNotExist) {
-		return c, err
+		return c.Normalize(), err
 	}
 
 	// From user config.
 	configDir, err := os.UserConfigDir()
 	if err != nil {
-		return c, nil
+		return c.Normalize(), nil
 	}
 	path = filepath.Join(configDir, "roar", "roar.toml")
 	if _, err = toml.DecodeFile(path, &c); !errors.Is(err, os.ErrNotExist) {
-		return c, err
+		return c.Normalize(), err
 	}
 
 	// Default config.
-	return Config{}, nil
+	return Config{}.Normalize(), nil
+}
+
+func (c Config) Normalize() Config {
+	if !c.Data.Docs && !c.Data.Dump && !c.Data.Reflect && !c.Data.None {
+		c.Data.Docs = true
+		c.Data.Dump = true
+		c.Data.Reflect = true
+	}
+	return c
 }
