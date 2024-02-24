@@ -36,7 +36,7 @@ type jObject struct {
 	// Maps enum item ID to changes.
 	EnumItem map[id.Enum]map[id.EnumItem][]changeID
 	// Maps type ID to changes.
-	Type map[id.Type][]changeID
+	Type map[id.TypeCategory]map[id.Type][]changeID
 }
 
 // Represents one unit of change.

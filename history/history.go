@@ -25,7 +25,7 @@ type Object struct {
 	// Maps enum item ID to changes.
 	EnumItem map[id.EnumItemID][]*Change
 	// Maps type ID to changes.
-	Type map[id.Type][]*Change
+	Type map[id.TypeID][]*Change
 }
 
 // Represents one unit of change.
@@ -106,7 +106,7 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 	r.Object.Member = make(map[id.MemberID][]*Change)
 	r.Object.Enum = make(map[id.Enum][]*Change, len(jr.Object.Enum))
 	r.Object.EnumItem = make(map[id.EnumItemID][]*Change)
-	r.Object.Type = make(map[id.Type][]*Change, len(jr.Object.Type))
+	r.Object.Type = make(map[id.TypeID][]*Change)
 
 	for class, changes := range jr.Object.Class {
 		r.Object.Class[class] = r.decodeChanges(changes)
@@ -124,8 +124,10 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 			r.Object.EnumItem[id.EnumItemID{enum, item}] = r.decodeChanges(changes)
 		}
 	}
-	for typ, changes := range jr.Object.Type {
-		r.Object.Type[typ] = r.decodeChanges(changes)
+	for cat, types := range jr.Object.Type {
+		for typ, changes := range types {
+			r.Object.Type[id.TypeID{cat, typ}] = r.decodeChanges(changes)
+		}
 	}
 
 	return nil
@@ -171,7 +173,7 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 	jr.Object.Member = make(map[id.Class]map[id.Member][]changeID)
 	jr.Object.Enum = make(map[id.Enum][]changeID, len(r.Object.Enum))
 	jr.Object.EnumItem = make(map[id.Enum]map[id.EnumItem][]changeID)
-	jr.Object.Type = make(map[id.Type][]changeID, len(r.Object.Type))
+	jr.Object.Type = make(map[id.TypeCategory]map[id.Type][]changeID, len(r.Object.Type))
 
 	for class, list := range r.Object.Class {
 		jr.Object.Class[class] = r.encodeChanges(changes, list)
@@ -195,8 +197,13 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 		}
 		items[enumItemID.EnumItem] = r.encodeChanges(changes, list)
 	}
-	for typ, list := range r.Object.Type {
-		jr.Object.Type[typ] = r.encodeChanges(changes, list)
+	for typeID, list := range r.Object.Type {
+		types := jr.Object.Type[typeID.Category]
+		if types == nil {
+			types = make(map[id.Type][]changeID)
+			jr.Object.Type[typeID.Category] = types
+		}
+		types[typeID.Type] = r.encodeChanges(changes, list)
 	}
 
 	return json.Marshal(jr)
@@ -355,10 +362,47 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 			item := id.EnumItemID{action.Primary, action.Secondary}
 			r.Object.EnumItem[item] = append(r.Object.EnumItem[item], &change)
 		}
+
+		// Add change to relevant types.
+		hasType := map[id.TypeID]struct{}{}
+		for _, field := range change.Prev {
+			r.addTypeField(hasType, field, &change)
+		}
+		for _, field := range change.Action.Fields {
+			r.addTypeField(hasType, field, &change)
+		}
 	}
 	r.Event = append(r.Event, &event)
 	if prev != nil {
 		prev.Next = &event
+	}
+}
+
+func (r *Root) addTypeField(hasType map[id.TypeID]struct{}, field any, change *Change) {
+	switch field := field.(type) {
+	case rbxdump.Type:
+		switch field.Category {
+		case "Class", "Enum":
+			return
+		}
+		idx := id.TypeID{Category: field.Category, Type: field.Name}
+		if _, ok := hasType[idx]; !ok {
+			hasType[idx] = struct{}{}
+			if r.Object.Type == nil {
+				r.Object.Type = map[id.TypeID][]*Change{}
+			}
+			r.Object.Type[idx] = append(r.Object.Type[idx], change)
+		}
+	case []rbxdump.Type:
+		for _, typ := range field {
+			r.addTypeField(hasType, typ, change)
+		}
+	case []rbxdump.Parameter:
+		for _, param := range field {
+			r.addTypeField(hasType, param.Type, change)
+		}
+	case rbxdump.Parameter:
+		r.addTypeField(hasType, field.Type, change)
 	}
 }
 
