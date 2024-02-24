@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/publysher/httpfs"
+	"github.com/robloxapi/rbxver"
 )
 
 type data struct {
@@ -31,7 +32,7 @@ type Build struct {
 	Group   string `json:",omitempty"`
 	GUID    string
 	Date    time.Time
-	Version string
+	Version rbxver.Version
 }
 
 type Repo struct {
@@ -125,32 +126,57 @@ func (r *Repo) Builds() (builds []Build) {
 	return builds
 }
 
-// Returns a ReadCloser for the content of a file. Returns nil if the build or
-// name was not found.
-func (r *Repo) Open(build Build, name string) io.ReadCloser {
+// Returns whether a file exists without making any FS calls.
+func (r *Repo) Exists(build Build, name string) bool {
 	if r.d == nil {
-		return nil
+		return false
 	}
-
 	// Attempt to determine if file is present early.
 	md, ok := r.d.metadata[build.Group]
 	if !ok {
 		// No metadata for group.
-		return nil
+		return false
 	}
 	if slices.Index(md.Files, name) < 0 {
 		// File name not present for group.
-		return nil
+		return false
 	}
 	if missing, ok := md.Missing[build.GUID]; ok && slices.Index(missing, name) >= 0 {
 		// Build is missing specific file.
+		return false
+	}
+	return true
+}
+
+// Returns file path for a build and file name.
+func filePath(build Build, name string) string {
+	return path.Join(build.Group, "builds", build.GUID, name)
+}
+
+// Returns info for a file. Returns nil if the file does not exist, or otherwise
+// errors.
+func (r *Repo) Stat(build Build, name string) fs.FileInfo {
+	if !r.Exists(build, name) {
 		return nil
 	}
-
-	// Finally try fetching file.
-	f, err := r.fs.Open(path.Join(build.Group, "builds", build.GUID, name))
+	info, err := fs.Stat(r.fs, filePath(build, name))
 	if err != nil {
 		return nil
 	}
-	return f
+	return info
+}
+
+// Returns a ReadCloser for the content of a file. Returns nil if the build or
+// name was not found.
+func (r *Repo) Open(build Build, name string) (rc io.ReadCloser, err error) {
+	if !r.Exists(build, name) {
+		return nil, nil
+	}
+
+	// Finally try fetching file.
+	f, err := r.fs.Open(filePath(build, name))
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
 }
