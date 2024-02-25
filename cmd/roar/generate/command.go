@@ -13,6 +13,7 @@ import (
 	"github.com/robloxapi/roar/archive"
 	"github.com/robloxapi/roar/cmd/roar/config"
 	"github.com/robloxapi/roar/history"
+	"github.com/robloxapi/roar/index"
 )
 
 const (
@@ -100,6 +101,15 @@ func (c *Command) Run(opt snek.Options) error {
 		}
 	}
 	if err := WriteFile(cfg.Site, dumpData, patcher.Root); err != nil {
+		return err
+	}
+
+	// Generate index file.
+	indexRoot := &index.Root{}
+	if err := indexRoot.Build(updatedHist, patcher.Root); err != nil {
+		return err
+	}
+	if err := WriteFile(cfg.Site, indexData, indexRoot); err != nil {
 		return err
 	}
 
