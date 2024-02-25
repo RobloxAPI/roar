@@ -13,6 +13,7 @@ import (
 type Config struct {
 	Source string // Location of builds.
 	Site   string // Location of Hugo site.
+	Update bool   // Update history database.
 	Data   Data
 }
 

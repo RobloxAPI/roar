@@ -155,7 +155,7 @@ func WriteHistory(histPath string, updatedHist *history.Root) error {
 	}
 	je := json.NewEncoder(f)
 	je.SetEscapeHTML(false)
-	je.SetIndent("", "\t")
+	je.SetIndent("", jsonIndent)
 	err = je.Encode(updatedHist)
 	f.Close()
 	if err != nil {

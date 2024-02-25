@@ -8,14 +8,23 @@ import (
 	"github.com/anaminus/snek"
 	"github.com/robloxapi/roar/archive"
 	"github.com/robloxapi/roar/cmd/roar/config"
+	"github.com/robloxapi/roar/history"
 )
 
 const (
-	siteData    = "data"
-	siteContent = "content"
-	historyData = "history.json"
 	apiDump     = "API-Dump.json"
 	fullAPIDump = "Full-API-Dump.json"
+
+	jsonIndent = "\t"
+
+	siteData    = "data"
+	siteContent = "content"
+
+	historyData = "history.json"
+	indexData   = "index.json"
+	docsData    = "docs.json"
+	dumpData    = "dump.json"
+	reflectData = "rfl.json"
 )
 
 var Def = snek.Def{
@@ -61,13 +70,18 @@ func (c *Command) Run(opt snek.Options) error {
 		return fmt.Errorf("failed to read repo: %w", err)
 	}
 
-	// Produce updated history using stored history as cache.
-	fmt.Println("rebuilding history database")
-	updatedHist := MergeHistory(repo, storedHist)
+	var updatedHist *history.Root
+	if cfg.Update {
+		// Produce updated history using stored history as cache.
+		fmt.Println("rebuilding history database")
+		updatedHist = MergeHistory(repo, storedHist)
 
-	// Write new history file.
-	if err := WriteHistory(histPath, updatedHist); err != nil {
-		return err
+		// Write new history file.
+		if err := WriteHistory(histPath, updatedHist); err != nil {
+			return err
+		}
+	} else {
+		updatedHist = storedHist
 	}
 
 	return nil
