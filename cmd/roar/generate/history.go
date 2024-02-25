@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	"slices"
 
 	"github.com/robloxapi/rbxdump"
@@ -144,22 +143,4 @@ func ReadHistory(histPath string) (storedhist *history.Root, err error) {
 		}
 	}
 	return storedHist, nil
-}
-
-// Writes history JSON to file at histPath.
-func WriteHistory(histPath string, updatedHist *history.Root) error {
-	os.MkdirAll(filepath.Dir(histPath), 0755)
-	f, err := os.Create(histPath)
-	if err != nil {
-		return fmt.Errorf("create history file: %w", err)
-	}
-	je := json.NewEncoder(f)
-	je.SetEscapeHTML(false)
-	je.SetIndent("", jsonIndent)
-	err = je.Encode(updatedHist)
-	f.Close()
-	if err != nil {
-		return fmt.Errorf("encode history file: %w", err)
-	}
-	return nil
 }

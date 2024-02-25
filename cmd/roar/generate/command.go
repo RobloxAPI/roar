@@ -1,8 +1,10 @@
 package generate
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/anaminus/snek"
@@ -77,12 +79,31 @@ func (c *Command) Run(opt snek.Options) error {
 		updatedHist = MergeHistory(repo, storedHist)
 
 		// Write new history file.
-		if err := WriteHistory(histPath, updatedHist); err != nil {
+		if err := WriteFile(cfg.Site, historyData, updatedHist); err != nil {
 			return err
 		}
 	} else {
 		updatedHist = storedHist
 	}
 
+	return nil
+}
+
+// Writes JSON to file at path.
+func WriteFile(site, file string, value any) error {
+	path := filepath.Join(site, siteData, file)
+	os.MkdirAll(filepath.Dir(path), 0755)
+	f, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("create %s file: %w", file, err)
+	}
+	je := json.NewEncoder(f)
+	je.SetEscapeHTML(false)
+	je.SetIndent("", jsonIndent)
+	err = je.Encode(value)
+	f.Close()
+	if err != nil {
+		return fmt.Errorf("encode %s file: %w", file, err)
+	}
 	return nil
 }
