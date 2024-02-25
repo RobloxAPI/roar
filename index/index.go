@@ -31,25 +31,22 @@ type Related struct {
 }
 
 type Class struct {
-	SubclassesByName       []id.Class
-	SuperclassesByName     []id.Class
-	SuperclassesByAncestry []id.Class
-	MembersByName          []id.Member
 	Removed                bool
-	Related                Related
+	SubclassesByName       []id.Class
+	SuperclassesByAncestry []id.Class
+	Related                Related `json:"-"`
 }
 
 type Member struct {
 	Removed bool
-	Related Related
+	Related Related `json:"-"`
 }
 
 type Enum struct {
-	EnumItemsByName  []id.EnumItem
+	Removed          bool
 	EnumItemsByValue []id.EnumItem
 	EnumItemsByIndex []id.EnumItem
-	Removed          bool
-	Related          Related
+	Related          Related `json:"-"`
 }
 
 type EnumItem struct {
@@ -59,7 +56,7 @@ type EnumItem struct {
 type Type struct {
 	Removed bool
 	Count   int
-	Related Related
+	Related Related `json:"-"`
 }
 
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
@@ -186,6 +183,66 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		}
 	}
 	sort.Strings(r.ClassesByRoot)
+
+	// Superclasses
+	for name, classIndex := range r.Class {
+		classDump := dump.Classes[name]
+		if classDump == nil {
+			fmt.Printf("CHECK: missing class %q from dump\n", name)
+			continue
+		}
+		for super := dump.Classes[classDump.Superclass]; super != nil; {
+			classIndex.SuperclassesByAncestry = append(classIndex.SuperclassesByAncestry, super.Name)
+			super = dump.Classes[super.Superclass]
+		}
+		if classIndex.SuperclassesByAncestry == nil {
+			classIndex.SuperclassesByAncestry = []id.Class{}
+		}
+	}
+
+	// Subclasses
+	for name := range r.Class {
+		classDump := dump.Classes[name]
+		if classDump == nil {
+			fmt.Printf("CHECK: missing class %q from dump\n", name)
+			continue
+		}
+		if superclassIndex := r.Class[classDump.Superclass]; superclassIndex != nil {
+			superclassIndex.SubclassesByName = append(superclassIndex.SubclassesByName, name)
+		}
+	}
+	for _, classIndex := range r.Class {
+		if classIndex.SubclassesByName == nil {
+			classIndex.SubclassesByName = []id.Class{}
+			continue
+		}
+		sort.Strings(classIndex.SubclassesByName)
+	}
+
+	// EnumItems
+	for name, enumIndex := range r.Enum {
+		enumDump := dump.Enums[name]
+		if enumDump == nil {
+			fmt.Printf("CHECK: missing enum %q from dump\n", name)
+			continue
+		}
+		byIndex := make([]*rbxdump.EnumItem, 0, len(enumDump.Items))
+		byValue := make([]*rbxdump.EnumItem, 0, len(enumDump.Items))
+		for _, item := range enumDump.Items {
+			byIndex = append(byIndex, item)
+			byValue = append(byValue, item)
+		}
+		sort.Slice(byIndex, func(i, j int) bool { return byIndex[i].Index < byIndex[j].Index })
+		sort.Slice(byValue, func(i, j int) bool { return byValue[i].Value < byValue[j].Value })
+		enumIndex.EnumItemsByIndex = make([]string, len(byIndex))
+		for i, item := range byIndex {
+			enumIndex.EnumItemsByIndex[i] = item.Name
+		}
+		enumIndex.EnumItemsByValue = make([]string, len(byValue))
+		for i, item := range byValue {
+			enumIndex.EnumItemsByValue[i] = item.Name
+		}
+	}
 
 	return nil
 }
