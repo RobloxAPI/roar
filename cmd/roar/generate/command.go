@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 
 	"github.com/anaminus/snek"
+	"github.com/robloxapi/rbxdump"
+	"github.com/robloxapi/rbxdump/diff"
 	"github.com/robloxapi/roar/archive"
 	"github.com/robloxapi/roar/cmd/roar/config"
 	"github.com/robloxapi/roar/history"
@@ -84,6 +86,21 @@ func (c *Command) Run(opt snek.Options) error {
 		}
 	} else {
 		updatedHist = storedHist
+	}
+
+	// Generate dump by rolling through entire history, excluding actions that
+	// remove elements.
+	patcher := diff.Patch{Root: &rbxdump.Root{}}
+	for _, event := range updatedHist.Event {
+		for _, change := range event.Changes {
+			if change.Action.Type == diff.Remove {
+				continue
+			}
+			patcher.Patch([]diff.Action{change.Action})
+		}
+	}
+	if err := WriteFile(cfg.Site, dumpData, patcher.Root); err != nil {
+		return err
 	}
 
 	return nil
