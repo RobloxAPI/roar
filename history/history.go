@@ -24,8 +24,8 @@ type Object struct {
 	Enum map[id.Enum][]*Change
 	// Maps enum item ID to changes.
 	EnumItem map[id.EnumItemID][]*Change
-	// Maps type ID to changes.
-	Type map[id.TypeID][]*Change
+	// Maps type ID to type references.
+	Type map[id.TypeID][]*TypeRef
 }
 
 // Represents one unit of change.
@@ -53,6 +53,15 @@ type Event struct {
 	Version rbxver.Version
 	// List of changes that occurred during the event.
 	Changes []*Change
+}
+
+// Refers to a Type that appears within a Change.
+type TypeRef struct {
+	Change *Change // The associated change.
+	Prev   bool    // true: Change.Prev; false: Change.Action.Fields.
+	Field  string  // Index of Fields.
+	Type   string  // Type: rbxdump.Type; Parameter: rbxdump.Parameter.
+	Index  int     // Index within slice value. -1: Not a slice.
 }
 
 // Entrypoint to history structure.
@@ -106,7 +115,7 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 	r.Object.Member = make(map[id.MemberID][]*Change)
 	r.Object.Enum = make(map[id.Enum][]*Change, len(jr.Object.Enum))
 	r.Object.EnumItem = make(map[id.EnumItemID][]*Change)
-	r.Object.Type = make(map[id.TypeID][]*Change)
+	r.Object.Type = make(map[id.TypeID][]*TypeRef)
 
 	for class, changes := range jr.Object.Class {
 		r.Object.Class[class] = r.decodeChanges(changes)
@@ -125,8 +134,8 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 		}
 	}
 	for cat, types := range jr.Object.Type {
-		for typ, changes := range types {
-			r.Object.Type[id.TypeID{cat, typ}] = r.decodeChanges(changes)
+		for typ, refs := range types {
+			r.Object.Type[id.TypeID{cat, typ}] = r.decodeTypeRefs(refs)
 		}
 	}
 
@@ -139,6 +148,20 @@ func (r *Root) decodeChanges(cids []changeID) []*Change {
 		changes[i] = r.Change[cid]
 	}
 	return changes
+}
+
+func (r *Root) decodeTypeRefs(jrefs []jTypeRef) []*TypeRef {
+	refs := make([]*TypeRef, len(jrefs))
+	for i, jref := range jrefs {
+		refs[i] = &TypeRef{
+			Change: r.Change[jref.Change],
+			Prev:   jref.Prev,
+			Field:  jref.Field,
+			Type:   jref.Type,
+			Index:  jref.Index,
+		}
+	}
+	return refs
 }
 
 func (r *Root) MarshalJSON() (b []byte, err error) {
@@ -173,7 +196,7 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 	jr.Object.Member = make(map[id.Class]map[id.Member][]changeID)
 	jr.Object.Enum = make(map[id.Enum][]changeID, len(r.Object.Enum))
 	jr.Object.EnumItem = make(map[id.Enum]map[id.EnumItem][]changeID)
-	jr.Object.Type = make(map[id.TypeCategory]map[id.Type][]changeID, len(r.Object.Type))
+	jr.Object.Type = make(map[id.TypeCategory]map[id.Type][]jTypeRef, len(r.Object.Type))
 
 	for class, list := range r.Object.Class {
 		jr.Object.Class[class] = r.encodeChanges(changes, list)
@@ -200,10 +223,10 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 	for typeID, list := range r.Object.Type {
 		types := jr.Object.Type[typeID.Category]
 		if types == nil {
-			types = make(map[id.Type][]changeID)
+			types = make(map[id.Type][]jTypeRef)
 			jr.Object.Type[typeID.Category] = types
 		}
-		types[typeID.Type] = r.encodeChanges(changes, list)
+		types[typeID.Type] = r.encodeTypeRefs(changes, list)
 	}
 
 	return json.Marshal(jr)
@@ -215,6 +238,20 @@ func (r *Root) encodeChanges(changes map[*Change]changeID, list []*Change) []cha
 		cids[i] = changes[change]
 	}
 	return cids
+}
+
+func (r *Root) encodeTypeRefs(changes map[*Change]changeID, refs []*TypeRef) []jTypeRef {
+	jrefs := make([]jTypeRef, len(refs))
+	for i, ref := range refs {
+		jrefs[i] = jTypeRef{
+			Change: changes[ref.Change],
+			Prev:   ref.Prev,
+			Field:  ref.Field,
+			Type:   ref.Type,
+			Index:  ref.Index,
+		}
+	}
+	return jrefs
 }
 
 // Returns an ordered list of events occurring after or at start and ending
@@ -363,13 +400,24 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 			r.Object.EnumItem[item] = append(r.Object.EnumItem[item], &change)
 		}
 
-		// Add change to relevant types.
-		hasType := map[id.TypeID]struct{}{}
-		for _, field := range change.Prev {
-			r.addTypeField(hasType, field, &change)
+		// Add a reference for each type found in the change.
+		for name, value := range change.Prev {
+			r.addTypeRefs(value, TypeRef{
+				Change: &change,
+				Prev:   true,
+				Field:  name,
+				Type:   "Type",
+				Index:  -1,
+			})
 		}
-		for _, field := range change.Action.Fields {
-			r.addTypeField(hasType, field, &change)
+		for name, value := range change.Action.Fields {
+			r.addTypeRefs(value, TypeRef{
+				Change: &change,
+				Prev:   false,
+				Field:  name,
+				Type:   "Type",
+				Index:  -1,
+			})
 		}
 	}
 	r.Event = append(r.Event, &event)
@@ -378,31 +426,34 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 	}
 }
 
-func (r *Root) addTypeField(hasType map[id.TypeID]struct{}, field any, change *Change) {
-	switch field := field.(type) {
+// Called recursively for non-Types that contain a Type.
+func (r *Root) addTypeRefs(value any, ref TypeRef) {
+	switch value := value.(type) {
 	case rbxdump.Type:
-		switch field.Category {
+		switch value.Category {
 		case "Class", "Enum":
 			return
 		}
-		idx := id.TypeID{Category: field.Category, Type: field.Name}
-		if _, ok := hasType[idx]; !ok {
-			hasType[idx] = struct{}{}
-			if r.Object.Type == nil {
-				r.Object.Type = map[id.TypeID][]*Change{}
-			}
-			r.Object.Type[idx] = append(r.Object.Type[idx], change)
+		idx := id.TypeID{Category: value.Category, Type: value.Name}
+		if r.Object.Type == nil {
+			r.Object.Type = map[id.TypeID][]*TypeRef{}
 		}
+		r.Object.Type[idx] = append(r.Object.Type[idx], &ref)
 	case []rbxdump.Type:
-		for _, typ := range field {
-			r.addTypeField(hasType, typ, change)
+		ref.Type = "Type"
+		for i, value := range value {
+			ref.Index = i
+			r.addTypeRefs(value, ref)
 		}
 	case []rbxdump.Parameter:
-		for _, param := range field {
-			r.addTypeField(hasType, param.Type, change)
+		ref.Type = "Parameter"
+		for i, value := range value {
+			ref.Index = i
+			r.addTypeRefs(value.Type, ref)
 		}
 	case rbxdump.Parameter:
-		r.addTypeField(hasType, field.Type, change)
+		ref.Type = "Parameter"
+		r.addTypeRefs(value.Type, ref)
 	}
 }
 
