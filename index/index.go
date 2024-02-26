@@ -13,8 +13,8 @@ import (
 )
 
 type Root struct {
-	ClassesByRoot []id.Class
-	MemberTypes   []id.MemberType
+	RootClasses []id.Class
+	MemberTypes []id.MemberType
 
 	Class    map[id.Class]*Class
 	Member   map[id.Class]map[id.Member]*Member
@@ -24,10 +24,10 @@ type Root struct {
 }
 
 type Class struct {
-	Removed                bool
-	SubclassesByName       []id.Class
-	SuperclassesByAncestry []id.Class
-	Related                TypeRefs `json:",omitempty"`
+	Removed      bool
+	Subclasses   []id.Class // Sorted by name.
+	Superclasses []id.Class // Sorted by ancestry.
+	Related      TypeRefs   `json:",omitempty"`
 }
 
 type Member struct {
@@ -36,10 +36,10 @@ type Member struct {
 }
 
 type Enum struct {
-	Removed          bool
-	EnumItemsByValue []id.EnumItem
-	EnumItemsByIndex []id.EnumItem
-	Related          TypeRefs `json:",omitempty"`
+	Removed      bool
+	ItemsByValue []id.EnumItem
+	ItemsByIndex []id.EnumItem
+	Related      TypeRefs `json:",omitempty"`
 }
 
 type EnumItem struct {
@@ -146,23 +146,23 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		}
 		if classDump.Superclass == "" {
 			// Has no superclass, is automatically a root.
-			r.ClassesByRoot = append(r.ClassesByRoot, name)
+			r.RootClasses = append(r.RootClasses, name)
 			continue
 		}
 		superclassIndex := r.Class[classDump.Superclass]
 		if superclassIndex == nil {
 			// Has superclass that is not present in tree.
-			r.ClassesByRoot = append(r.ClassesByRoot, name)
+			r.RootClasses = append(r.RootClasses, name)
 			continue
 		}
 		if !classIndex.Removed && superclassIndex.Removed {
 			// Is not removed while having a removed superclass. That is, while
 			// it may still inherit from a hidden "removed" tree, visibly, it
 			// looks like a root.
-			r.ClassesByRoot = append(r.ClassesByRoot, name)
+			r.RootClasses = append(r.RootClasses, name)
 		}
 	}
-	sort.Strings(r.ClassesByRoot)
+	sort.Strings(r.RootClasses)
 
 	// Superclasses
 	for name, classIndex := range r.Class {
@@ -172,11 +172,11 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 			continue
 		}
 		for super := dump.Classes[classDump.Superclass]; super != nil; {
-			classIndex.SuperclassesByAncestry = append(classIndex.SuperclassesByAncestry, super.Name)
+			classIndex.Superclasses = append(classIndex.Superclasses, super.Name)
 			super = dump.Classes[super.Superclass]
 		}
-		if classIndex.SuperclassesByAncestry == nil {
-			classIndex.SuperclassesByAncestry = []id.Class{}
+		if classIndex.Superclasses == nil {
+			classIndex.Superclasses = []id.Class{}
 		}
 	}
 
@@ -188,15 +188,15 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 			continue
 		}
 		if superclassIndex := r.Class[classDump.Superclass]; superclassIndex != nil {
-			superclassIndex.SubclassesByName = append(superclassIndex.SubclassesByName, name)
+			superclassIndex.Subclasses = append(superclassIndex.Subclasses, name)
 		}
 	}
 	for _, classIndex := range r.Class {
-		if classIndex.SubclassesByName == nil {
-			classIndex.SubclassesByName = []id.Class{}
+		if classIndex.Subclasses == nil {
+			classIndex.Subclasses = []id.Class{}
 			continue
 		}
-		sort.Strings(classIndex.SubclassesByName)
+		sort.Strings(classIndex.Subclasses)
 	}
 
 	// EnumItems
@@ -214,13 +214,13 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		}
 		sort.Slice(byIndex, func(i, j int) bool { return byIndex[i].Index < byIndex[j].Index })
 		sort.Slice(byValue, func(i, j int) bool { return byValue[i].Value < byValue[j].Value })
-		enumIndex.EnumItemsByIndex = make([]string, len(byIndex))
+		enumIndex.ItemsByIndex = make([]string, len(byIndex))
 		for i, item := range byIndex {
-			enumIndex.EnumItemsByIndex[i] = item.Name
+			enumIndex.ItemsByIndex[i] = item.Name
 		}
-		enumIndex.EnumItemsByValue = make([]string, len(byValue))
+		enumIndex.ItemsByValue = make([]string, len(byValue))
 		for i, item := range byValue {
-			enumIndex.EnumItemsByValue[i] = item.Name
+			enumIndex.ItemsByValue[i] = item.Name
 		}
 	}
 
@@ -251,7 +251,6 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 						fmt.Printf("CHECK: missing class %q from index\n", ref.Type.Name)
 						break
 					}
-					// refClassIndex.Related.ClassesByName = append(refClassIndex.Related.ClassesByName, className)
 					refClassIndex.Related = append(refClassIndex.Related, ref)
 				case "Enum":
 					classIndex.Related = append(classIndex.Related, ref)
@@ -261,7 +260,6 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 						fmt.Printf("CHECK: missing enum %q from index\n", ref.Type.Name)
 						break
 					}
-					// refEnumIndex.Related.ClassesByName = append(refEnumIndex.Related.ClassesByName, className)
 					refEnumIndex.Related = append(refEnumIndex.Related, ref)
 				default:
 					classIndex.Related = append(classIndex.Related, ref)
@@ -275,7 +273,6 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 						fmt.Printf("CHECK: missing type %s:%q from index\n", ref.Type.Category, ref.Type.Name)
 						break
 					}
-					// refTypeIndex.Related.ClassesByName = append(refTypeIndex.Related.ClassesByName, className)
 					refTypeIndex.Related = append(refTypeIndex.Related, ref)
 				}
 			})
