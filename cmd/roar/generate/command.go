@@ -113,6 +113,9 @@ func (c *Command) Run(opt snek.Options) error {
 		return err
 	}
 
+	// Generate pages.
+	GeneratePages(indexRoot, filepath.Join(cfg.Site, siteContent))
+
 	return nil
 }
 
