@@ -4,5 +4,5 @@
 <link rel="icon" type="image/png" sizes="16x16" href="{{relURL `favicon-16x16.png`}}">
 <link rel="shortcut icon" href="{{relURL `favicon.png`}}">
 <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
-{{ partialCached "head/css.html" . }}
-{{ partialCached "head/js.html" . }}
+{{- partialCached "head/css.html" . }}
+{{- partialCached "head/js.html" . }}
