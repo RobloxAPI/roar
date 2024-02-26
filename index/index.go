@@ -23,30 +23,23 @@ type Root struct {
 	Type     map[id.TypeCategory]map[id.Type]*Type
 }
 
-type Related struct {
-	ClassesByName   []id.Class
-	MembersByName   []id.MemberID
-	EnumsByName     []id.Enum
-	EnumItemsByName []id.EnumItemID
-}
-
 type Class struct {
 	Removed                bool
 	SubclassesByName       []id.Class
 	SuperclassesByAncestry []id.Class
-	Related                Related `json:"-"`
+	Related                TypeRefs `json:",omitempty"`
 }
 
 type Member struct {
 	Removed bool
-	Related Related `json:"-"`
+	Related TypeRefs `json:",omitempty"`
 }
 
 type Enum struct {
 	Removed          bool
 	EnumItemsByValue []id.EnumItem
 	EnumItemsByIndex []id.EnumItem
-	Related          Related `json:"-"`
+	Related          TypeRefs `json:",omitempty"`
 }
 
 type EnumItem struct {
@@ -56,7 +49,7 @@ type EnumItem struct {
 type Type struct {
 	Removed bool
 	Count   int
-	Related Related `json:"-"`
+	Related TypeRefs `json:",omitempty"`
 }
 
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
@@ -244,5 +237,157 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		}
 	}
 
+	for className, members := range r.Member {
+		classIndex := r.Class[className]
+		for memberName, memberIndex := range members {
+			classDump := dump.Classes[className]
+			if classDump == nil {
+				fmt.Printf("CHECK: missing class %q from dump\n", className)
+				continue
+			}
+			memberDump := classDump.Members[memberName]
+			if memberDump == nil {
+				fmt.Printf("CHECK: missing member %s.%q from dump\n", className, memberName)
+				continue
+			}
+			forEachType(memberDump.Fields(nil), func(ref TypeRef) {
+				ref.Class = className
+				ref.Member = memberName
+				ref.MemberType = memberDump.MemberType()
+				ref.Removed = memberIndex.Removed || classIndex.Removed
+				switch ref.Type.Category {
+				case "Class":
+					classIndex.Related = append(classIndex.Related, ref)
+					memberIndex.Related = append(memberIndex.Related, ref)
+					refClassIndex := r.Class[ref.Type.Name]
+					if refClassIndex == nil {
+						fmt.Printf("CHECK: missing class %q from index\n", ref.Type.Name)
+						break
+					}
+					// refClassIndex.Related.ClassesByName = append(refClassIndex.Related.ClassesByName, className)
+					refClassIndex.Related = append(refClassIndex.Related, ref)
+				case "Enum":
+					classIndex.Related = append(classIndex.Related, ref)
+					memberIndex.Related = append(memberIndex.Related, ref)
+					refEnumIndex := r.Enum[ref.Type.Name]
+					if refEnumIndex == nil {
+						fmt.Printf("CHECK: missing enum %q from index\n", ref.Type.Name)
+						break
+					}
+					// refEnumIndex.Related.ClassesByName = append(refEnumIndex.Related.ClassesByName, className)
+					refEnumIndex.Related = append(refEnumIndex.Related, ref)
+				default:
+					classIndex.Related = append(classIndex.Related, ref)
+					refCatIndex := r.Type[ref.Type.Category]
+					if refCatIndex == nil {
+						fmt.Printf("CHECK: missing type category %q from index\n", ref.Type.Category)
+						break
+					}
+					refTypeIndex := refCatIndex[ref.Type.Name]
+					if refTypeIndex == nil {
+						fmt.Printf("CHECK: missing type %s:%q from index\n", ref.Type.Category, ref.Type.Name)
+						break
+					}
+					// refTypeIndex.Related.ClassesByName = append(refTypeIndex.Related.ClassesByName, className)
+					refTypeIndex.Related = append(refTypeIndex.Related, ref)
+				}
+			})
+		}
+	}
+
+	for _, index := range r.Class {
+		sort.Sort(index.Related)
+	}
+	for _, members := range r.Member {
+		for _, index := range members {
+			sort.Sort(index.Related)
+		}
+	}
+	for _, index := range r.Enum {
+		sort.Sort(index.Related)
+	}
+	for _, types := range r.Type {
+		for _, index := range types {
+			sort.Sort(index.Related)
+		}
+	}
+
 	return nil
+}
+
+// TypeRef represents a reference to a type from a member.
+type TypeRef struct {
+	Class      id.Class      // Class name.
+	Member     id.Member     // Member name.
+	MemberType id.MemberType // Member type.
+	Removed    bool          // Whether member is removed.
+	Field      string        // Index of Fields.
+	Kind       string        // Type: rbxdump.Type; Parameter: rbxdump.Parameter.
+	Index      int           // Index within slice value. -1: Not a slice.
+	Type       rbxdump.Type  // Type value.
+}
+
+func forEachType(fields rbxdump.Fields, walk func(ref TypeRef)) {
+	for field, value := range fields {
+		switch value := value.(type) {
+		case rbxdump.Type:
+			walk(TypeRef{Field: field, Kind: "Type", Index: -1, Type: value})
+		case rbxdump.Parameter:
+			walk(TypeRef{Field: field, Kind: "Parameter", Index: -1, Type: value.Type})
+		case []rbxdump.Type:
+			for i, value := range value {
+				walk(TypeRef{Field: field, Kind: "Type", Index: i, Type: value})
+			}
+		case []rbxdump.Parameter:
+			for i, value := range value {
+				walk(TypeRef{Field: field, Kind: "parameter", Index: i, Type: value.Type})
+			}
+		}
+	}
+}
+
+var sortMemberType = map[string]int{
+	"Property": 4,
+	"Function": 3,
+	"Event":    2,
+	"Callback": 1,
+}
+
+type TypeRefs []TypeRef
+
+func (t TypeRefs) Len() int      { return len(t) }
+func (t TypeRefs) Swap(i, j int) { t[i], t[j] = t[j], t[i] }
+func (t TypeRefs) Less(i, j int) bool {
+	u, v := t[i], t[j]
+	if u.Removed != v.Removed {
+		return !u.Removed && v.Removed
+	}
+	if u.Class != v.Class {
+		return u.Class < v.Class
+	}
+	if sortMemberType[u.MemberType] != sortMemberType[v.MemberType] {
+		return sortMemberType[u.MemberType] > sortMemberType[v.MemberType]
+	}
+	if u.MemberType != v.MemberType {
+		return u.MemberType < v.MemberType
+	}
+	if u.Member != v.Member {
+		return u.Member < v.Member
+	}
+	if u.Field != v.Field {
+		return u.Field < v.Field
+	}
+	if u.Kind != v.Kind {
+		return u.Kind < v.Kind
+	}
+	if u.Index != v.Index {
+		return u.Index < v.Index
+	}
+	if u.Type.Category != v.Type.Category {
+		return u.Type.Category < v.Type.Category
+	}
+	if u.Type.Name != v.Type.Name {
+		return u.Type.Name < v.Type.Name
+	}
+	return !u.Type.Optional && v.Type.Optional
 }
