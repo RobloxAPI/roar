@@ -48,7 +48,6 @@ type EnumItem struct {
 
 type Type struct {
 	Removed bool
-	Count   int
 	Related TypeRefs `json:",omitempty"`
 }
 
@@ -126,25 +125,13 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	}
 
 	r.Type = map[id.TypeCategory]map[id.Type]*Type{}
-	for i, refs := range hist.Object.Type {
-		typ := Type{Removed: true}
-		count := 0
-		for _, ref := range refs {
-			if ref.Prev {
-				count--
-			} else {
-				count++
-			}
-		}
-		typ.Count = count
-		typ.Removed = count == 0
-
+	for i := range hist.Object.Type {
 		types := r.Type[i.Category]
 		if types == nil {
 			types = map[id.Type]*Type{}
 			r.Type[i.Category] = types
 		}
-		types[i.Type] = &typ
+		types[i.Type] = &Type{Removed: true}
 	}
 
 	// Select roots of the inheritance tree. This includes roots of the visible
@@ -309,6 +296,13 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	for _, types := range r.Type {
 		for _, index := range types {
 			sort.Sort(index.Related)
+			count := 0
+			for _, ref := range index.Related {
+				if !ref.Removed {
+					count++
+				}
+			}
+			index.Removed = count == 0
 		}
 	}
 
