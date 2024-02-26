@@ -1,0 +1,6 @@
+*.lock
+/site/public/
+/site/data/
+/site/content/class/
+/site/content/enum/
+/site/content/type/

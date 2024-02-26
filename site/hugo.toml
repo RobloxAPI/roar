@@ -1,0 +1,25 @@
+baseURL = 'https://robloxapi.github.io/ref/'
+languageCode = 'en-us'
+title = 'Roblox API Reference'
+uglyURLs = true
+disablePathToLower = true
+
+[[menus.main]]
+name = 'Roblox API Reference'
+pageRef = '/'
+weight = 10
+
+[[menus.main]]
+name = 'Classes'
+pageRef = '/class'
+weight = 20
+
+[[menus.main]]
+name = 'Enums'
+pageRef = '/enum'
+weight = 20
+
+[[menus.main]]
+name = 'Types'
+pageRef = '/type'
+weight = 20
