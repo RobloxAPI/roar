@@ -14,7 +14,6 @@ import (
 
 const PageTemplate = `+++
 title = %[1]q
-alias = [%[2]q]
 +++
 `
 
