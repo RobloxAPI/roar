@@ -25,7 +25,7 @@ type Object struct {
 	// Maps enum item ID to changes.
 	EnumItem map[id.EnumItemID][]*Change
 	// Maps type ID to type references.
-	Type map[id.TypeID][]*TypeRef
+	Type map[id.Type][]*TypeRef
 }
 
 // Represents one unit of change.
@@ -57,11 +57,12 @@ type Event struct {
 
 // Refers to a Type that appears within a Change.
 type TypeRef struct {
-	Change *Change // The associated change.
-	Prev   bool    // true: Change.Prev; false: Change.Action.Fields.
-	Field  string  // Index of Fields.
-	Type   string  // Type: rbxdump.Type; Parameter: rbxdump.Parameter.
-	Index  int     // Index within slice value. -1: Not a slice.
+	Change *Change      // The associated change.
+	Prev   bool         // true: Change.Prev; false: Change.Action.Fields.
+	Field  string       // Index of Fields.
+	Type   string       // Type: rbxdump.Type; Parameter: rbxdump.Parameter.
+	Index  int          // Index within slice value. -1: Not a slice.
+	Value  rbxdump.Type // The type itself.
 }
 
 // Entrypoint to history structure.
@@ -115,7 +116,7 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 	r.Object.Member = make(map[id.MemberID][]*Change)
 	r.Object.Enum = make(map[id.Enum][]*Change, len(jr.Object.Enum))
 	r.Object.EnumItem = make(map[id.EnumItemID][]*Change)
-	r.Object.Type = make(map[id.TypeID][]*TypeRef)
+	r.Object.Type = make(map[id.Type][]*TypeRef)
 
 	for class, changes := range jr.Object.Class {
 		r.Object.Class[class] = r.decodeChanges(changes)
@@ -133,10 +134,8 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 			r.Object.EnumItem[id.EnumItemID{enum, item}] = r.decodeChanges(changes)
 		}
 	}
-	for cat, types := range jr.Object.Type {
-		for typ, refs := range types {
-			r.Object.Type[id.TypeID{cat, typ}] = r.decodeTypeRefs(refs)
-		}
+	for typ, refs := range jr.Object.Type {
+		r.Object.Type[typ] = r.decodeTypeRefs(refs)
 	}
 
 	return nil
@@ -159,6 +158,7 @@ func (r *Root) decodeTypeRefs(jrefs []jTypeRef) []*TypeRef {
 			Field:  jref.Field,
 			Type:   jref.Type,
 			Index:  jref.Index,
+			Value:  jref.Value,
 		}
 	}
 	return refs
@@ -196,7 +196,7 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 	jr.Object.Member = make(map[id.Class]map[id.Member][]changeID)
 	jr.Object.Enum = make(map[id.Enum][]changeID, len(r.Object.Enum))
 	jr.Object.EnumItem = make(map[id.Enum]map[id.EnumItem][]changeID)
-	jr.Object.Type = make(map[id.TypeCategory]map[id.Type][]jTypeRef, len(r.Object.Type))
+	jr.Object.Type = make(map[id.Type][]jTypeRef, len(r.Object.Type))
 
 	for class, list := range r.Object.Class {
 		jr.Object.Class[class] = r.encodeChanges(changes, list)
@@ -220,13 +220,8 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 		}
 		items[enumItemID.EnumItem] = r.encodeChanges(changes, list)
 	}
-	for typeID, list := range r.Object.Type {
-		types := jr.Object.Type[typeID.Category]
-		if types == nil {
-			types = make(map[id.Type][]jTypeRef)
-			jr.Object.Type[typeID.Category] = types
-		}
-		types[typeID.Type] = r.encodeTypeRefs(changes, list)
+	for typ, list := range r.Object.Type {
+		jr.Object.Type[typ] = r.encodeTypeRefs(changes, list)
 	}
 
 	return json.Marshal(jr)
@@ -249,6 +244,7 @@ func (r *Root) encodeTypeRefs(changes map[*Change]changeID, refs []*TypeRef) []j
 			Field:  ref.Field,
 			Type:   ref.Type,
 			Index:  ref.Index,
+			Value:  ref.Value,
 		}
 	}
 	return jrefs
@@ -458,11 +454,11 @@ func (r *Root) addTypeRefs(value any, ref TypeRef) {
 		case "Class", "Enum":
 			return
 		}
-		idx := id.TypeID{Category: value.Category, Type: value.Name}
 		if r.Object.Type == nil {
-			r.Object.Type = map[id.TypeID][]*TypeRef{}
+			r.Object.Type = map[id.Type][]*TypeRef{}
 		}
-		r.Object.Type[idx] = append(r.Object.Type[idx], &ref)
+		ref.Value = value
+		r.Object.Type[value.Name] = append(r.Object.Type[value.Name], &ref)
 	case []rbxdump.Type:
 		ref.Type = "Type"
 		for i, value := range value {

@@ -36,7 +36,7 @@ type jObject struct {
 	// Maps enum item ID to changes.
 	EnumItem map[id.Enum]map[id.EnumItem][]changeID
 	// Maps type ID to references.
-	Type map[id.TypeCategory]map[id.Type][]jTypeRef
+	Type map[id.Type][]jTypeRef
 }
 
 type jTypeRef struct {
@@ -45,6 +45,7 @@ type jTypeRef struct {
 	Field  string
 	Type   string
 	Index  int
+	Value  rbxdump.Type
 }
 
 // Represents one unit of change.

@@ -83,9 +83,7 @@ func GeneratePages(index *index.Root, rootPath string) {
 	// Generate for each type of element.
 	generatePageType(rootPath, "class", pages, index.Class)
 	generatePageType(rootPath, "enum", pages, index.Enum)
-	for _, types := range index.Type {
-		generatePageType(rootPath, "type", pages, types)
-	}
+	generatePageType(rootPath, "type", pages, index.Type)
 
 	// Remove untouched pages.
 	for path := range pages {

@@ -20,7 +20,7 @@ type Root struct {
 	Member   map[id.Class]map[id.Member]*Member
 	Enum     map[id.Enum]*Enum
 	EnumItem map[id.Enum]map[id.EnumItem]*EnumItem
-	Type     map[id.TypeCategory]map[id.Type]*Type
+	Type     map[id.Type]*Type
 }
 
 type Class struct {
@@ -47,8 +47,9 @@ type EnumItem struct {
 }
 
 type Type struct {
-	Removed bool
-	Related TypeRefs `json:",omitempty"`
+	Category string
+	Removed  bool
+	Related  TypeRefs `json:",omitempty"`
 }
 
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
@@ -124,14 +125,17 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		items[i.EnumItem] = &item
 	}
 
-	r.Type = map[id.TypeCategory]map[id.Type]*Type{}
-	for i := range hist.Object.Type {
-		types := r.Type[i.Category]
-		if types == nil {
-			types = map[id.Type]*Type{}
-			r.Type[i.Category] = types
+	r.Type = map[id.Type]*Type{}
+	for i, refs := range hist.Object.Type {
+		typ := Type{Removed: true}
+		for _, ref := range refs {
+			if ref.Value.Category != typ.Category && typ.Category != "" {
+				fmt.Printf("CHECK: type %s has category %s and %s\n", i, typ.Category, ref.Value.Category)
+			} else {
+				typ.Category = ref.Value.Category
+			}
 		}
-		types[i.Type] = &Type{Removed: true}
+		r.Type[i] = &typ
 	}
 
 	// Select roots of the inheritance tree. This includes roots of the visible
@@ -263,14 +267,9 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 					refEnumIndex.Related = append(refEnumIndex.Related, ref)
 				default:
 					classIndex.Related = append(classIndex.Related, ref)
-					refCatIndex := r.Type[ref.Type.Category]
-					if refCatIndex == nil {
-						fmt.Printf("CHECK: missing type category %q from index\n", ref.Type.Category)
-						break
-					}
-					refTypeIndex := refCatIndex[ref.Type.Name]
+					refTypeIndex := r.Type[ref.Type.Name]
 					if refTypeIndex == nil {
-						fmt.Printf("CHECK: missing type %s:%q from index\n", ref.Type.Category, ref.Type.Name)
+						fmt.Printf("CHECK: missing type %q from index\n", ref.Type.Name)
 						break
 					}
 					refTypeIndex.Related = append(refTypeIndex.Related, ref)
@@ -290,17 +289,15 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	for _, index := range r.Enum {
 		sort.Sort(index.Related)
 	}
-	for _, types := range r.Type {
-		for _, index := range types {
-			sort.Sort(index.Related)
-			count := 0
-			for _, ref := range index.Related {
-				if !ref.Removed {
-					count++
-				}
+	for _, index := range r.Type {
+		sort.Sort(index.Related)
+		count := 0
+		for _, ref := range index.Related {
+			if !ref.Removed {
+				count++
 			}
-			index.Removed = count == 0
 		}
+		index.Removed = count == 0
 	}
 
 	return nil
