@@ -24,7 +24,8 @@ type Root struct {
 }
 
 type Class struct {
-	Removed      bool
+	Removed      bool       // Not present in latest state.
+	HasRemoved   bool       // Has removed descendant class.
 	Subclasses   []id.Class // Sorted by name.
 	Superclasses []id.Class // Sorted by ancestry.
 	Related      TypeRefs   `json:",omitempty"`
@@ -280,6 +281,12 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	for _, index := range r.Class {
 		sort.Sort(index.Related)
+		if index.Removed {
+			for _, superID := range index.Superclasses {
+				super := r.Class[superID]
+				super.HasRemoved = true
+			}
+		}
 	}
 	for _, members := range r.Member {
 		for _, index := range members {
