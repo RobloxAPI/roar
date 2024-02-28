@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
-	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -60,9 +59,8 @@ func generatePageType[T any](rootPath, typ string, pages Pages, m map[string]T) 
 	var buf bytes.Buffer
 	for name := range m {
 		buf.Reset()
-		escName := url.PathEscape(name)
-		fmt.Fprintf(&buf, PageTemplate, name, escName+".html", typ)
-		filePath := filepath.Join(basePath, escName+".md")
+		fmt.Fprintf(&buf, PageTemplate, name)
+		filePath := filepath.Join(basePath, name+".md")
 		if err := os.WriteFile(filePath, buf.Bytes(), 0666); err != nil {
 			fmt.Printf("generate page %q: %s\n", name, err)
 			continue
