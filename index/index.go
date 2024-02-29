@@ -342,7 +342,7 @@ func forEachType(fields rbxdump.Fields, walk func(ref TypeRef)) {
 			}
 		case []rbxdump.Parameter:
 			for i, value := range value {
-				walk(TypeRef{Field: field, Kind: "parameter", Index: i, Type: value.Type})
+				walk(TypeRef{Field: field, Kind: "Parameter", Index: i, Type: value.Type})
 			}
 		}
 	}
