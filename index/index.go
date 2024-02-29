@@ -24,6 +24,7 @@ type Root struct {
 }
 
 type Class struct {
+	Name         string
 	Removed      bool       // Not present in latest state.
 	HasRemoved   bool       // Has removed descendant class.
 	Subclasses   []id.Class // Sorted by name.
@@ -32,11 +33,14 @@ type Class struct {
 }
 
 type Member struct {
+	Class   string
+	Name    string
 	Removed bool
 	Related TypeRefs `json:",omitempty"`
 }
 
 type Enum struct {
+	Name         string
 	Removed      bool
 	ItemsByValue []id.EnumItem
 	ItemsByIndex []id.EnumItem
@@ -44,11 +48,14 @@ type Enum struct {
 }
 
 type EnumItem struct {
+	Enum    string
+	Name    string
 	Removed bool
 }
 
 type Type struct {
 	Category string
+	Name     string
 	Removed  bool
 	Related  TypeRefs `json:",omitempty"`
 }
@@ -58,7 +65,7 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	r.Class = map[id.Class]*Class{}
 	for i, changes := range hist.Object.Class {
-		class := Class{Removed: true}
+		class := Class{Name: i, Removed: true}
 		for _, change := range changes {
 			switch change.Action.Type {
 			case diff.Add:
@@ -73,7 +80,7 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	r.Member = map[id.Class]map[id.Member]*Member{}
 	for i, changes := range hist.Object.Member {
-		member := Member{Removed: true}
+		member := Member{Class: i.Class, Name: i.Member, Removed: true}
 		for _, change := range changes {
 			switch change.Action.Type {
 			case diff.Add:
@@ -93,7 +100,7 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	r.Enum = map[id.Enum]*Enum{}
 	for i, changes := range hist.Object.Enum {
-		enum := Enum{Removed: true}
+		enum := Enum{Name: i, Removed: true}
 		for _, change := range changes {
 			switch change.Action.Type {
 			case diff.Add:
@@ -108,7 +115,7 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	r.EnumItem = map[id.Enum]map[id.EnumItem]*EnumItem{}
 	for i, changes := range hist.Object.EnumItem {
-		item := EnumItem{Removed: true}
+		item := EnumItem{Enum: i.Enum, Name: i.EnumItem, Removed: true}
 		for _, change := range changes {
 			switch change.Action.Type {
 			case diff.Add:
@@ -128,7 +135,7 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	r.Type = map[id.Type]*Type{}
 	for i, refs := range hist.Object.Type {
-		typ := Type{Removed: true}
+		typ := Type{Name: i, Removed: true}
 		for _, ref := range refs {
 			if ref.Value.Category != typ.Category && typ.Category != "" {
 				fmt.Printf("CHECK: type %s has category %s and %s\n", i, typ.Category, ref.Value.Category)
