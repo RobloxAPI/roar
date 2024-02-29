@@ -10,4 +10,6 @@
 	<a href="{{ref site.Home (path.Join `enum` $primary)}}">{{$primary}}</a>
 {{- else if eq $type "enumitem" -}}
 	<a href="{{ref site.Home (print (path.Join `enum` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
+{{- else if eq $type "type" -}}
+	<a href="{{ref site.Home (path.Join `type` $primary)}}">{{$primary}}</a>
 {{- end -}}
