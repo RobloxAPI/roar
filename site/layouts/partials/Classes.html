@@ -1,0 +1,8 @@
+{{$classes := slice}}
+{{range .}}
+	{{$class := index site.Data.index.Class .}}
+	{{if not $class.Removed}}
+		{{$classes = $classes | append $class}}
+	{{end}}
+{{end}}
+{{return $classes}}
