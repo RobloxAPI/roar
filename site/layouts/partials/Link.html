@@ -1,0 +1,13 @@
+{{- $type := index . 0 -}}
+{{- $primary := index . 1 -}}
+{{- $secondary := index . 2 -}}
+{{- $mode := index . 3 -}}
+{{- if eq $type "class" -}}
+	<a href="{{ref site.Home (path.Join `class` $primary)}}">{{$primary}}</a>
+{{- else if eq $type "member" -}}
+	<a href="{{ref site.Home (print (path.Join `class` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
+{{- else if eq $type "enum" -}}
+	<a href="{{ref site.Home (path.Join `enum` $primary)}}">{{$primary}}</a>
+{{- else if eq $type "enumitem" -}}
+	<a href="{{ref site.Home (print (path.Join `enum` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
+{{- end -}}

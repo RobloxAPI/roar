@@ -44,13 +44,13 @@
 		{{- end }}
 	{{- end }}
 	<section id="present-classes">
-		<header><h2>Classes <span class="element-count">{{$countPresentClasses}}</span></h2></header>
+		<header><h2>Classes {{partial "element-count.html" $countPresentClasses}}</h2></header>
 		<ul class="class-tree">
 			{{- template "class-tree" site.Data.index.RootClasses -}}
 		</ul>
 	</section>
 	<section id="removed-classes">
-		<header><h2>Removed classes <span class="element-count">{{$countRemovedClasses}}</span></h2></header>
+		<header><h2>Removed classes {{partial "element-count.html" $countRemovedClasses}}</span></h2></header>
 		<ul class="class-tree">
 	{{- range site.Data.index.RootClasses }}
 		{{- $class := index site.Data.index.Class . }}

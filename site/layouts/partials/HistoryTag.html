@@ -1,0 +1,10 @@
+{{- $type := "changed" }}
+{{- if lt .Action.Type 0 }}
+	{{- $type = "removed" }}
+{{- else if gt .Action.Type 0 }}
+	{{- $type = "added" }}
+{{- end }}
+{{- $event := index site.Data.history.Event (int .Event) }}
+<a class="history-tag {{$type}}" href="#" title="{{humanize $type}} on {{$event.Date}}
+{{$event.Version}}
+{{$event.GUID}}">{{index (split $event.Version ".") 1}}</a>
