@@ -1,1 +1,33 @@
-TYPE {{.Title}}
+{{- define "main" }}
+{{- $typeName := .Title }}
+{{- $typeIndex := index site.Data.index.Type $typeName }}
+
+{{- $relatedMembers := slice }}
+{{- range $typeIndex.Related}}
+	{{- if and (not .Removed) }}
+		{{- $relatedMembers = $relatedMembers | append . }}
+	{{- end }}
+{{- end }}
+
+<header><h1>{{$typeName}}</h1></header>
+
+{{- if $relatedMembers }}
+	<section id="related-members">
+		<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
+		<ul class="truncated-list element-list">
+			{{- range $relatedMembers }}
+				{{- $type := "class" }}
+				{{- if .Member }}
+					{{- $type = "member" }}
+				{{- end }}
+				<li>
+					{{- partial "link/entity.html" (slice $type .Class .Member) }}
+					{{- if eq .Kind "Parameter" }} (
+						{{- index site.Data.dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+					{{- end -}}
+				</li>
+			{{- end }}
+		</ul>
+	</section>
+{{- end }}
+{{- end }}
