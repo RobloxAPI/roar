@@ -115,8 +115,10 @@ func (c *Command) Run(opt snek.Options) error {
 			patcher.Patch([]diff.Action{change.Action})
 		}
 	}
-	if err := WriteFile(cfg.Site, dumpData, patcher.Root); err != nil {
-		return err
+	if !cfg.Disable.Dump {
+		if err := WriteFile(cfg.Site, dumpData, patcher.Root); err != nil {
+			return err
+		}
 	}
 
 	// Generate index file.
