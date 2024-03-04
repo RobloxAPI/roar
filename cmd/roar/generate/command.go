@@ -97,8 +97,10 @@ func (c *Command) Run(opt snek.Options) error {
 		updatedHist = MergeHistory(repo, storedHist)
 
 		// Write new history file.
-		if err := WriteFile(cfg.Site, historyData, updatedHist); err != nil {
-			return err
+		if !cfg.Disable.History {
+			if err := WriteFile(cfg.Site, historyData, updatedHist); err != nil {
+				return err
+			}
 		}
 	} else {
 		updatedHist = storedHist
