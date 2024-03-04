@@ -1,7 +1,21 @@
-{{- $type := index . 0 -}}
+{{- /* string, string, string?, string? // Render a link to an API element. */ -}}
+
+{{- /* string // Type of referred element. Case-insensitive. May be class,
+member, enum, enumitem, or type */ -}}
+{{- $type := index . 0 | lower -}}
+
+{{- /* string // Name of primary element. */ -}}
 {{- $primary := index . 1 -}}
+
+{{- /* string? // Name of secondary element. */ -}}
 {{- $secondary := index . 2 -}}
+
+{{- /* string? // How to render the link.
+	- (default): Render full link with icon.
+	- "simple": Include only the name of the referred element (no primary or icon).
+*/ -}}
 {{- $mode := index . 3 -}}
+
 {{- if eq $type "class" -}}
 	<a href="{{ref site.Home (path.Join `class` $primary)}}">{{$primary}}</a>
 {{- else if eq $type "member" -}}

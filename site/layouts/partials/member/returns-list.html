@@ -1,0 +1,5 @@
+{{/* []Type // Render member return types as delimited list. */}}
+{{- range $i, $type := . -}}
+	{{- if gt $i 0}}, {{end -}}
+	{{- partial "member/type.html" $type -}}
+{{- end -}}

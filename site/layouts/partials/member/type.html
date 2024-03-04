@@ -1,0 +1,9 @@
+{{- /* Type // Render a link to a data type element. */ -}}
+
+{{- $cat := "type" }}
+{{- if eq .Category "Class" -}}
+	{{- $cat = "class" }}
+{{- else if eq .Category "Enum" -}}
+	{{- $cat = "enum" }}
+{{- end -}}
+<a class="type" href="{{ref site.Home (path.Join $cat .Name)}}">{{.Name}}{{if .Optional}}?{{end}}</a>

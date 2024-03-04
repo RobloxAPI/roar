@@ -1,0 +1,23 @@
+{{/* []Parameter // Render member parameters as a table. */}}
+<table class="index-card param-index-card">
+	<thead>
+		<tr>
+			<th class="col-member">Name</th>
+			<th class="col-type">Type</th>
+			<th class="col-default">Default</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- range . }}
+			<tr class="row-{{.Name}}">
+				<td class="col-member">{{.Name}}</td>
+				<td class="col-type">{{partial "member/type.html" .Type}}</td>
+				<td class="col-default">{{if .Optional}}<span class="api-default">{{.Default}}</span>{{else}}<span class="api-no-default">none</span>{{end}}</td>
+			</tr>
+		{{- else }}
+			<tr>
+				<td colspan="3">No parameters.</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>

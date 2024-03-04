@@ -1,3 +1,6 @@
+{{/* ([]string): []ClassIndex // Returns a list of classes from class names.
+Only present classes are included. */}}
+
 {{$classes := slice}}
 {{range .}}
 	{{$class := index site.Data.index.Class .}}
