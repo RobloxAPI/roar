@@ -36,15 +36,25 @@ var Def = snek.Def{
 	Name: "generate",
 	Doc: snek.Doc{
 		Summary:     "Generate site.",
-		Arguments:   "[config]",
+		Arguments:   "[flags] [config]",
 		Description: usage,
 	},
 	New: func() snek.Command { return &Command{} },
 }
 
-type Command struct{}
+type Command struct {
+	NoCache bool
+}
+
+func (c *Command) SetFlags(flagset snek.FlagSet) {
+	flagset.BoolVar(&c.NoCache, "no-cache", false, "Ignore cached history.")
+}
 
 func (c *Command) Run(opt snek.Options) error {
+	if err := opt.Parse(opt.Arguments); err != nil {
+		return err
+	}
+
 	var stdin io.Reader
 	if opt.Arg(0) == "-" {
 		stdin = opt.Stdin
@@ -64,9 +74,14 @@ func (c *Command) Run(opt snek.Options) error {
 
 	// Read history file, if available.
 	histPath := filepath.Join(cfg.Site, siteData, historyData)
-	storedHist, err := ReadHistory(histPath)
-	if err != nil {
-		return err
+	var storedHist *history.Root
+	if c.NoCache {
+		storedHist = &history.Root{}
+	} else {
+		var err error
+		if storedHist, err = ReadHistory(histPath); err != nil {
+			return err
+		}
 	}
 
 	// Create archive repository.

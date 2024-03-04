@@ -6,7 +6,7 @@ Currently, the only subcommand is `generate`, which produces data and pages for
 a [Hugo][hugo] website.
 
 ```bash
-roar generate [config]
+roar generate [flags] [config]
 ```
 
 An optional path to a configuration file can be passed as an argument. If `-`,
@@ -16,6 +16,9 @@ configuration in the following locations, in order:
 1. `roar.toml` in the working directory.
 2. `roar/roar.toml` in the user config directory (according to
    [os.UserConfigDir][userconfigdir]).
+
+The `--no-cache` flag will ignore any cached data, causing the data to be
+reproduced from scratch.
 
 ### Configuration
 The generate command is configured by a [TOML][toml] file.
