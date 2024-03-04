@@ -34,13 +34,11 @@ site = "~/projects/website"
 # so setting this to false will skip merging and use the existing cache instead.
 update = true
 
-# Selectively enable or disable types of generated data. If all types are
-# disabled, then they are all enabled.
-[data]
-docs = false    # Fetches documentation from github.com/Roblox/creator-docs.
-dump = false    # Includes Cumulative API dump.
-reflect = false # Fetches and includes reflection metadata.
-none = false    # If true, no data will be generated.
+# Selectively disable types of generated data.
+[disable]
+docs = true    # Disables fetching of documentation from github.com/Roblox/creator-docs.
+dump = true    # Excludes cumulative API dump.
+reflect = true # Excludes reflection metadata.
 ```
 
 The `source` field must point to the `data` directory of a

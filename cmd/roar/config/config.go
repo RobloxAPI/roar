@@ -11,17 +11,16 @@ import (
 )
 
 type Config struct {
-	Source string // Location of builds.
-	Site   string // Location of Hugo site.
-	Update bool   // Update history database.
-	Data   Data
+	Source  string // Location of builds.
+	Site    string // Location of Hugo site.
+	Update  bool   // Update history database.
+	Disable Disable
 }
 
-type Data struct {
-	Docs    bool // Whether to generate doc data.
-	Dump    bool // Whether to generate dump data.
-	Reflect bool // Whether to generate reflection metadata.
-	None    bool // Force no extra data to be generated.
+type Disable struct {
+	Docs    bool // Don't generate doc data.
+	Dump    bool // Don't generate dump data.
+	Reflect bool // Don't generate reflection metadata.
 }
 
 // Opens configuration. If stdin is not nil, then it is used. Otherwise, if path
@@ -62,10 +61,5 @@ func Open(path string, stdin io.Reader) (c Config, err error) {
 }
 
 func (c Config) Normalize() Config {
-	if !c.Data.Docs && !c.Data.Dump && !c.Data.Reflect && !c.Data.None {
-		c.Data.Docs = true
-		c.Data.Dump = true
-		c.Data.Reflect = true
-	}
 	return c
 }
