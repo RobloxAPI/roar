@@ -4,9 +4,9 @@
 		{{- if not $class.Removed }}
 		<li><a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
 			{{- if $class.Subclasses }}
-			<ul>
-			{{- template "class-tree" $class.Subclasses }}
-			</ul>
+				<ul>
+					{{- template "class-tree" $class.Subclasses }}
+				</ul>
 			{{- end }}
 		</li>
 		{{- end }}
@@ -18,14 +18,14 @@
 		{{- $class := index site.Data.index.Class . }}
 		{{- if or $class.Removed $class.HasRemoved }}
 		<li>{{- if $class.Removed }}
-			<a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
+				<a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
 			{{- else }}
 				{{.}}
 			{{- end }}
 			{{- if $class.Subclasses }}
-			<ul>
-			{{- template "removed-class-tree" $class.Subclasses }}
-			</ul>
+				<ul>
+					{{- template "removed-class-tree" $class.Subclasses }}
+				</ul>
 			{{- end }}
 		</li>
 		{{- end }}
@@ -52,12 +52,12 @@
 	<section id="removed-classes">
 		<header><h2>Removed classes {{partial "element-count.html" $countRemovedClasses}}</span></h2></header>
 		<ul class="class-tree">
-	{{- range site.Data.index.RootClasses }}
-		{{- $class := index site.Data.index.Class . }}
-		{{- if $class.Removed }}
-			{{- template "removed-class-tree" (slice .) }}
-		{{- end }}
-	{{- end -}}
+			{{- range site.Data.index.RootClasses }}
+				{{- $class := index site.Data.index.Class . }}
+				{{- if $class.Removed }}
+					{{- template "removed-class-tree" (slice .) }}
+				{{- end }}
+			{{- end -}}
 		</ul>
 	</section>
 </article>
@@ -74,21 +74,21 @@
 	<section id="present-enums">
 		<header><h2>Enums <span class="element-count">{{$countPresentEnums}}</span></h2></header>
 		<ul class="enum-list">
-	{{- range $name, $enum := site.Data.index.Enum }}
-		{{- if not $enum.Removed }}
-			<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
-		{{- end }}
-	{{- end }}
+			{{- range $name, $enum := site.Data.index.Enum }}
+				{{- if not $enum.Removed }}
+					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
+				{{- end }}
+			{{- end }}
 		</ul>
 	</section>
 	<section id="removed-enums">
 		<header><h2>Removed enums <span class="element-count">{{$countRemovedEnums}}</span></h2></header>
 		<ul class="enum-list">
-	{{- range $name, $enum := site.Data.index.Enum }}
-		{{- if $enum.Removed }}
-			<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
-		{{- end }}
-	{{- end }}
+			{{- range $name, $enum := site.Data.index.Enum }}
+				{{- if $enum.Removed }}
+					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
+				{{- end }}
+			{{- end }}
 		</ul>
 	</section>
 </article>
@@ -112,11 +112,11 @@
 			{{- range $category := $presentCats.Values }}
 			<li>{{$category}}
 				<ul class="type-list">
-				{{- range $name, $type := site.Data.index.Type }}
-					{{- if and (eq $type.Category $category) (not $type.Removed) }}
-					<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
+					{{- range $name, $type := site.Data.index.Type }}
+						{{- if and (eq $type.Category $category) (not $type.Removed) }}
+							<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
+						{{- end }}
 					{{- end }}
-				{{- end }}
 				</ul>
 			</li>
 			{{- end }}
@@ -126,15 +126,15 @@
 		<header><h2>Removed types <span class="element-count">{{$countRemovedTypes}}/{{len $removedCats.Values}}</span></h2></header>
 		<ul class="type-category-list">
 			{{- range $category := $removedCats.Values }}
-			<li>{{$category}}
-				<ul class="type-list">
-				{{- range $name, $type := site.Data.index.Type }}
-					{{- if and (eq $type.Category $category) $type.Removed }}
-					<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
-					{{- end }}
-				{{- end }}
-				</ul>
-			</li>
+				<li>{{$category}}
+					<ul class="type-list">
+						{{- range $name, $type := site.Data.index.Type }}
+							{{- if and (eq $type.Category $category) $type.Removed }}
+								<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
+							{{- end }}
+						{{- end }}
+					</ul>
+				</li>
 			{{- end }}
 		</ul>
 	</section>

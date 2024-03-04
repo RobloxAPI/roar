@@ -25,26 +25,26 @@
 {{/* []Parameter // Render member parameters as a table. */}}
 {{- define "parameters-table" -}}
 	<table class="index-card param-index-card">
-	<thead>
-		<tr>
-			<th class="col-member">Name</th>
-			<th class="col-type">Type</th>
-			<th class="col-default">Default</th>
-		</tr>
-	</thead>
-	<tbody>
-	{{- range . }}
-		<tr class="row-{{.Name}}">
-			<td class="col-member">{{.Name}}</td>
-			<td class="col-type">{{template "type" .Type}}</td>
-			<td class="col-default">{{if .Optional}}<span class="api-default">{{.Default}}</span>{{else}}<span class="api-no-default">none</span>{{end}}</td>
-		</tr>
-	{{- else }}
-		<tr>
-			<td colspan="3">No parameters.</td>
-		</tr>
-	{{- end }}
-	</tbody>
+		<thead>
+			<tr>
+				<th class="col-member">Name</th>
+				<th class="col-type">Type</th>
+				<th class="col-default">Default</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{- range . }}
+				<tr class="row-{{.Name}}">
+					<td class="col-member">{{.Name}}</td>
+					<td class="col-type">{{template "type" .Type}}</td>
+					<td class="col-default">{{if .Optional}}<span class="api-default">{{.Default}}</span>{{else}}<span class="api-no-default">none</span>{{end}}</td>
+				</tr>
+			{{- else }}
+				<tr>
+					<td colspan="3">No parameters.</td>
+				</tr>
+			{{- end }}
+		</tbody>
 	</table>
 {{- end -}}
 
@@ -75,43 +75,43 @@
 
 {{/* []MemberIndex // Render member index table. */}}
 {{- define "member-index" }}
-<table class="member-index">
-	<thead>
-		<tr>
-			<th class="col-history">History</th>
-			<th class="col-icon"></th>
-			<th class="col-member">Member</th>
-		</tr>
-	</thead>
-	<tbody>
-{{- $members := . }}
-{{- range $memberType := site.Data.index.MemberTypes }}
-	{{- range $members }}
-		{{ $memberDump := index site.Data.dump "Classes" .Class "Members" .Name }}
-		{{- if eq $memberDump.MemberType $memberType }}
-		<tr>
-			{{- $changes := index site.Data.history.Object.Member .Class .Name}}
-			{{- $latest := int (index (last 1 $changes) 0) }}
-			{{- $change := index site.Data.history.Change $latest }}
-			<td class="col-history">{{partial "HistoryTag.html" $change}}</td>
-			<td class="col-icon">{{$memberDump.MemberType}}</td>
-			<td class="col-member">
-			{{- if eq $memberDump.MemberType "Property" }}
-				<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>: <span class="type">{{template "type" $memberDump.ValueType}}</span>
-			{{- else if eq $memberDump.MemberType "Function" }}
-				<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>{{template "parameters" $memberDump.Parameters}}: {{template "returns" $memberDump.ReturnType}}
-			{{- else if eq $memberDump.MemberType "Event" }}
-				<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>{{template "parameters" $memberDump.Parameters}}
-			{{- else if eq $memberDump.MemberType "Callback" }}
-				<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>{{template "parameters" $memberDump.Parameters}}: {{template "returns" $memberDump.ReturnType}}
-			{{- end -}}
-			</td>
-		</tr>
-		{{- end }}
-	{{- end }}
-{{- end }}
-	</tbody>
-</table>
+	<table class="member-index">
+		<thead>
+			<tr>
+				<th class="col-history">History</th>
+				<th class="col-icon"></th>
+				<th class="col-member">Member</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{- $members := . }}
+			{{- range $memberType := site.Data.index.MemberTypes }}
+				{{- range $members }}
+					{{ $memberDump := index site.Data.dump "Classes" .Class "Members" .Name }}
+					{{- if eq $memberDump.MemberType $memberType }}
+						<tr>
+							{{- $changes := index site.Data.history.Object.Member .Class .Name}}
+							{{- $latest := int (index (last 1 $changes) 0) }}
+							{{- $change := index site.Data.history.Change $latest }}
+							<td class="col-history">{{partial "HistoryTag.html" $change}}</td>
+							<td class="col-icon">{{$memberDump.MemberType}}</td>
+							<td class="col-member">
+								{{- if eq $memberDump.MemberType "Property" }}
+									<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>: <span class="type">{{template "type" $memberDump.ValueType}}</span>
+								{{- else if eq $memberDump.MemberType "Function" }}
+									<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>{{template "parameters" $memberDump.Parameters}}: {{template "returns" $memberDump.ReturnType}}
+								{{- else if eq $memberDump.MemberType "Event" }}
+									<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>{{template "parameters" $memberDump.Parameters}}
+								{{- else if eq $memberDump.MemberType "Callback" }}
+									<span class="name">{{partial "Link.html" (slice "member" .Class .Name "simple")}}</span>{{template "parameters" $memberDump.Parameters}}: {{template "returns" $memberDump.ReturnType}}
+								{{- end -}}
+							</td>
+						</tr>
+					{{- end }}
+				{{- end }}
+			{{- end }}
+		</tbody>
+	</table>
 {{- end }}
 
 {{/* (Change, PreferredDescriptor) // Render a preferred descriptor value. */}}
@@ -222,95 +222,95 @@
 
 {{/* []MemberIndex // Render section for each member. */}}
 {{- define "members" }}
-<div id="members-sections">
-{{- range . }}
-	{{- $dump := index site.Data.dump.Classes .Class "Members" .Name }}
-	<section id="member-{{.Name}}">
-		<header><h3>{{.Name}}</h3></header>
-	{{- if eq $dump.MemberType "Property"}}
-		<table class="metadata-pairs">
-			<tbody>
-				<tr><td>Value Type</td><td>{{template "type" $dump.ValueType}}</td></tr>
-		{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
-			{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
-				<tr><td>Security</td><td>{{$dump.ReadSecurity}}</td></tr>
+	<div id="members-sections">
+		{{- range . }}
+			{{- $dump := index site.Data.dump.Classes .Class "Members" .Name }}
+			<section id="member-{{.Name}}">
+				<header><h3>{{.Name}}</h3></header>
+				{{- if eq $dump.MemberType "Property"}}
+					<table class="metadata-pairs">
+						<tbody>
+							<tr><td>Value Type</td><td>{{template "type" $dump.ValueType}}</td></tr>
+							{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
+								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
+									<tr><td>Security</td><td>{{$dump.ReadSecurity}}</td></tr>
+								{{- end }}
+							{{- else }}
+								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
+									<tr><td>Read Security</td><td>{{$dump.ReadSecurity}}</td></tr>
+								{{- end }}
+								{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None" "") }}
+									<tr><td>Write Security</td><td>{{$dump.WriteSecurity}}</td></tr>
+								{{- end }}
+							{{- end }}
+							<tr><td>Category</td><td>{{$dump.Category}}</td></tr>
+							<tr><td>Can Load</td><td>{{$dump.CanLoad}}</td></tr>
+							<tr><td>Can Save</td><td>{{$dump.CanSave}}</td></tr>
+							{{/* TODO: reflection metadata */}}
+						</tbody>
+					</table>
+				{{- else if eq $dump.MemberType "Function"}}
+					<table class="metadata-pairs">
+						<tbody>
+							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
+						</tbody>
+					</table>
+					{{- template "parameters-table" $dump.Parameters }}
+					<table class="metadata-pairs">
+						<tbody>
+							<tr><td>Returns</td><td>{{template "return-types" $dump.ReturnType}}</td></tr>
+							{{- if and .Security (ne .Security "None" "") }}
+								<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
+							{{- end }}
+							{{/* TODO: reflection metadata */}}
+						</tbody>
+					</table>
+				{{- else if eq $dump.MemberType "Event"}}
+					<table class="metadata-pairs">
+						<tbody>
+							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
+						</tbody>
+					</table>
+					{{- template "parameters-table" $dump.Parameters }}
+					<table class="metadata-pairs">
+						<tbody>
+							{{- if and .Security (ne .Security "None" "") }}
+								<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
+							{{- end }}
+							{{/* TODO: reflection metadata */}}
+						</tbody>
+					</table>
+				{{- else if eq $dump.MemberType "Callback"}}
+					<table class="metadata-pairs">
+						<tbody>
+							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
+						</tbody>
+					</table>
+					{{- template "parameters-table" $dump.Parameters }}
+					<table class="metadata-pairs">
+						<tbody>
+							<tr><td>Returns</td><td>{{template "return-types" $dump.ReturnType}}</td></tr>
+							{{- if and .Security (ne .Security "None" "") }}
+								<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
+							{{- end }}
+							{{/* TODO: reflection metadata */}}
+						</tbody>
+					</table>
+				{{- end }}
+			{{- if $dump.Tags }}
+				<p class="tags">Tags: [{{delimit $dump.Tags ", "}}]</p>
 			{{- end }}
-		{{- else }}
-			{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
-				<tr><td>Read Security</td><td>{{$dump.ReadSecurity}}</td></tr>
-			{{- end }}
-			{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None" "") }}
-				<tr><td>Write Security</td><td>{{$dump.WriteSecurity}}</td></tr>
-			{{- end }}
+				{{- $changes := slice | append (index site.Data.history.Object.Member .Class .Name) }}
+				<h4>History {{partial "element-count.html" (len $changes)}}</h4>
+				<ul class="change-list truncated-list">
+					{{- range $changes | sort | collections.Reverse }}
+						{{- $change := index site.Data.history.Change (int .) }}
+						<li>{{partial "HistoryTag.html" $change}} {{template "change" $change}}</li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-				<tr><td>Category</td><td>{{$dump.Category}}</td></tr>
-				<tr><td>Can Load</td><td>{{$dump.CanLoad}}</td></tr>
-				<tr><td>Can Save</td><td>{{$dump.CanSave}}</td></tr>
-				{{/* TODO: reflection metadata */}}
-			</tbody>
-		</table>
-	{{- else if eq $dump.MemberType "Function"}}
-		<table class="metadata-pairs">
-			<tbody>
-				<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
-			</tbody>
-		</table>
-		{{- template "parameters-table" $dump.Parameters }}
-		<table class="metadata-pairs">
-			<tbody>
-				<tr><td>Returns</td><td>{{template "return-types" $dump.ReturnType}}</td></tr>
-			{{- if and .Security (ne .Security "None" "") }}
-				<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
-			{{- end }}
-				{{/* TODO: reflection metadata */}}
-			</tbody>
-		</table>
-	{{- else if eq $dump.MemberType "Event"}}
-		<table class="metadata-pairs">
-			<tbody>
-				<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
-			</tbody>
-		</table>
-		{{- template "parameters-table" $dump.Parameters }}
-		<table class="metadata-pairs">
-			<tbody>
-			{{- if and .Security (ne .Security "None" "") }}
-				<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
-			{{- end }}
-				{{/* TODO: reflection metadata */}}
-			</tbody>
-		</table>
-	{{- else if eq $dump.MemberType "Callback"}}
-		<table class="metadata-pairs">
-			<tbody>
-				<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
-			</tbody>
-		</table>
-		{{- template "parameters-table" $dump.Parameters }}
-		<table class="metadata-pairs">
-			<tbody>
-				<tr><td>Returns</td><td>{{template "return-types" $dump.ReturnType}}</td></tr>
-			{{- if and .Security (ne .Security "None" "") }}
-				<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
-			{{- end }}
-				{{/* TODO: reflection metadata */}}
-			</tbody>
-		</table>
-	{{- end }}
-	{{- if $dump.Tags }}
-		<p class="tags">Tags: [{{delimit $dump.Tags ", "}}]</p>
-	{{- end }}
-		{{- $changes := slice | append (index site.Data.history.Object.Member .Class .Name) }}
-		<h4>History {{partial "element-count.html" (len $changes)}}</h4>
-		<ul class="change-list truncated-list">
-		{{- range $changes | sort | collections.Reverse }}
-			{{- $change := index site.Data.history.Change (int .) }}
-			<li>{{partial "HistoryTag.html" $change}} {{template "change" $change}}</li>
-		{{- end }}
-		</ul>
-	</section>
-{{- end }}
-</div>
+	</div>
 {{- end }}
 
 {{- define "main" }}
@@ -388,90 +388,90 @@
 
 <nav>
 	<section>
-	<header><h2>Table of contents</h2></header>
-	<ol class="toc">
-	{{- if or $superclasses $subclasses }}
-		<li id="toc-class-tree">Class tree
-			<ol>
-		{{- if $superclasses }}
-			<li id="toc-superclasses"><a href="#superclasses">Inherits</a></li>
-		{{- end }}
-		{{- if $subclasses }}
-			<li id="toc-subclasses"><a href="#subclasses">Inherited by</a></li>
-		{{- end }}
-			</ol>
-		</li>
-	{{- end }}
-		<li><a href="#members-index">Member index</a></li>
-		{{- if $removedMembers }}
-			<li id="toc-removed-members-index"><a href="#removed-members-index">Removed member index</a></li>
-		{{- end }}
-		{{- if $changes }}
-			<li><a href="#history">History</a></li>
-		{{- end }}
-		{{- if $members }}
-			<li><a href="#members">Members</a>
-				<ol>
-				{{- range $members}}
-					<li><a href="#member-{{.Name}}">{{.Name}}</a></li>
-				{{- end }}
-				</ol>
-			</li>
-		{{- end }}
-		{{- if $removedMembers }}
-			<li><a href="#removed-members">Removed members</a>
-				<ol>
-				{{- range $removedMembers}}
-					<li><a href="#member-{{.Name}}">{{.Name}}</a></li>
-				{{- end }}
-				</ol>
-			</li>
-		{{- end }}
-		{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
-			<li>References
-				<ol>
-				{{- if or $relatedClasses }}
-					<li><a href="#related-classes">Related classes</a></li>
-				{{- end }}
-				{{- if or $relatedMembers }}
-					<li><a href="#related-members">Related members</a></li>
-				{{- end }}
-				{{- if or $relatedEnums }}
-					<li><a href="#related-enums">Related enums</a></li>
-				{{- end }}
-				{{- if or $relatedTypes }}
-					<li><a href="#related-types">Related types</a></li>
-				{{- end }}
-				</ol>
-			</li>
-		{{- end }}
-	</ol>
+		<header><h2>Table of contents</h2></header>
+		<ol class="toc">
+			{{- if or $superclasses $subclasses }}
+				<li id="toc-class-tree">Class tree
+					<ol>
+						{{- if $superclasses }}
+							<li id="toc-superclasses"><a href="#superclasses">Inherits</a></li>
+						{{- end }}
+						{{- if $subclasses }}
+							<li id="toc-subclasses"><a href="#subclasses">Inherited by</a></li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			<li><a href="#members-index">Member index</a></li>
+			{{- if $removedMembers }}
+				<li id="toc-removed-members-index"><a href="#removed-members-index">Removed member index</a></li>
+			{{- end }}
+			{{- if $changes }}
+				<li><a href="#history">History</a></li>
+			{{- end }}
+			{{- if $members }}
+				<li><a href="#members">Members</a>
+					<ol>
+						{{- range $members}}
+							<li><a href="#member-{{.Name}}">{{.Name}}</a></li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $removedMembers }}
+				<li><a href="#removed-members">Removed members</a>
+					<ol>
+						{{- range $removedMembers}}
+							<li><a href="#member-{{.Name}}">{{.Name}}</a></li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
+				<li>References
+					<ol>
+						{{- if or $relatedClasses }}
+							<li><a href="#related-classes">Related classes</a></li>
+						{{- end }}
+						{{- if or $relatedMembers }}
+							<li><a href="#related-members">Related members</a></li>
+						{{- end }}
+						{{- if or $relatedEnums }}
+							<li><a href="#related-enums">Related enums</a></li>
+						{{- end }}
+						{{- if or $relatedTypes }}
+							<li><a href="#related-types">Related types</a></li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+		</ol>
 	</section>
 </nav>
 
 {{- if or $superclasses $subclasses }}
-<section id="hierarchy">
-{{- if $superclasses }}
-	<section id="superclasses">
-		<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
-		<ul>
-		{{- range $superclasses }}
-			<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+	<section id="hierarchy">
+		{{- if $superclasses }}
+			<section id="superclasses">
+				<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
+				<ul>
+					{{- range $superclasses }}
+						<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-		</ul>
-	</section>
-{{- end }}
-{{- if $subclasses }}
-	<section id="subclasses">
-		<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
-		<ul>
-		{{- range $subclasses }}
-			<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+		{{- if $subclasses }}
+			<section id="subclasses">
+				<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
+				<ul>
+					{{- range $subclasses }}
+						<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-		</ul>
 	</section>
-{{- end }}
-</section>
 {{- end }}
 
 <section id="members-index">
@@ -480,89 +480,89 @@
 </section>
 
 {{- if $removedMembers }}
-<section id="removed-members-index">
-	<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
-	{{- template "member-index" $removedMembers }}
-</section>
+	<section id="removed-members-index">
+		<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
+		{{- template "member-index" $removedMembers }}
+	</section>
 {{- end }}
 
 {{- if $changes }}
-<section id="history">
-	<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
-	<ul class="change-list truncated-list">
-	{{- range $changes | sort | collections.Reverse }}
-		{{- $change := index site.Data.history.Change (int .) }}
-		<li>{{partial "HistoryTag.html" $change}} {{template "change" $change}}</li>
-	{{- end }}
-	</ul>
-</section>
+	<section id="history">
+		<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
+		<ul class="change-list truncated-list">
+			{{- range $changes | sort | collections.Reverse }}
+				{{- $change := index site.Data.history.Change (int .) }}
+				<li>{{partial "HistoryTag.html" $change}} {{template "change" $change}}</li>
+			{{- end }}
+		</ul>
+	</section>
 {{- end }}
 
 {{- if $members }}
-<section id="members">
-	<header><h2>Members</h2></header>
-	{{template "members" $members}}
-</section>
+	<section id="members">
+		<header><h2>Members</h2></header>
+		{{template "members" $members}}
+	</section>
 {{- end }}
 
 {{- if $removedMembers }}
-<section id="removed-members">
-	<header><h2>Removed members</h2></header>
-	{{template "members" $removedMembers}}
-</section>
+	<section id="removed-members">
+		<header><h2>Removed members</h2></header>
+		{{template "members" $removedMembers}}
+	</section>
 {{- end }}
 
 {{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
-<section id="references">
-{{- if $relatedClasses }}
-	<section id="related-classes">
-		<header><h2>Related classes {{partial "element-count.html" (len $relatedClasses)}}</h2></header>
-		<ul class="truncated-list element-list">
-		{{- range $relatedClasses }}
-			<li>{{partial "Link.html" (slice "class" .)}}</li>
+	<section id="references">
+		{{- if $relatedClasses }}
+			<section id="related-classes">
+				<header><h2>Related classes {{partial "element-count.html" (len $relatedClasses)}}</h2></header>
+				<ul class="truncated-list element-list">
+					{{- range $relatedClasses }}
+						<li>{{partial "Link.html" (slice "class" .)}}</li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-		</ul>
-	</section>
-{{- end }}
-{{- if $relatedMembers }}
-	<section id="related-members">
-		<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-		<ul class="truncated-list element-list">
-		{{- range $relatedMembers }}
-			{{- $type := "class" }}
-			{{- if .Member }}
-				{{- $type = "member" }}
-			{{- end }}
-			<li>
-				{{- partial "Link.html" (slice $type .Class .Member) }}
-				{{- if eq .Kind "Parameter" }} (
-					{{- index site.Data.dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
-				{{- end -}}
-			</li>
+		{{- if $relatedMembers }}
+			<section id="related-members">
+				<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
+				<ul class="truncated-list element-list">
+					{{- range $relatedMembers }}
+						{{- $type := "class" }}
+						{{- if .Member }}
+							{{- $type = "member" }}
+						{{- end }}
+						<li>
+							{{- partial "Link.html" (slice $type .Class .Member) }}
+							{{- if eq .Kind "Parameter" }} (
+								{{- index site.Data.dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+							{{- end -}}
+						</li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-		</ul>
-	</section>
-{{- end }}
-{{- if $relatedEnums }}
-	<section id="related-enums">
-		<header><h2>Related enums {{partial "element-count.html" (len $relatedEnums)}}</h2></header>
-		<ul class="truncated-list element-list">
-		{{- range $relatedEnums }}
-			<li>{{partial "Link.html" (slice "enum" .)}}</li>
+		{{- if $relatedEnums }}
+			<section id="related-enums">
+				<header><h2>Related enums {{partial "element-count.html" (len $relatedEnums)}}</h2></header>
+				<ul class="truncated-list element-list">
+					{{- range $relatedEnums }}
+						<li>{{partial "Link.html" (slice "enum" .)}}</li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-		</ul>
-	</section>
-{{- end }}
-{{- if $relatedTypes }}
-	<section id="related-types">
-		<header><h2>Related types {{partial "element-count.html" (len $relatedTypes)}}</h2></header>
-		<ul class="truncated-list element-list">
-		{{- range $relatedTypes }}
-			<li>{{partial "Link.html" (slice "type" .)}}</li>
+		{{- if $relatedTypes }}
+			<section id="related-types">
+				<header><h2>Related types {{partial "element-count.html" (len $relatedTypes)}}</h2></header>
+				<ul class="truncated-list element-list">
+					{{- range $relatedTypes }}
+						<li>{{partial "Link.html" (slice "type" .)}}</li>
+					{{- end }}
+				</ul>
+			</section>
 		{{- end }}
-		</ul>
 	</section>
-{{- end }}
-</section>
 {{- end }}
 {{- end }}
