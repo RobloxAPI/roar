@@ -3,7 +3,7 @@ Only present classes are included. */}}
 
 {{$classes := slice}}
 {{range .}}
-	{{$class := index site.Data.index.Class .}}
+	{{$class := index site.Data.Index.Class .}}
 	{{if not $class.Removed}}
 		{{$classes = $classes | append $class}}
 	{{end}}

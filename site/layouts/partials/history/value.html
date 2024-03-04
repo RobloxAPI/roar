@@ -58,7 +58,7 @@
 	{{- template "preferred-descriptor" slice $change $value -}}
 {{- else if eq $field "Default" -}}
 	{{/* TODO: Type must reflect state of element at time of change, not latest. */}}
-	{{- $type := index site.Data.dump.Classes $change.Action.Primary "Members" $change.Action.Secondary "ValueType" -}}
+	{{- $type := index site.Data.Dump.Classes $change.Action.Primary "Members" $change.Action.Secondary "ValueType" -}}
 	{{- template "default" slice $type $value -}}
 {{- else if eq $value "" -}}
 	<span class="api-value-empty"></span>

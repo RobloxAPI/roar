@@ -25,11 +25,11 @@ const (
 	siteData    = "data"
 	siteContent = "content"
 
-	historyData = "history.json"
-	indexData   = "index.json"
-	docsData    = "docs.json"
-	dumpData    = "dump.json"
-	reflectData = "reflect.json"
+	historyData = "History.json"
+	indexData   = "Index.json"
+	docsData    = "Docs.json"
+	dumpData    = "Dump.json"
+	reflectData = "Reflect.json"
 )
 
 var Def = snek.Def{

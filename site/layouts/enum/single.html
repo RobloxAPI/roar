@@ -2,7 +2,7 @@
 {{- define "item-index" }}
 {{- $hasLegacyNames := false }}
 {{- range . }}
-	{{- $itemDump := index site.Data.dump "Enums" .Enum "Items" .Name }}
+	{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 	{{- if $itemDump.LegacyNames }}
 		{{- $hasLegacyNames = true }}
 		{{- break }}
@@ -22,13 +22,13 @@
 		</thead>
 		<tbody>
 			{{- range . }}
-				{{- $itemDump := index site.Data.dump "Enums" .Enum "Items" .Name }}
+				{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 				<tr>
-					{{- $changes := index site.Data.history.Object.EnumItem .Enum .Name}}
+					{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
 					{{- $change := false }}
 					{{- if $changes }}
 						{{- $latest := int (index (last 1 $changes) 0) }}
-						{{- $change = index site.Data.history.Change $latest }}
+						{{- $change = index site.Data.History.Change $latest }}
 					{{- end }}
 					<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
 					<td class="col-icon">EnumItem</td>
@@ -45,27 +45,27 @@
 
 {{- define "main" }}
 {{- $enumName := .Title }}
-{{- $enumIndex := index site.Data.index.Enum $enumName }}
-{{- $enumDump := index site.Data.dump.Enums $enumName }}
+{{- $enumIndex := index site.Data.Index.Enum $enumName }}
+{{- $enumDump := index site.Data.Dump.Enums $enumName }}
 
 {{- $items := slice }}
-{{- range index site.Data.index.Enum $enumName "ItemsByIndex" }}
-	{{- $index := index site.Data.index.EnumItem $enumName . }}
+{{- range index site.Data.Index.Enum $enumName "ItemsByIndex" }}
+	{{- $index := index site.Data.Index.EnumItem $enumName . }}
 	{{- if not $index.Removed }}
 		{{- $items = $items | append $index }}
 	{{- end }}
 {{- end }}
 
 {{- $removedItems := slice }}
-{{- range index site.Data.index.Enum $enumName "ItemsByIndex" }}
-	{{- $index := index site.Data.index.EnumItem $enumName . }}
+{{- range index site.Data.Index.Enum $enumName "ItemsByIndex" }}
+	{{- $index := index site.Data.Index.EnumItem $enumName . }}
 	{{- if $index.Removed }}
 		{{- $removedItems = $removedItems | append $index }}
 	{{- end }}
 {{- end }}
 
-{{- $changes := slice | append (index site.Data.history.Object.Enum $enumName) }}
-{{- range index site.Data.history.Object.EnumItem $enumName }}
+{{- $changes := slice | append (index site.Data.History.Object.Enum $enumName) }}
+{{- range index site.Data.History.Object.EnumItem $enumName }}
 	{{- $changes = $changes | append . }}
 {{- end }}
 
@@ -120,7 +120,7 @@
 		<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
 		<ul class="change-list truncated-list">
 			{{- range $changes | sort | collections.Reverse }}
-				{{- $change := index site.Data.history.Change (int .) }}
+				{{- $change := index site.Data.History.Change (int .) }}
 				<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
 			{{- end }}
 		</ul>
@@ -139,7 +139,7 @@
 				<li>
 					{{- partial "link/entity.html" (slice $type .Class .Member) }}
 					{{- if eq .Kind "Parameter" }} (
-						{{- index site.Data.dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+						{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
 					{{- end -}}
 				</li>
 			{{- end }}

@@ -1,6 +1,6 @@
 {{- define "main" }}
 {{- $typeName := .Title }}
-{{- $typeIndex := index site.Data.index.Type $typeName }}
+{{- $typeIndex := index site.Data.Index.Type $typeName }}
 
 {{- $relatedMembers := slice }}
 {{- range $typeIndex.Related}}
@@ -23,7 +23,7 @@
 				<li>
 					{{- partial "link/entity.html" (slice $type .Class .Member) }}
 					{{- if eq .Kind "Parameter" }} (
-						{{- index site.Data.dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+						{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
 					{{- end -}}
 				</li>
 			{{- end }}

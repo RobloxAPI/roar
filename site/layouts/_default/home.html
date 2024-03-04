@@ -1,6 +1,6 @@
 {{- define "class-tree" }}
 	{{- range . }}
-		{{- $class := index site.Data.index.Class . }}
+		{{- $class := index site.Data.Index.Class . }}
 		{{- if not $class.Removed }}
 		<li><a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
 			{{- if $class.Subclasses }}
@@ -15,7 +15,7 @@
 
 {{- define "removed-class-tree" }}
 	{{- range . }}
-		{{- $class := index site.Data.index.Class . }}
+		{{- $class := index site.Data.Index.Class . }}
 		{{- if or $class.Removed $class.HasRemoved }}
 		<li>{{- if $class.Removed }}
 				<a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
@@ -36,7 +36,7 @@
 <article id="classes">
 	{{- $countPresentClasses := 0 }}
 	{{- $countRemovedClasses := 0 }}
-	{{- range site.Data.index.Class }}
+	{{- range site.Data.Index.Class }}
 		{{- if .Removed }}
 			{{- $countRemovedClasses = $countRemovedClasses | add 1 }}
 		{{- else }}
@@ -46,14 +46,14 @@
 	<section id="present-classes">
 		<header><h2>Classes {{partial "element-count.html" $countPresentClasses}}</h2></header>
 		<ul class="class-tree">
-			{{- template "class-tree" site.Data.index.RootClasses -}}
+			{{- template "class-tree" site.Data.Index.RootClasses -}}
 		</ul>
 	</section>
 	<section id="removed-classes">
 		<header><h2>Removed classes {{partial "element-count.html" $countRemovedClasses}}</span></h2></header>
 		<ul class="class-tree">
-			{{- range site.Data.index.RootClasses }}
-				{{- $class := index site.Data.index.Class . }}
+			{{- range site.Data.Index.RootClasses }}
+				{{- $class := index site.Data.Index.Class . }}
 				{{- if $class.Removed }}
 					{{- template "removed-class-tree" (slice .) }}
 				{{- end }}
@@ -64,7 +64,7 @@
 <article id="enums">
 	{{- $countPresentEnums := 0 }}
 	{{- $countRemovedEnums := 0 }}
-	{{- range site.Data.index.Enum }}
+	{{- range site.Data.Index.Enum }}
 		{{- if .Removed }}
 			{{- $countRemovedEnums = $countRemovedEnums | add 1 }}
 		{{- else }}
@@ -74,7 +74,7 @@
 	<section id="present-enums">
 		<header><h2>Enums <span class="element-count">{{$countPresentEnums}}</span></h2></header>
 		<ul class="enum-list">
-			{{- range $name, $enum := site.Data.index.Enum }}
+			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if not $enum.Removed }}
 					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
 				{{- end }}
@@ -84,7 +84,7 @@
 	<section id="removed-enums">
 		<header><h2>Removed enums <span class="element-count">{{$countRemovedEnums}}</span></h2></header>
 		<ul class="enum-list">
-			{{- range $name, $enum := site.Data.index.Enum }}
+			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if $enum.Removed }}
 					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
 				{{- end }}
@@ -97,7 +97,7 @@
 	{{- $countRemovedTypes := 0 }}
 	{{- $presentCats := newScratch }}
 	{{- $removedCats := newScratch }}
-	{{- range site.Data.index.Type }}
+	{{- range site.Data.Index.Type }}
 		{{- if .Removed }}
 			{{- $countRemovedTypes = $countRemovedTypes | add 1 }}
 			{{- $removedCats.Set .Category .Category }}
@@ -112,7 +112,7 @@
 			{{- range $category := $presentCats.Values }}
 			<li>{{$category}}
 				<ul class="type-list">
-					{{- range $name, $type := site.Data.index.Type }}
+					{{- range $name, $type := site.Data.Index.Type }}
 						{{- if and (eq $type.Category $category) (not $type.Removed) }}
 							<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
 						{{- end }}
@@ -128,7 +128,7 @@
 			{{- range $category := $removedCats.Values }}
 				<li>{{$category}}
 					<ul class="type-list">
-						{{- range $name, $type := site.Data.index.Type }}
+						{{- range $name, $type := site.Data.Index.Type }}
 							{{- if and (eq $type.Category $category) $type.Removed }}
 								<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
 							{{- end }}
