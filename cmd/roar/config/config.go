@@ -19,6 +19,7 @@ type Config struct {
 }
 
 type Disable struct {
+	Index   bool // Don't generate index data.
 	History bool // Don't write history data (cache).
 	Dump    bool // Don't generate dump data.
 	Reflect bool // Don't generate reflection metadata.

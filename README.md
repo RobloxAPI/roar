@@ -43,6 +43,7 @@ docs = "https://github.com/Roblox/creator-docs"
 
 # Selectively disable types of generated data.
 [disable]
+index = true   # Excludes index data.
 history = true # Don't write history data (cache).
 dump = true    # Excludes cumulative API dump.
 reflect = true # Excludes reflection metadata.

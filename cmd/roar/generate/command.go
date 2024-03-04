@@ -128,8 +128,10 @@ func (c *Command) Run(opt snek.Options) error {
 	if err := indexRoot.Build(updatedHist, patcher.Root); err != nil {
 		return err
 	}
-	if err := WriteFile(cfg.Site, indexData, indexRoot); err != nil {
-		return err
+	if !cfg.Disable.Index {
+		if err := WriteFile(cfg.Site, indexData, indexRoot); err != nil {
+			return err
+		}
 	}
 
 	// Generate pages.
