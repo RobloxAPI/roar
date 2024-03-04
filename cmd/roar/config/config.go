@@ -14,11 +14,11 @@ type Config struct {
 	Source  string // Location of builds.
 	Site    string // Location of Hugo site.
 	Update  bool   // Update history database.
+	Docs    string // Location of documentation.
 	Disable Disable
 }
 
 type Disable struct {
-	Docs    bool // Don't generate doc data.
 	Dump    bool // Don't generate dump data.
 	Reflect bool // Don't generate reflection metadata.
 }

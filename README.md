@@ -34,9 +34,12 @@ site = "~/projects/website"
 # so setting this to false will skip merging and use the existing cache instead.
 update = true
 
+# Location of documentation source. May be a URL or a file path. Must point
+# to a Git repository. If empty or unspecified, then documentation is disabled.
+docs = "https://github.com/Roblox/creator-docs"
+
 # Selectively disable types of generated data.
 [disable]
-docs = true    # Disables fetching of documentation from github.com/Roblox/creator-docs.
 dump = true    # Excludes cumulative API dump.
 reflect = true # Excludes reflection metadata.
 ```
