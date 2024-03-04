@@ -1,6 +1,6 @@
 {{/* []MemberIndex // Render member index table. */}}
 {{- define "member-index" }}
-	<table class="member-index">
+	<table class="members-index">
 		<thead>
 			<tr>
 				<th class="col-history">History</th>
@@ -12,7 +12,7 @@
 			{{- $members := . }}
 			{{- range $memberType := site.Data.index.MemberTypes }}
 				{{- range $members }}
-					{{ $memberDump := index site.Data.dump "Classes" .Class "Members" .Name }}
+					{{- $memberDump := index site.Data.dump "Classes" .Class "Members" .Name }}
 					{{- if eq $memberDump.MemberType $memberType }}
 						<tr>
 							{{- $changes := index site.Data.history.Object.Member .Class .Name}}
