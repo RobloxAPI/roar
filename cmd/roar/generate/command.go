@@ -29,7 +29,7 @@ const (
 	indexData   = "index.json"
 	docsData    = "docs.json"
 	dumpData    = "dump.json"
-	reflectData = "rfl.json"
+	reflectData = "reflect.json"
 )
 
 var Def = snek.Def{

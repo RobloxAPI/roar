@@ -1,5 +1,5 @@
 // Provides a queryable representation of ReflectionMetadata.
-package rfl
+package reflect
 
 import (
 	"io"
