@@ -21,6 +21,7 @@ type Config struct {
 type Disable struct {
 	Dump    bool // Don't generate dump data.
 	Reflect bool // Don't generate reflection metadata.
+	Pages   bool // Don't generate website pages.
 }
 
 // Opens configuration. If stdin is not nil, then it is used. Otherwise, if path

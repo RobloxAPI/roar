@@ -42,6 +42,7 @@ docs = "https://github.com/Roblox/creator-docs"
 [disable]
 dump = true    # Excludes cumulative API dump.
 reflect = true # Excludes reflection metadata.
+pages = true   # Don't generate website pages.
 ```
 
 The `source` field must point to the `data` directory of a

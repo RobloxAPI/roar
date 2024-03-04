@@ -114,7 +114,9 @@ func (c *Command) Run(opt snek.Options) error {
 	}
 
 	// Generate pages.
-	GeneratePages(indexRoot, filepath.Join(cfg.Site, siteContent))
+	if !cfg.Disable.Pages {
+		GeneratePages(indexRoot, filepath.Join(cfg.Site, siteContent))
+	}
 
 	return nil
 }
