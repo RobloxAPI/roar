@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 
 	"github.com/robloxapi/roar/index"
 )
@@ -75,12 +76,20 @@ func GeneratePages(index *index.Root, rootPath string) {
 		filepath.Join(rootPath, "class"),
 		filepath.Join(rootPath, "enum"),
 		filepath.Join(rootPath, "type"),
+		filepath.Join(rootPath, "updates"),
 	)
 
 	// Generate for each type of element.
 	generatePageType(rootPath, "class", pages, index.Class)
 	generatePageType(rootPath, "enum", pages, index.Enum)
 	generatePageType(rootPath, "type", pages, index.Type)
+
+	// Generate pages for each year of changes.
+	years := map[string]struct{}{}
+	for i := index.MinYear; i <= index.MaxYear; i++ {
+		years[strconv.Itoa(i)] = struct{}{}
+	}
+	generatePageType(rootPath, "updates", pages, years)
 
 	// Remove untouched pages.
 	for path := range pages {

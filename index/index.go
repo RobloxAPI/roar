@@ -21,6 +21,9 @@ type Root struct {
 	Enum     map[id.Enum]*Enum
 	EnumItem map[id.Enum]map[id.EnumItem]*EnumItem
 	Type     map[id.Type]*Type
+
+	MinYear int
+	MaxYear int
 }
 
 type Class struct {
@@ -62,6 +65,17 @@ type Type struct {
 
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	r.MemberTypes = slices.Clone(MemberTypes)
+
+	r.MinYear, r.MaxYear = 100000, -100000
+	for _, event := range hist.Event {
+		year := event.Date.Year()
+		if year < r.MinYear {
+			r.MinYear = year
+		}
+		if year > r.MaxYear {
+			r.MaxYear = year
+		}
+	}
 
 	r.Class = map[id.Class]*Class{}
 	for i, changes := range hist.Object.Class {
