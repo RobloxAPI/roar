@@ -36,14 +36,36 @@
 					{{- if .ChangesCount }}
 						{{- $event := . }}
 						{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
+
+						{{/* For added primary elements, subsequent matching
+						secondary elements are indented within it. Assumes that
+						such elements are ordered correctly. */}}
+						{{- $parent := false }}
+
 						{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
 							{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
 							{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
 							{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
 							{{- range seq $start $max }}
 								{{- $change := index site.Data.History.Change . }}
-								<li>{{partial "history/change.html" $change}}</li>
+								{{- if and ($parent) (ne $change.Action.Primary $parent.Action.Primary) }}
+									{{- $parent = false }}
+									</ul>
+									</li>
+								{{- end }}
+								<li>{{- partial "history/change.html" $change -}}
+								{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
+									{{- $parent = $change }}
+									<ul>
+								{{- else }}
+									</li>
+								{{- end }}
 							{{- end }}
+						{{- end }}
+						{{- if $parent }}
+							{{- $parent = false }}
+							</ul>
+							</li>
 						{{- end }}
 					{{- else }}
 						<li class="no-changes">No changes</li>
