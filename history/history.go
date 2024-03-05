@@ -75,6 +75,19 @@ type Root struct {
 	Event []*Event
 }
 
+// Returns a new Root with initialized fields.
+func NewRoot() *Root {
+	return &Root{
+		Object: Object{
+			Class:    map[id.Class][]*Change{},
+			Member:   map[id.MemberID][]*Change{},
+			Enum:     map[id.Enum][]*Change{},
+			EnumItem: map[id.EnumItemID][]*Change{},
+			Type:     map[id.Type][]*TypeRef{},
+		},
+	}
+}
+
 func (r *Root) UnmarshalJSON(b []byte) error {
 	var jr jRoot
 	if err := json.Unmarshal(b, &jr); err != nil {
@@ -340,6 +353,8 @@ func filterFields(keys, values rbxdump.Fields) rbxdump.Fields {
 
 // Appends an event derived from the given build and actions. The latest event
 // is assumed to be the previous.
+//
+// All maps in the Root are expected to be non-nil.
 func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot *rbxdump.Root) {
 	build.Version.Format = rbxver.Dot
 	var prev *Event
@@ -370,17 +385,11 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 
 		switch action.Element {
 		case diff.Class:
-			if r.Object.Class == nil {
-				r.Object.Class = map[id.Class][]*Change{}
-			}
 			r.Object.Class[action.Primary] = append(r.Object.Class[action.Primary], &change)
 			// Removal of primary element is relevant to each secondary element.
 			if prevRoot != nil && action.Type == diff.Remove {
 				if class := prevRoot.Classes[action.Primary]; class != nil {
 					for member := range class.Members {
-						if r.Object.Member == nil {
-							r.Object.Member = map[id.MemberID][]*Change{}
-						}
 						i := id.MemberID{action.Primary, member}
 						r.Object.Member[i] = append(r.Object.Member[i], &change)
 					}
@@ -390,9 +399,6 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 			diff.Function,
 			diff.Event,
 			diff.Callback:
-			if r.Object.Member == nil {
-				r.Object.Member = map[id.MemberID][]*Change{}
-			}
 			member := id.MemberID{action.Primary, action.Secondary}
 			r.Object.Member[member] = append(r.Object.Member[member], &change)
 		case diff.Enum:
@@ -404,18 +410,12 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 			if prevRoot != nil && action.Type == diff.Remove {
 				if enum := prevRoot.Enums[action.Primary]; enum != nil {
 					for item := range enum.Items {
-						if r.Object.EnumItem == nil {
-							r.Object.EnumItem = map[id.EnumItemID][]*Change{}
-						}
 						i := id.EnumItemID{action.Primary, item}
 						r.Object.EnumItem[i] = append(r.Object.EnumItem[i], &change)
 					}
 				}
 			}
 		case diff.EnumItem:
-			if r.Object.EnumItem == nil {
-				r.Object.EnumItem = map[id.EnumItemID][]*Change{}
-			}
 			item := id.EnumItemID{action.Primary, action.Secondary}
 			r.Object.EnumItem[item] = append(r.Object.EnumItem[item], &change)
 		}

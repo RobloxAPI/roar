@@ -65,7 +65,7 @@ func MergeHistory(repo *archive.Repo, storedHist *history.Root) *history.Root {
 	// incrementally.
 	var differ diff.Diff
 	var cursor history.Cursor
-	updatedHist := &history.Root{}
+	updatedHist := history.NewRoot()
 	for _, build := range allBuilds {
 		var dump *rbxdump.Root
 		if event, ok := storedEvents[build.GUID]; ok {
@@ -130,7 +130,7 @@ func ReadHistory(histPath string) (storedhist *history.Root, err error) {
 	var storedHist *history.Root
 	if f, err := os.Open(histPath); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			storedHist = &history.Root{}
+			storedHist = history.NewRoot()
 		} else {
 			return nil, fmt.Errorf("open %s: %w", historyData, err)
 		}

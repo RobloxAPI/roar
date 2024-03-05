@@ -76,7 +76,7 @@ func (c *Command) Run(opt snek.Options) error {
 	histPath := filepath.Join(cfg.Site, siteData, historyData)
 	var storedHist *history.Root
 	if c.NoCache {
-		storedHist = &history.Root{}
+		storedHist = history.NewRoot()
 	} else {
 		var err error
 		if storedHist, err = ReadHistory(histPath); err != nil {
