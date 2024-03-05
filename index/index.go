@@ -66,16 +66,8 @@ type Type struct {
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	r.MemberTypes = slices.Clone(MemberTypes)
 
-	r.MinYear, r.MaxYear = 100000, -100000
-	for _, event := range hist.Event {
-		year := event.Date.Year()
-		if year < r.MinYear {
-			r.MinYear = year
-		}
-		if year > r.MaxYear {
-			r.MaxYear = year
-		}
-	}
+	r.MinYear = hist.EarliestEvent().Date.Year()
+	r.MaxYear = hist.LatestEvent().Date.Year()
 
 	r.Class = map[id.Class]*Class{}
 	for i, changes := range hist.Object.Class {
