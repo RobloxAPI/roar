@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"slices"
+	"sort"
 
 	"github.com/robloxapi/rbxdump"
 	"github.com/robloxapi/rbxdump/diff"
@@ -105,6 +106,33 @@ func MergeHistory(repo *archive.Repo, storedHist *history.Root) *history.Root {
 
 		differ.Next = dump
 		actions := differ.Diff()
+		sort.Slice(actions, func(i, j int) bool {
+			if pi, pj := actions[i].Element.Primary(), actions[j].Element.Primary(); pi != pj {
+				return pi < pj
+			}
+			if actions[i].Primary != actions[j].Primary {
+				return actions[i].Primary < actions[j].Primary
+			}
+			if actions[i].Element != actions[j].Element {
+				return actions[i].Element < actions[j].Element
+			}
+			if actions[i].Secondary != actions[j].Secondary {
+				return actions[i].Secondary < actions[j].Secondary
+			}
+			if actions[i].Type != actions[j].Type {
+				return actions[i].Type > actions[j].Type
+			}
+			var fieldi, fieldj string
+			for field := range actions[i].Fields {
+				fieldi = field
+				break
+			}
+			for field := range actions[i].Fields {
+				fieldj = field
+				break
+			}
+			return fieldi < fieldj
+		})
 		updatedHist.AppendEvent(build, actions, differ.Prev)
 		fmt.Printf("\tappended %d actions\n", len(actions))
 
