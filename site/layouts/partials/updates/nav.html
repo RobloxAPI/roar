@@ -1,0 +1,15 @@
+<ul>
+	{{- $recent := site.GetPage "updates" }}
+	{{- if eq . $recent }}
+		<li class="recent">Recent</li>
+	{{- else }}
+		<li class="recent"><a href="{{$recent.RelPermalink}}">Recent</a></li>
+	{{- end }}
+	{{- range $recent.Pages | collections.Reverse }}
+		{{- if eq . page }}
+			<li>{{.Title}}</li>
+		{{- else }}
+			<li><a href="{{.RelPermalink}}">{{.Title}}</a></li>
+		{{- end }}
+	{{- end }}
+</ul>

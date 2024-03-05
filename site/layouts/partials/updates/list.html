@@ -1,0 +1,55 @@
+{{- $all := site.Data.History.Event | collections.Reverse }}
+{{- $updates := slice }}
+{{- $recent := site.GetPage "updates" }}
+{{- if eq . $recent }}
+	{{- $latestNonEmpty := false }}
+	{{- range $all }}
+		{{- if gt .ChangesCount 0 }}
+			{{- $latestNonEmpty = . }}
+			{{- break }}
+		{{- end }}
+	{{- end }}
+	{{- $startTime := (now.AddDate 0 -3 0) }}
+	{{- if $latestNonEmpty }}
+		{{- $startTime = (time $latestNonEmpty.Date).AddDate 0 -3 0 }}
+	{{- end }}
+	{{- range $all }}
+		{{- if $startTime.Before (time .Date) }}
+			{{- $updates = $updates | append . }}
+		{{- end }}
+	{{- end }}
+{{- else }}
+	{{- $year := int .Title }}
+	{{- range $all }}
+		{{- if eq $year (time .Date).Year }}
+			{{- $updates = $updates | append . }}
+		{{- end }}
+	{{- end }}
+{{- end }}
+<ul id="update-list">
+	{{- range $updates }}
+		<li>
+			<section id="{{.GUID}}" class="update">
+				<span class="change-list-toggle"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time>  (v{{.Version}})</span>
+				<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><span>{{.GUID}}</span></a>
+				<ul class="change-list">
+					{{- if .ChangesCount }}
+						{{- $event := . }}
+						{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
+						{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
+							{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
+							{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
+							{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
+							{{- range seq $start $max }}
+								{{- $change := index site.Data.History.Change . }}
+								<li>{{partial "history/change.html" $change}}</li>
+							{{- end }}
+						{{- end }}
+					{{- else }}
+						<li class="no-changes">No changes</li>
+					{{- end }}
+				</ul>
+			</section>
+		</li>
+	{{- end }}
+</ul>
