@@ -63,7 +63,7 @@ func MergeHistory(repo *archive.Repo, storedHist *history.Root) *history.Root {
 
 	// Walk through each build. Compared to known builds to fetch new builds
 	// incrementally.
-	var differ diff.Diff
+	differ := diff.Diff{SeparateFields: true}
 	var cursor history.Cursor
 	updatedHist := history.NewRoot()
 	for _, build := range allBuilds {
