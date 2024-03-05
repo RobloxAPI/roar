@@ -1,0 +1,47 @@
+<article id="types">
+	{{- $countPresentTypes := 0 }}
+	{{- $countRemovedTypes := 0 }}
+	{{- $presentCats := newScratch }}
+	{{- $removedCats := newScratch }}
+	{{- range site.Data.Index.Type }}
+		{{- if .Removed }}
+			{{- $countRemovedTypes = $countRemovedTypes | add 1 }}
+			{{- $removedCats.Set .Category .Category }}
+		{{- else }}
+			{{- $countPresentTypes = $countPresentTypes | add 1 }}
+			{{- $presentCats.Set .Category .Category }}
+		{{- end }}
+	{{- end }}
+	<section id="present-types">
+		<header><h2>Types <span class="element-count">{{$countPresentTypes}}/{{len $presentCats.Values}}</span></h2></header>
+		<ul class="type-category-list">
+			{{- range $category := $presentCats.Values }}
+			<li>{{$category}}
+				<ul class="type-list">
+					{{- range $name, $type := site.Data.Index.Type }}
+						{{- if and (eq $type.Category $category) (not $type.Removed) }}
+							<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
+						{{- end }}
+					{{- end }}
+				</ul>
+			</li>
+			{{- end }}
+		</ul>
+	</section>
+	<section id="removed-types">
+		<header><h2>Removed types <span class="element-count">{{$countRemovedTypes}}/{{len $removedCats.Values}}</span></h2></header>
+		<ul class="type-category-list">
+			{{- range $category := $removedCats.Values }}
+				<li>{{$category}}
+					<ul class="type-list">
+						{{- range $name, $type := site.Data.Index.Type }}
+							{{- if and (eq $type.Category $category) $type.Removed }}
+								<li><a href="{{relref page (path.Join `type` $name) }}">{{$name}}</a></li>
+							{{- end }}
+						{{- end }}
+					</ul>
+				</li>
+			{{- end }}
+		</ul>
+	</section>
+</article>

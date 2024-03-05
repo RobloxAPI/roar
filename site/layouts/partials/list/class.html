@@ -1,0 +1,62 @@
+{{- define "class-tree" }}
+	{{- range . }}
+		{{- $class := index site.Data.Index.Class . }}
+		{{- if not $class.Removed }}
+		<li><a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
+			{{- if $class.Subclasses }}
+				<ul>
+					{{- template "class-tree" $class.Subclasses }}
+				</ul>
+			{{- end }}
+		</li>
+		{{- end }}
+	{{- end }}
+{{- end }}
+
+{{- define "removed-class-tree" }}
+	{{- range . }}
+		{{- $class := index site.Data.Index.Class . }}
+		{{- if or $class.Removed $class.HasRemoved }}
+		<li>{{- if $class.Removed }}
+				<a href="{{relref page (path.Join `class` .) }}">{{.}}</a>
+			{{- else }}
+				{{.}}
+			{{- end }}
+			{{- if $class.Subclasses }}
+				<ul>
+					{{- template "removed-class-tree" $class.Subclasses }}
+				</ul>
+			{{- end }}
+		</li>
+		{{- end }}
+	{{- end }}
+{{- end -}}
+
+<article id="classes">
+	{{- $countPresentClasses := 0 }}
+	{{- $countRemovedClasses := 0 }}
+	{{- range site.Data.Index.Class }}
+		{{- if .Removed }}
+			{{- $countRemovedClasses = $countRemovedClasses | add 1 }}
+		{{- else }}
+			{{- $countPresentClasses = $countPresentClasses | add 1 }}
+		{{- end }}
+	{{- end }}
+	<section id="present-classes">
+		<header><h2>Classes {{partial "element-count.html" $countPresentClasses}}</h2></header>
+		<ul class="class-tree">
+			{{- template "class-tree" site.Data.Index.RootClasses -}}
+		</ul>
+	</section>
+	<section id="removed-classes">
+		<header><h2>Removed classes {{partial "element-count.html" $countRemovedClasses}}</span></h2></header>
+		<ul class="class-tree">
+			{{- range site.Data.Index.RootClasses }}
+				{{- $class := index site.Data.Index.Class . }}
+				{{- if $class.Removed }}
+					{{- template "removed-class-tree" (slice .) }}
+				{{- end }}
+			{{- end -}}
+		</ul>
+	</section>
+</article>
