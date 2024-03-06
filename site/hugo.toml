@@ -4,22 +4,12 @@ title = 'Roblox API Reference'
 uglyURLs = true
 disablePathToLower = true
 
-[[menus.main]]
-name = 'Roblox API Reference'
-pageRef = '/'
-weight = 10
+markup.goldmark.renderer.unsafe = true
 
-[[menus.main]]
-name = 'Classes'
-pageRef = '/class'
-weight = 20
-
-[[menus.main]]
-name = 'Enums'
-pageRef = '/enum'
-weight = 20
-
-[[menus.main]]
-name = 'Types'
-pageRef = '/type'
-weight = 20
+[params]
+repo = "https://github.com/robloxapi/roar"
+issues = "https://github.com/robloxapi/roar/issues"
+roblox = "https://www.roblox.com"
+creatorhub = "https://create.roblox.com/docs/en-us/reference/engine"
+license = "https://creativecommons.org/licenses/by-sa/4.0/"
+author = "https://anaminus.github.io"
