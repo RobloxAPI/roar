@@ -3,7 +3,6 @@ package generate
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/robloxapi/rbxdump"
 	"github.com/robloxapi/rbxdump/diff"
 	"github.com/robloxapi/roar/archive"
-	"github.com/robloxapi/roar/cmd/roar/config"
 	"github.com/robloxapi/roar/history"
 	"github.com/robloxapi/roar/index"
 )
@@ -43,11 +41,34 @@ var Def = snek.Def{
 }
 
 type Command struct {
+	Site    string
+	Source  string
+	Docs    string
+	Update  bool
 	NoCache bool
+	Disable Disable
+}
+
+type Disable struct {
+	Index   bool // Don't generate index data.
+	History bool // Don't write history data (cache).
+	Dump    bool // Don't generate dump data.
+	Reflect bool // Don't generate reflection metadata.
+	Pages   bool // Don't generate website pages.
 }
 
 func (c *Command) SetFlags(flagset snek.FlagSet) {
+	flagset.StringVar(&c.Site, "site", "", "Location of Hugo site.")
+	flagset.StringVar(&c.Source, "source", "", "Location of builds.")
+	flagset.StringVar(&c.Docs, "docs", "", "Location of documentation.")
+	flagset.BoolVar(&c.Update, "update", false, "Update history database.")
 	flagset.BoolVar(&c.NoCache, "no-cache", false, "Ignore cached history.")
+
+	flagset.BoolVar(&c.Disable.Index, "disable-index", false, "Don't generate index data.")
+	flagset.BoolVar(&c.Disable.History, "disable-history", false, "Don't write history data (cache).")
+	flagset.BoolVar(&c.Disable.Dump, "disable-dump", false, "Don't generate dump data.")
+	flagset.BoolVar(&c.Disable.Reflect, "disable-reflect", false, "Don't generate reflection metadata.")
+	flagset.BoolVar(&c.Disable.Pages, "disable-pages", false, "Don't generate website pages.")
 }
 
 func (c *Command) Run(opt snek.Options) error {
@@ -55,16 +76,7 @@ func (c *Command) Run(opt snek.Options) error {
 		return err
 	}
 
-	var stdin io.Reader
-	if opt.Arg(0) == "-" {
-		stdin = opt.Stdin
-	}
-	cfg, err := config.Open(opt.Arg(0), stdin)
-	if err != nil {
-		return fmt.Errorf("open config file: %w", err)
-	}
-
-	if cfg.Source == "" {
+	if c.Source == "" {
 		if opt.Arg(0) == "" {
 			opt.WriteUsageOf(opt.Stderr, opt.Def)
 			return nil
@@ -73,7 +85,7 @@ func (c *Command) Run(opt snek.Options) error {
 	}
 
 	// Read history file, if available.
-	histPath := filepath.Join(cfg.Site, siteData, historyData)
+	histPath := filepath.Join(c.Site, siteData, historyData)
 	var storedHist *history.Root
 	if c.NoCache {
 		storedHist = history.NewRoot()
@@ -85,20 +97,20 @@ func (c *Command) Run(opt snek.Options) error {
 	}
 
 	// Create archive repository.
-	repo, err := archive.NewRepo(cfg.Source)
+	repo, err := archive.NewRepo(c.Source)
 	if err != nil {
 		return fmt.Errorf("failed to read repo: %w", err)
 	}
 
 	var updatedHist *history.Root
-	if cfg.Update {
+	if c.Update {
 		// Produce updated history using stored history as cache.
 		fmt.Println("rebuilding history database")
 		updatedHist = MergeHistory(repo, storedHist)
 
 		// Write new history file.
-		if !cfg.Disable.History {
-			if err := WriteFile(cfg.Site, historyData, updatedHist); err != nil {
+		if !c.Disable.History {
+			if err := WriteFile(c.Site, historyData, updatedHist); err != nil {
 				return err
 			}
 		}
@@ -117,8 +129,8 @@ func (c *Command) Run(opt snek.Options) error {
 			patcher.Patch([]diff.Action{change.Action})
 		}
 	}
-	if !cfg.Disable.Dump {
-		if err := WriteFile(cfg.Site, dumpData, patcher.Root); err != nil {
+	if !c.Disable.Dump {
+		if err := WriteFile(c.Site, dumpData, patcher.Root); err != nil {
 			return err
 		}
 	}
@@ -128,15 +140,15 @@ func (c *Command) Run(opt snek.Options) error {
 	if err := indexRoot.Build(updatedHist, patcher.Root); err != nil {
 		return err
 	}
-	if !cfg.Disable.Index {
-		if err := WriteFile(cfg.Site, indexData, indexRoot); err != nil {
+	if !c.Disable.Index {
+		if err := WriteFile(c.Site, indexData, indexRoot); err != nil {
 			return err
 		}
 	}
 
 	// Generate pages.
-	if !cfg.Disable.Pages {
-		GeneratePages(indexRoot, filepath.Join(cfg.Site, siteContent))
+	if !c.Disable.Pages {
+		GeneratePages(indexRoot, filepath.Join(c.Site, siteContent))
 	}
 
 	return nil
