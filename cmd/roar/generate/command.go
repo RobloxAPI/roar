@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/anaminus/snek"
 	"github.com/robloxapi/rbxdump"
@@ -82,6 +83,9 @@ func (c *Command) Run(opt snek.Options) error {
 			return nil
 		}
 		return fmt.Errorf("source option is required")
+	}
+	if !strings.HasSuffix(c.Source, "/") {
+		c.Source += "/"
 	}
 
 	// Read history file, if available.
