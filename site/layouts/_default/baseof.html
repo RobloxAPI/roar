@@ -7,7 +7,7 @@
 	<header>
 		{{- partial "header.html" . }}
 	</header>
-	<main>
+	<main{{if .Params.article}} class="article"{{end}}>
 		{{- block "main" . }}{{ end }}
 	</main>
 	<footer>

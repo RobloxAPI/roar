@@ -1,16 +1,14 @@
-<header id="main-header">
-	<div id="main-header-left">
-		<h1><a href="{{site.Home.RelPermalink}}">{{site.Title}}</a></h1>
-		<nav class="main-nav">
-			<ul>
-				{{- range site.Sections }}
-					<li><a href="{{.RelPermalink}}">{{.Title}}</a></li>
-				{{- end }}
-			</ul>
-		</nav>
-		<aside id="search">
-			<section id="no-search">Searching requires Javascript.</section>
-		</aside>
-	</div>
-	<div id="main-header-right"></div>
-</header>
+<div>
+	<h1><a href="{{site.Home.RelPermalink}}">{{site.Title}}</a></h1>
+	<nav>
+		<ul>
+			{{- range site.Sections }}
+				<li><a href="{{.RelPermalink}}">{{.Title}}</a></li>
+			{{- end }}
+		</ul>
+	</nav>
+	<aside id="search">
+		<section id="no-search">Searching requires Javascript.</section>
+	</aside>
+</div>
+<div id="settings-container"></div>

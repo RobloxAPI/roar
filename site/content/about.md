@@ -1,5 +1,6 @@
 +++
 title = "About"
+article = true
 +++
 
 <section id="about">

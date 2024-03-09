@@ -1,0 +1,15 @@
+@import "themes/light";
+@import "themes/dark";
+
+:root {
+	@if $theme == "light" {
+		@include theme-light;
+	} @else if $theme == "dark" {
+		@include theme-dark;
+	} @else {
+		@include theme-light;
+		@media (prefers-color-scheme: dark) {
+			@include theme-dark;
+		}
+	}
+}
