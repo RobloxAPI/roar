@@ -1,0 +1,46 @@
+// Class page style.
+
+body > main.kind-page.type-class {
+	// A grid arranges navigation on left and content on right. Content is
+	// centered within its track, and is allowed to expand to its maximum
+	// content size. Using 1fr for content track would start squeezing nav track
+	// only once content track hits its min-content. Using "auto" starts
+	// squeezing earlier, which distributes the space more evenly. The exact
+	// calculation is not self-evident (minmax(auto, auto)), but seems to work
+	// well enough.
+	display: grid;
+	grid-gap: 0 var(--section-spacing);
+	grid-template-columns: minmax(0, max-content) auto;
+	grid-template-areas: "nav content";
+	> nav {
+		grid-area: nav;
+		overflow-x: clip;
+		li {
+			> a {
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+	}
+	> #content {
+		grid-area: content;
+		justify-self: center;
+		overflow-x: clip;
+	}
+
+	// Table of contents.
+	#toc {
+		position: sticky;
+		top: var(--header-height);
+		max-height: calc(100vh - var(--header-height));
+		overflow-y: auto;
+	}
+
+	// Specific content styling.
+	#content {
+		p {
+			max-width: 90ch;
+		}
+	}
+}

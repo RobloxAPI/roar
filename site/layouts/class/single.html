@@ -195,8 +195,6 @@
 {{- end }}
 {{- $relatedTypes = $relatedTypes | sort | uniq }}
 
-<section>
-<div>
 <nav>
 	{{- if or $superclasses $subclasses }}
 		<section id="hierarchy">
@@ -223,8 +221,9 @@
 		</section>
 	{{- end }}
 	<section id="toc">
-		<header><h2>Table of contents</h2></header>
+		<header><h2>Contents</h2></header>
 		<ol class="toc">
+			<li class="toc-summary"><a href="#summary">Summary</a></li>
 			{{- if or $superclasses $subclasses }}
 				<li class="toc-hierarchy">Class tree
 					<ol>
@@ -283,7 +282,6 @@
 		</ol>
 	</section>
 </nav>
-</div>
 <section id="content">
 	<header><h1>{{$className}}</h1></header>
 	<section id="summary">
@@ -388,7 +386,6 @@
 				</section>
 			{{- end }}
 		</section>
-	</section>
+	{{- end }}
 </section>
-{{- end }}
 {{- end }}
