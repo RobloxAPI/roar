@@ -7,6 +7,7 @@ disablePathToLower = true
 markup.goldmark.renderer.unsafe = true
 
 [params]
+debug = false
 repo = "https://github.com/robloxapi/roar"
 issues = "https://github.com/robloxapi/roar/issues"
 roblox = "https://www.roblox.com"

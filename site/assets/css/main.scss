@@ -1,4 +1,4 @@
-$debug: false;
+$debug: {{site.Params.debug}};
 $theme: auto;
 
 @if ($debug) {
