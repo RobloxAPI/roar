@@ -88,6 +88,9 @@ html {
 	flex-direction: column;
 	height: 100%;
 
+	// Adjust for main header when targeting page sections.
+	scroll-padding-top: calc(var(--header-height) + var(--halfbase));
+
 	background-color: var(--theme-MainBackground);
 	color: var(--theme-MainText);
 }
