@@ -123,6 +123,7 @@ body {
 	> header {
 		position: sticky;
 		top: 0;
+		z-index: 1;
 		height: var(--header-height);
 		background-color: var(--theme-Tab);
 		box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
