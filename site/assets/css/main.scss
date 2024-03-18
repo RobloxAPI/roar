@@ -1,64 +1,89 @@
 $debug: false;
 $theme: auto;
 
-$tiny: 400px;
-$reduced: 950px;
-
 @if ($debug) {
 	* {
 		outline: 1px solid red !important;
-		box-sizing: border-box;
+	}
+	body {
+		contain: layout;
+		> div {
+			pointer-events: none;
+
+			// Test header height against viewport height.
+			// position: fixed;
+			// width: 100vw;
+			// height: 8.333333333333332vh; // 1/12
+			// background-color: #00FF0040;
+
+			// Show baseline alignment.
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			mix-blend-mode: exclusion;
+			background: repeating-linear-gradient(
+				#00000008 0 var(--halfbase),
+				#FFFFFF08 var(--halfbase) calc(var(--halfbase) * 2));
+		}
 	}
 }
 
 @import "theme";
 
 :root {
-	--font-size: 16px;
-	@media (max-width: $tiny) {
-		--font-size: 14px;
-	}
+	// Breakpoint at which header height is approximately greater than 12 of
+	// viewport height, based on font-size.
+	$hbp-header: 850px;
+
+	/* Baseline */
+	--font-size: clamp(0.875rem, 0.7rem + 0.5vmin, 1.125rem);
 	--line-height: 1.5;
 	--baseline: calc(var(--font-size) * var(--line-height));
 	--halfbase: calc(var(--baseline) / 2);
 
 	/* Header/Footer layout */
-	--header-step:   3;
+	--header-step: 3;
 	--header-height: calc(var(--header-step) * var(--baseline));
 	--header-bottom: var(--baseline);
+	// header-height > vh/12
+	@media (max-height: 850px) {
+		--header-step: 2;
+	}
 
 	/* Heading layout */
-	--heading-step:   3;
+	--heading-step: 3;
 	--heading-height: calc(var(--heading-step) * var(--baseline));
-	--heading-bottom: var(--baseline);
 
 	/* Icon sizing */
 	--icon-size-constant: 16px;
-	--icon-size-dynamic:  calc(var(--font-size) * 1.2);
-	--icon-scale:         var(--icon-size-constant);
-	--icon-spacing:       0.5ch;
+	--icon-size-dynamic: calc(var(--font-size) * 1.2);
+	--icon-scale: var(--icon-size-constant);
+	--icon-spacing: 0.5ch;
 
 	/* Fonts */
 	--sans-serif: "Open Sans", "Trebuchet MS", "DejaVu Sans", "Geneva", sans-serif;
-	--monospace:  "Consolas", "DejaVu Sans Mono", monospace;
+	--monospace: "Consolas", "DejaVu Sans Mono", monospace;
 
 	/* Horizontal spacing */
-	--indent-full:      4ch;
-	--indent-half:      calc(var(--indent-full)/2);
-	--indent:           var(--indent-full); /* Dynamic */
-	--section-spacing:  2ch;
+	--indent-full: 4ch;
+	--indent-half: calc(var(--indent-full)/2);
+	--indent: var(--indent-full); /* Dynamic */
+	--section-spacing: 2ch;
 
 	/* Z Layers */
-	--layer-content:          auto;
+	--layer-content: auto;
 	--layer-below-foreground: 10;
-	--layer-foreground:       20;
-	--layer-menu:             30;
+	--layer-foreground: 20;
+	--layer-menu: 30;
 
 	/* Misc. */
 	--scrollbar-width: 4ch;
 }
 
 html {
+	// Ensure footer is attached to bottom of viewport.
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -67,27 +92,21 @@ html {
 	color: var(--theme-MainText);
 }
 
-@mixin running-center-text {
-	display: flex;
-	align-items: center;
-	gap: 0 0.25em;
-
-	min-height: calc(var(--header-step) * var(--baseline));
-
-	@media (max-width: $reduced) {
-		--header-step: 2;
-	}
-}
-@mixin running-button {
+// For link buttons in header and footer.
+@mixin running-link {
 	transition: background-color 100ms linear, color 100ms linear;
-	&:hover {
-		background-color: var(--theme-Tab-Hover);
-	}
 }
 
+// Padding on sides of elements in header and footer.
 @mixin running-padding {
 	padding-left: var(--halfbase);
 	padding-right: var(--halfbase);
+}
+
+// Elements displayed only when javascript is enabled. The related script
+// manually removes the js class when it is ready.
+.js {
+	//TODO: display: none;
 }
 
 body {
@@ -95,100 +114,173 @@ body {
 
 	display: flex;
 	flex-direction: column;
-	height: 100%;
 
 	font: var(--font-size)/var(--line-height) var(--sans-serif);
 	margin: 0;
 	padding: 0;
 
-	> header, > footer {
-		:not(span) :not(span) {
-			@include running-center-text;
+	// Main header.
+	> header {
+		position: sticky;
+		top: 0;
+		height: var(--header-height);
+		background-color: var(--theme-Tab);
+		box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
+
+		display: grid;
+		grid-template-columns:
+			minmax(0, max-content) // Title
+			minmax(0, 1fr) // Navigation
+			max-content // Search
+			max-content // Settings
+		;
+
+		// Layout for all descendant elements.
+		* {
+			// Elements should be vertically centered.
+			display: flex;
+			align-items: center;
+			// Generally, interactivity of all descendant elements should span
+			// entire height.
+			height: 100%;
 		}
-		h1 {
+		// Exception for anything under icons.
+		.icon * {
+			display: revert;
+			align-items: revert;
+			height: revert;
+		}
+		// Exception for search inputs.
+		input {
+			height: revert;
+		}
+
+		// Gracefully hide any overflow.
+		> * {
+			overflow: hidden;
+		}
+
+		// Website title.
+		> h1 {
 			margin: 0;
+			white-space: nowrap;
+			justify-content: flex-end;
 			> a {
 				@include running-padding;
 			}
 		}
-		nav {
-			flex: 1 1 auto;
 
-			display: flex;
-			align-items: stretch;
-			gap: 0;
-
-			ul {
-				display: flex;
-				flex-flow: wrap row;
-				gap: 0;
-
+		// Navigation links.
+		> nav {
+			> ul {
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
 				li {
-					display: flex;
-					align-items: stretch;
-					gap: 0;
-
 					a {
-						@include running-button;
+						&:hover {
+							background-color: var(--theme-Tab-Hover);
+						}
+						@include running-link;
 						@include running-padding;
 					}
 				}
 			}
 		}
-	}
-	> header {
-		display: grid;
-		grid-template-columns: 1fr auto;
 
-		background-color: var(--theme-Tab);
-		> div:first-child {
-			display: flex;
-			align-items: center;
-			flex-flow: wrap row;
-			gap: 0;
-
-			> aside {
-				> #no-search {
-					@media (max-width: $reduced) {
-						display: none;
-					}
-					@include running-padding;
-				}
-				&:has(> #no-search) {
-					@media (max-width: $reduced) {
-						display: none;
-					}
-				}
+		// Search widget.
+		> #search {
+			label {
+				@include running-padding;
 			}
 		}
-		> div:last-child {
+
+		// Settings widget.
+		> #settings-container {
+		}
+
+		// Square icon with inset element.
+		.icon {
+			width: var(--header-height);
+			height: var(--header-height);
 			display: flex;
-			gap: 0;
+			align-items: center;
+			justify-content: center;
+			> * {
+				width: calc(var(--header-height) - var(--baseline) * (var(--header-step) / 2) );
+				height: calc(var(--header-height) - var(--baseline) * (var(--header-step) / 2) );
+			}
+			// If svg, color paths to match text.
+			path {
+				transition: fill 100ms linear;
+				fill: var(--theme-SubText);
+			}
+			&:hover path {
+				fill: var(--theme-SubText-Selected);
+			}
+		}
+
+		// Anything meant to be a button.
+		.button {
+			cursor: pointer;
 		}
 	}
+
+	// Main content.
 	> main {
 		flex: 1 0 auto;
 		margin: var(--halfbase);
+
+		// Squeeze and center pages considered articles.
 		&.article {
 			max-width: 90ch;
 			margin: var(--halfbase) auto;
+			padding: 0 var(--halfbase);
 		}
 	}
+
+	// Main footer.
 	> footer {
 		flex-shrink: 0;
 
 		display: flex;
 		align-items: center;
 		flex-flow: wrap row;
-		gap: 0;
 
 		background-color: var(--theme-footer);
 		color: var(--theme-footer-text);
+		// Browsers may have fixed UI that appears at bottom of viewport, such
+		// as link URLs.
 		padding-bottom: var(--baseline);
 
+		:not(span) :not(span) {
+			display: flex;
+			align-items: center;
+
+			min-height: calc(var(--header-step) * var(--baseline));
+		}
+		nav {
+			flex: 1 1 auto;
+
+			display: flex;
+			align-items: stretch;
+
+			ul {
+				display: flex;
+				flex-flow: wrap row;
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				li {
+					display: flex;
+					align-items: stretch;
+					a {
+						@include running-link;
+						@include running-padding;
+					}
+				}
+			}
+		}
 		a[href] {
 			color: var(--theme-footer-text);
 			&:hover {
@@ -213,7 +305,7 @@ body {
 				width: 14px;
 			}
 			path {
-				fill: var(--theme-DialogMainButtonText);
+				fill: var(--theme-footer-text);
 			}
 		}
 	}
@@ -224,14 +316,27 @@ a[href] {
 	text-decoration: none;
 }
 
+input[type="search"] {
+	font: inherit;
+	appearance: none;
+	background-color: var(--theme-MainBackground);
+	color: var(--theme-MainText);
+	border: 1px solid var(--theme-Border);
+	&:hover {
+		border: 1px solid var(--theme-Border-Selected);
+	}
+	width: 24ch;
+}
+
+// Headings.
 h1,h2,h3,h4,h5,h6 {
 	--heading-font-size: calc(var(--heading-scale,1) * var(--font-size));
-	font-size:           var(--heading-font-size);
-	line-height:         var(--line-height);
-	margin-bottom:       var(--heading-bottom);
-	margin-top:          calc(var(--heading-height) - var(--heading-bottom) - var(--heading-font-size)*var(--line-height));
-	margin-left:         0;
-	margin-right:        0;
+	--heading-bottom: var(--baseline);
+	font-size: var(--heading-font-size);
+	margin-bottom: var(--heading-bottom);
+	margin-top: calc(var(--heading-height) - var(--heading-bottom) - var(--heading-font-size)*var(--line-height));
+	margin-left: 0;
+	margin-right: 0;
 }
 h1 { --heading-scale: calc(12/6) }
 h2 { --heading-scale: calc(9/6) }
@@ -239,3 +344,47 @@ h3 { --heading-scale: calc(7/6) }
 h4 { --heading-scale: calc(6/6) }
 h5 { --heading-scale: calc(5/6) }
 h6 { --heading-scale: calc(4/6) }
+
+// Margined elements.
+p, ul, ol {
+	margin: var(--baseline) 0;
+}
+ul, ol {
+	padding-left: var(--indent);
+}
+ul ul, ul ol, ol ul, ol ol {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+// Overflowing list that takes up a non-disruptive fraction of the viewport.
+.truncated-list {
+	max-height: 38.2vh;
+	overflow-y: auto;
+	padding-right: var(--scrollbar-width);
+}
+
+// List where each element has an icon.
+.element-list {
+	--element-list-indent: calc(var(--icon-scale) + var(--icon-spacing));
+	--indent: 0;
+	list-style: none;
+	ul {
+		--indent: var(--element-list-indent);
+		list-style: none;
+	}
+}
+
+// Contained within a heading to display the number of elements.
+.element-count {
+	font-size: 75%;
+	&::before {
+		content: "(";
+	}
+	&::after {
+		content: ")";
+	}
+}
+
+// Page types.
+@import "class"
