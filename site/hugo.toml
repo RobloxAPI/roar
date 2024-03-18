@@ -8,6 +8,7 @@ markup.goldmark.renderer.unsafe = true
 
 [params]
 debug = false
+theme = "auto"
 repo = "https://github.com/robloxapi/roar"
 issues = "https://github.com/robloxapi/roar/issues"
 roblox = "https://www.roblox.com"

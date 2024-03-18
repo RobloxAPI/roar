@@ -1,5 +1,5 @@
 $debug: {{site.Params.debug}};
-$theme: auto;
+$theme: {{site.Params.theme}};
 
 @if ($debug) {
 	* {
