@@ -3,16 +3,17 @@
 <head>
 	{{ partial "head.html" . }}
 </head>
-<body>
+<body id="top">
 	<header>
 		{{- partial "header.html" . }}
 	</header>
 	<main class="kind-{{.Kind}} type-{{.Type}}{{if .Params.Article}} article{{end}}">
 		{{- block "main" . }}{{ end }}
 	</main>
+	<div class="top-nav"><a href="#top"></a></div>
 	<footer>
 		{{- partial "footer.html" . }}
 	</footer>
-	<div></div>
+	<div class="debug"></div>
 </body>
 </html>

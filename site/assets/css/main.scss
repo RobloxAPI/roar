@@ -7,7 +7,7 @@ $theme: auto;
 	}
 	body {
 		contain: layout;
-		> div {
+		> .debug {
 			pointer-events: none;
 
 			// Test header height against viewport height.
@@ -311,6 +311,23 @@ body {
 			path {
 				fill: var(--theme-footer-text);
 			}
+		}
+	}
+
+}
+
+// Top navigation
+.top-nav {
+	display: flex;
+	align-self: flex-end;
+	position: sticky;
+	bottom: 0;
+	right: 0;
+	a {
+		background-color: var(--theme-MainBackground);
+		padding: var(--halfbase);
+		&::before {
+			content: "Top ↑";
 		}
 	}
 }
