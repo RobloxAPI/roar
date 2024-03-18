@@ -195,26 +195,38 @@
 {{- end }}
 {{- $relatedTypes = $relatedTypes | sort | uniq }}
 
-<header><h1>{{$className}}</h1></header>
-
-<section id="summary">
-	<header><h2>Summary</h2></header>
-	<table class="metadata-pairs">
-		<tbody>
-			<tr><th>Memory Category</th><td>{{$classDump.MemoryCategory}}</td></tr>
-		</tbody>
-	</table>
-	{{- if $classDump.Tags }}
-		<p class="tags">Tags: [{{delimit $classDump.Tags ", "}}]</p>
-	{{- end }}
-</section>
-
+<section>
+<div>
 <nav>
-	<section>
+	{{- if or $superclasses $subclasses }}
+		<section id="hierarchy">
+			{{- if $superclasses }}
+				<section id="superclasses">
+					<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $superclasses }}
+							<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+			{{- if $subclasses }}
+				<section id="subclasses">
+					<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $subclasses }}
+							<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+		</section>
+	{{- end }}
+	<section id="toc">
 		<header><h2>Table of contents</h2></header>
 		<ol class="toc">
 			{{- if or $superclasses $subclasses }}
-				<li id="toc-class-tree">Class tree
+				<li class="toc-hierarchy">Class tree
 					<ol>
 						{{- if $superclasses }}
 							<li id="toc-superclasses"><a href="#superclasses">Inherits</a></li>
@@ -225,15 +237,15 @@
 					</ol>
 				</li>
 			{{- end }}
-			<li><a href="#members-index">Member index</a></li>
+			<li class="toc-members-index"><a href="#members-index">Member index</a></li>
 			{{- if $removedMembers }}
-				<li id="toc-removed-members-index"><a href="#removed-members-index">Removed member index</a></li>
+				<li class="toc-removed-members-index"><a href="#removed-members-index">Removed member index</a></li>
 			{{- end }}
 			{{- if $changes }}
-				<li><a href="#history">History</a></li>
+				<li class="toc-history"><a href="#history">History</a></li>
 			{{- end }}
 			{{- if $members }}
-				<li><a href="#members">Members</a>
+				<li class="toc-members"><a href="#members">Members</a>
 					<ol>
 						{{- range $members}}
 							<li><a href="#member-{{.Name}}">{{.Name}}</a></li>
@@ -242,7 +254,7 @@
 				</li>
 			{{- end }}
 			{{- if $removedMembers }}
-				<li><a href="#removed-members">Removed members</a>
+				<li class="toc-removed-members"><a href="#removed-members">Removed members</a>
 					<ol>
 						{{- range $removedMembers}}
 							<li><a href="#member-{{.Name}}">{{.Name}}</a></li>
@@ -251,7 +263,7 @@
 				</li>
 			{{- end }}
 			{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
-				<li>References
+				<li class="toc-references">References
 					<ol>
 						{{- if or $relatedClasses }}
 							<li><a href="#related-classes">Related classes</a></li>
@@ -271,121 +283,112 @@
 		</ol>
 	</section>
 </nav>
-
-{{- if or $superclasses $subclasses }}
-	<section id="hierarchy">
-		{{- if $superclasses }}
-			<section id="superclasses">
-				<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
-				<ul>
-					{{- range $superclasses }}
-						<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
-					{{- end }}
-				</ul>
-			</section>
-		{{- end }}
-		{{- if $subclasses }}
-			<section id="subclasses">
-				<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
-				<ul>
-					{{- range $subclasses }}
-						<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
-					{{- end }}
-				</ul>
-			</section>
+</div>
+<section id="content">
+	<header><h1>{{$className}}</h1></header>
+	<section id="summary">
+		<header><h2>Summary</h2></header>
+		<table class="metadata-pairs">
+			<tbody>
+				<tr><th>Memory Category</th><td>{{$classDump.MemoryCategory}}</td></tr>
+			</tbody>
+		</table>
+		{{- if $classDump.Tags }}
+			<p class="tags">Tags: [{{delimit $classDump.Tags ", "}}]</p>
 		{{- end }}
 	</section>
-{{- end }}
 
-<section id="members-index">
-	<header><h2>Members {{partial "element-count.html" (len $members)}}</h2></header>
-	{{- template "member-index" $members }}
-</section>
-
-{{- if $removedMembers }}
-	<section id="removed-members-index">
-		<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
-		{{- template "member-index" $removedMembers }}
+	<section id="members-index">
+		<header><h2>Members {{partial "element-count.html" (len $members)}}</h2></header>
+		{{- template "member-index" $members }}
 	</section>
-{{- end }}
 
-{{- if $changes }}
-	<section id="history">
-		<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
-		<ul class="change-list truncated-list">
-			{{- range $changes | sort | collections.Reverse }}
-				{{- $change := index site.Data.History.Change (int .) }}
-				<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
-			{{- end }}
-		</ul>
-	</section>
-{{- end }}
+	{{- if $removedMembers }}
+		<section id="removed-members-index">
+			<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
+			{{- template "member-index" $removedMembers }}
+		</section>
+	{{- end }}
 
-{{- if $members }}
-	<section id="members">
-		<header><h2>Members</h2></header>
-		{{template "members" $members}}
-	</section>
-{{- end }}
+	{{- if $changes }}
+		<section id="history">
+			<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
+			<ul class="change-list truncated-list">
+				{{- range $changes | sort | collections.Reverse }}
+					{{- $change := index site.Data.History.Change (int .) }}
+					<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
+				{{- end }}
+			</ul>
+		</section>
+	{{- end }}
 
-{{- if $removedMembers }}
-	<section id="removed-members">
-		<header><h2>Removed members</h2></header>
-		{{template "members" $removedMembers}}
-	</section>
-{{- end }}
+	{{- if $members }}
+		<section id="members">
+			<header><h2>Members</h2></header>
+			{{template "members" $members}}
+		</section>
+	{{- end }}
 
-{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
-	<section id="references">
-		{{- if $relatedClasses }}
-			<section id="related-classes">
-				<header><h2>Related classes {{partial "element-count.html" (len $relatedClasses)}}</h2></header>
-				<ul class="truncated-list element-list">
-					{{- range $relatedClasses }}
-						<li>{{partial "link/entity.html" (slice "class" .)}}</li>
-					{{- end }}
-				</ul>
-			</section>
-		{{- end }}
-		{{- if $relatedMembers }}
-			<section id="related-members">
-				<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-				<ul class="truncated-list element-list">
-					{{- range $relatedMembers }}
-						{{- $type := "class" }}
-						{{- if .Member }}
-							{{- $type = "member" }}
+	{{- if $removedMembers }}
+		<section id="removed-members">
+			<header><h2>Removed members</h2></header>
+			{{template "members" $removedMembers}}
+		</section>
+	{{- end }}
+
+	{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
+		<section id="references">
+			{{- if $relatedClasses }}
+				<section id="related-classes">
+					<header><h2>Related classes {{partial "element-count.html" (len $relatedClasses)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $relatedClasses }}
+							<li>{{partial "link/entity.html" (slice "class" .)}}</li>
 						{{- end }}
-						<li>
-							{{- partial "link/entity.html" (slice $type .Class .Member) }}
-							{{- if eq .Kind "Parameter" }} (
-								{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
-							{{- end -}}
-						</li>
-					{{- end }}
-				</ul>
-			</section>
-		{{- end }}
-		{{- if $relatedEnums }}
-			<section id="related-enums">
-				<header><h2>Related enums {{partial "element-count.html" (len $relatedEnums)}}</h2></header>
-				<ul class="truncated-list element-list">
-					{{- range $relatedEnums }}
-						<li>{{partial "link/entity.html" (slice "enum" .)}}</li>
-					{{- end }}
-				</ul>
-			</section>
-		{{- end }}
-		{{- if $relatedTypes }}
-			<section id="related-types">
-				<header><h2>Related types {{partial "element-count.html" (len $relatedTypes)}}</h2></header>
-				<ul class="truncated-list element-list">
-					{{- range $relatedTypes }}
-						<li>{{partial "link/entity.html" (slice "type" .)}}</li>
-					{{- end }}
-				</ul>
-			</section>
-		{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+			{{- if $relatedMembers }}
+				<section id="related-members">
+					<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $relatedMembers }}
+							{{- $type := "class" }}
+							{{- if .Member }}
+								{{- $type = "member" }}
+							{{- end }}
+							<li>
+								{{- partial "link/entity.html" (slice $type .Class .Member) }}
+								{{- if eq .Kind "Parameter" }} (
+									{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+								{{- end -}}
+							</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+			{{- if $relatedEnums }}
+				<section id="related-enums">
+					<header><h2>Related enums {{partial "element-count.html" (len $relatedEnums)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $relatedEnums }}
+							<li>{{partial "link/entity.html" (slice "enum" .)}}</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+			{{- if $relatedTypes }}
+				<section id="related-types">
+					<header><h2>Related types {{partial "element-count.html" (len $relatedTypes)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $relatedTypes }}
+							<li>{{partial "link/entity.html" (slice "type" .)}}</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+		</section>
 	</section>
+</section>
 {{- end }}
 {{- end }}
