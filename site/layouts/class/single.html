@@ -49,6 +49,7 @@
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
 						<tbody>
+							<tr><td>Member Type</td><td>Property</td></tr>
 							<tr><td>Value Type</td><td>{{partial "member/type.html" $dump.ValueType}}</td></tr>
 							{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
@@ -71,6 +72,7 @@
 				{{- else if eq $dump.MemberType "Function"}}
 					<table class="metadata-pairs">
 						<tbody>
+							<tr><td>Member Type</td><td>Function</td></tr>
 							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
@@ -87,6 +89,7 @@
 				{{- else if eq $dump.MemberType "Event"}}
 					<table class="metadata-pairs">
 						<tbody>
+							<tr><td>Member Type</td><td>Event</td></tr>
 							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
@@ -102,6 +105,7 @@
 				{{- else if eq $dump.MemberType "Callback"}}
 					<table class="metadata-pairs">
 						<tbody>
+							<tr><td>Member Type</td><td>Callback</td></tr>
 							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
