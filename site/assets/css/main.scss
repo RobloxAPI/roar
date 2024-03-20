@@ -242,7 +242,8 @@ body {
 			padding: 0 var(--halfbase);
 		}
 
-		&:not(.article) {
+		// Standard formatting for entity pages.
+		&:is(.type-class, .type-enum, .type-type, .type-updates) {
 			// A grid arranges navigation on left and content on right. Content is
 			// centered within its track, and is allowed to expand to its maximum
 			// content size. Using 1fr for content track would start squeezing nav
