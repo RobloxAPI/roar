@@ -397,7 +397,7 @@ ul ul, ul ol, ol ul, ol ol {
 }
 
 // Contained within a heading to display the number of elements.
-.element-count {
+:is(h1,h2,h3,h4,h5,h6) .element-count {
 	font-size: 75%;
 	&::before {
 		content: "(";
