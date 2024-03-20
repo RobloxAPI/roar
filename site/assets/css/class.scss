@@ -1,5 +1,29 @@
 // Class page style.
 body > main.kind-page.type-class {
+	#members-index {
+		.inherited-members {
+			label {
+				color: var(--theme-link);
+				cursor: pointer;
+				> input {
+					appearance: none;
+					font: inherit;
+					margin: 0;
+					padding: 0;
+					padding-right: 0.5ch;
+					&:checked::before {
+						content: "⏷";
+					}
+					&:not(:checked)::before {
+						content: "⏵";
+					}
+				}
+			}
+		}
+		thead:has(input:not(:checked)) + tbody {
+			display: none;
+		}
+	}
 	#members-sections {
 		> section {
 			border-bottom: 1px solid var(--theme-border);
