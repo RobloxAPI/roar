@@ -479,6 +479,10 @@ ul ul, ul ol, ol ul, ol ol {
 	margin: var(--baseline) var(--card-margin);
 	padding: var(--card-padding);
 	border-radius: var(--card-padding);
+
+	tr:not(:first-of-type) > td {
+		border-top: 1px solid var(--theme-border);
+	}
 	th {
 		background-color: var(--theme-border);
 	}
