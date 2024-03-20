@@ -422,6 +422,13 @@ ul ul, ul ol, ol ul, ol ol {
 	margin-bottom: 0;
 }
 
+blockquote > :first-child::before {
+	content: '“ ';
+}
+blockquote > :last-child::after {
+	content: ' ”';
+}
+
 // Overflowing list that takes up a non-disruptive fraction of the viewport.
 .truncated-list {
 	max-height: 38.2vh;
