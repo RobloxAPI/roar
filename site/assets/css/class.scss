@@ -43,4 +43,10 @@ body > main.kind-page.type-class {
 			max-width: 90ch;
 		}
 	}
+
+	#members-sections {
+		> section {
+			border-bottom: 1px solid var(--theme-border);
+		}
+	}
 }
