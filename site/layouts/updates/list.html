@@ -1,15 +1,15 @@
 {{- define "main" }}
-<header><h2>Recent API updates</h2></header>
-<aside>
-	<label>
-		<input id="expand-all" type="checkbox"/>
-		Show all changes.
-	</label>
-</aside>
 <nav>
 	{{- partial "updates/nav.html" . }}
 </nav>
-<article>
+<article id="content">
+	<header><h2>Recent API updates</h2></header>
+	<aside>
+		<label>
+			<input id="expand-all" type="checkbox"/>
+			Show all changes.
+		</label>
+	</aside>
 	<p>Click a date to expand or collapse changes.</p>
 	{{- partial "updates/list.html" . }}
 </article>
