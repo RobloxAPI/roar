@@ -9,25 +9,27 @@
 	{{- end }}
 {{- end }}
 
-<header><h1>{{$typeName}}</h1></header>
+<section id="content">
+	<header><h1>{{$typeName}}</h1></header>
 
-{{- if $relatedMembers }}
-	<section id="related-members">
-		<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-		<ul class="truncated-list element-list">
-			{{- range $relatedMembers }}
-				{{- $type := "class" }}
-				{{- if .Member }}
-					{{- $type = "member" }}
+	{{- if $relatedMembers }}
+		<section id="related-members">
+			<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
+			<ul class="truncated-list element-list">
+				{{- range $relatedMembers }}
+					{{- $type := "class" }}
+					{{- if .Member }}
+						{{- $type = "member" }}
+					{{- end }}
+					<li>
+						{{- partial "link/entity.html" (slice $type .Class .Member) }}
+						{{- if eq .Kind "Parameter" }} (
+							{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+						{{- end -}}
+					</li>
 				{{- end }}
-				<li>
-					{{- partial "link/entity.html" (slice $type .Class .Member) }}
-					{{- if eq .Kind "Parameter" }} (
-						{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
-					{{- end -}}
-				</li>
-			{{- end }}
-		</ul>
-	</section>
-{{- end }}
+			</ul>
+		</section>
+	{{- end }}
+</section>
 {{- end }}

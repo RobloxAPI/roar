@@ -1,14 +1,16 @@
 {{/* []EnumItemIndex // Render item index table. */}}
 {{- define "item-index" }}
+{{- $enum := index . 0 }}
+{{- $items := index . 1 }}
 {{- $hasLegacyNames := false }}
-{{- range . }}
+{{- range $items }}
 	{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 	{{- if $itemDump.LegacyNames }}
 		{{- $hasLegacyNames = true }}
 		{{- break }}
 	{{- end }}
 {{- end }}
-	<table class="enumitem-index">
+	<table class="index-card enumitem-index">
 		<thead>
 			<tr>
 				<th class="col-history">History</th>
@@ -21,7 +23,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{{- range . }}
+			{{- range $items }}
 				{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 				<tr>
 					{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
@@ -37,6 +39,10 @@
 					{{- if $hasLegacyNames }}
 						<td class="col-legacy-names">{{if $itemDump.LegacyNames}}{{delimit $itemDump.LegacyNames ", "}}{{end}}</td>
 					{{- end}}
+				</tr>
+			{{- else }}
+				<tr class="empty">
+					<td colspan="4">No members defined by {{$enum}}.</td>
 				</tr>
 			{{- end }}
 		</tbody>
@@ -76,18 +82,9 @@
 	{{- end }}
 {{- end }}
 
-<header><h1>{{$enumName}}</h1></header>
-
-{{- if $enumDump.Tags }}
-	<section id="summary">
-		<header><h2>Summary</h2></header>
-		<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
-	</section>
-{{- end }}
-
 <nav>
-	<section>
-		<header><h2>Table of contents</h2></header>
+	<section id="toc">
+		<header><h2>Contents</h2></header>
 		<ol class="toc">
 			<li><a href="#members-index">Items</a></li>
 			{{- if $removedItems }}
@@ -103,47 +100,58 @@
 	</section>
 </nav>
 
-<section id="members-index">
-	<header><h2>Items {{partial "element-count.html" (len $items)}}</h2></header>
-	{{- template "item-index" $items }}
-</section>
+<section id="content">
+	<header><h1>{{$enumName}}</h1></header>
 
-{{- if $removedItems }}
-	<section id="removed-members-index">
-		<header><h2>Removed items {{partial "element-count.html" (len $removedItems)}}</h2></header>
-		{{- template "item-index" $removedItems }}
+	{{- if $enumDump.Tags }}
+		<section id="summary">
+			<header><h2>Summary</h2></header>
+			<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
+		</section>
+	{{- end }}
+
+	<section id="members-index">
+		<header><h2>Items {{partial "element-count.html" (len $items)}}</h2></header>
+		{{- template "item-index" (slice $enumName $items) }}
 	</section>
-{{- end }}
 
-{{- if $changes }}
-	<section id="history">
-		<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
-		<ul class="change-list truncated-list">
-			{{- range $changes | sort | collections.Reverse }}
-				{{- $change := index site.Data.History.Change (int .) }}
-				<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
-			{{- end }}
-		</ul>
-	</section>
-{{- end }}
+	{{- if $removedItems }}
+		<section id="removed-members-index">
+			<header><h2>Removed items {{partial "element-count.html" (len $removedItems)}}</h2></header>
+			{{- template "item-index" (slice $enumName $removedItems) }}
+		</section>
+	{{- end }}
 
-{{- if $relatedMembers }}
-	<section id="related-members">
-		<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-		<ul class="truncated-list element-list">
-			{{- range $relatedMembers }}
-				{{- $type := "class" }}
-				{{- if .Member }}
-					{{- $type = "member" }}
+	{{- if $changes }}
+		<section id="history">
+			<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
+			<ul class="change-list truncated-list">
+				{{- range $changes | sort | collections.Reverse }}
+					{{- $change := index site.Data.History.Change (int .) }}
+					<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
 				{{- end }}
-				<li>
-					{{- partial "link/entity.html" (slice $type .Class .Member) }}
-					{{- if eq .Kind "Parameter" }} (
-						{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
-					{{- end -}}
-				</li>
-			{{- end }}
-		</ul>
-	</section>
-{{- end }}
+			</ul>
+		</section>
+	{{- end }}
+
+	{{- if $relatedMembers }}
+		<section id="related-members">
+			<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
+			<ul class="truncated-list element-list">
+				{{- range $relatedMembers }}
+					{{- $type := "class" }}
+					{{- if .Member }}
+						{{- $type = "member" }}
+					{{- end }}
+					<li>
+						{{- partial "link/entity.html" (slice $type .Class .Member) }}
+						{{- if eq .Kind "Parameter" }} (
+							{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+						{{- end -}}
+					</li>
+				{{- end }}
+			</ul>
+		</section>
+	{{- end }}
+</section>
 {{- end }}
