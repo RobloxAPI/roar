@@ -458,6 +458,11 @@ ul ul, ul ol, ol ul, ol ol {
 	.col-member {
 		text-align: left;
 	}
+	.member-text {
+		display: flex;
+		flex-flow: wrap row;
+		white-space: pre-wrap;
+	}
 }
 
 .param-index-card {

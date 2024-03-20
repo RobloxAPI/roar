@@ -1,10 +1,13 @@
 {{/* []Parameter // Render member parameters as function type definition. */}}
 {{- $n := sub (len .) 1 -}}
-<span class="params-open">(</span>
+<span class="parameters open">(</span>
 {{- range $i, $param := . -}}
-	<span class="parameter">{{$param.Name}}: {{partial "member/type.html" $param.Type}}{{if .Optional}} = {{.Default}}{{end}}</span>
-	{{- if lt $i $n -}}
-		<span class="param-sep">, </span>
-	{{- end -}}
+	<span class="parameters parameter">
+		{{- $param.Name -}}: {{partial "member/type.html" $param.Type -}}
+		{{- if .Optional }} = {{ .Default -}}{{- end -}}
+		{{- if lt $i $n -}}
+			<span class="parameters sep">, </span>
+		{{- end -}}
+	</span>
 {{- end -}}
-<span class="params-close">)</span>
+<span class="parameters close">)</span>

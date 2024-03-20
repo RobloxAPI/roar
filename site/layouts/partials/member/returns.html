@@ -1,14 +1,14 @@
 {{/* []Type // Render member return types as function type definition. */}}
 {{- $n := sub (len .) 1 -}}
 {{- if eq $n 0 -}}
-	<span class="return">{{partial "member/type.html" (index . 0)}}</span>
+	<span class="returns return">{{partial "member/type.html" (index . 0)}}</span>
 {{- else -}}
-	<span class="returns-open">(</span>
+	<span class="returns open">(</span>
 	{{- range $i, $type := . -}}
-		<span class="return">{{partial "member/type.html" $type}}</span>
+		<span class="returns return">{{partial "member/type.html" $type}}</span>
 		{{- if lt $i $n -}}
-			<span class="return-sep">, </span>
+			<span class="returns sep">, </span>
 		{{- end -}}
 	{{- end -}}
-	<span class="returns-close">)</span>
+	<span class="returns close">)</span>
 {{- end -}}

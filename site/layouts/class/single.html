@@ -21,15 +21,17 @@
 							<td class="col-history">{{partial "history/tag.html" $change}}</td>
 							<td class="col-icon">{{$memberDump.MemberType}}</td>
 							<td class="col-member">
-								{{- if eq $memberDump.MemberType "Property" }}
-									<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>: <span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
-								{{- else if eq $memberDump.MemberType "Function" }}
-									<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
-								{{- else if eq $memberDump.MemberType "Event" }}
-									<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}
-								{{- else if eq $memberDump.MemberType "Callback" }}
-									<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
-								{{- end -}}
+								<span class="member-text">
+									{{- if eq $memberDump.MemberType "Property" }}
+										<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>: <span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
+									{{- else if eq $memberDump.MemberType "Function" }}
+										<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
+									{{- else if eq $memberDump.MemberType "Event" }}
+										<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}
+									{{- else if eq $memberDump.MemberType "Callback" }}
+										<span class="name">{{partial "link/entity.html" (slice "member" .Class .Name "simple")}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
+									{{- end -}}
+								</span>
 							</td>
 						</tr>
 					{{- end }}
