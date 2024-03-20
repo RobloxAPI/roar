@@ -377,6 +377,10 @@ body {
 	}
 }
 
+.class-tree ul {
+	border-left: 1px dotted var(--theme-border)
+}
+
 a[href] {
 	color: var(--theme-link);
 	text-decoration: none;
