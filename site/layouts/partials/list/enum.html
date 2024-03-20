@@ -10,7 +10,7 @@
 	{{- end }}
 	<section id="present-enums">
 		<header><h2>Enums <span class="element-count">{{$countPresentEnums}}</span></h2></header>
-		<ul class="enum-list">
+		<ul class="enum-list element-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if not $enum.Removed }}
 					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
@@ -20,7 +20,7 @@
 	</section>
 	<section id="removed-enums">
 		<header><h2>Removed enums <span class="element-count">{{$countRemovedEnums}}</span></h2></header>
-		<ul class="enum-list">
+		<ul class="enum-list element-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if $enum.Removed }}
 					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
