@@ -121,7 +121,7 @@
 					</table>
 				{{- end }}
 			{{- if $dump.Tags }}
-				<p class="tags">Tags: [{{delimit $dump.Tags ", "}}]</p>
+				<div class="tags">Tags: [{{delimit $dump.Tags ", "}}]</div>
 			{{- end }}
 				{{- $changes := slice | append (index site.Data.History.Object.Member .Class .Name) }}
 				<h4>History {{partial "element-count.html" (len $changes)}}</h4>
@@ -292,7 +292,7 @@
 			</tbody>
 		</table>
 		{{- if $classDump.Tags }}
-			<p class="tags">Tags: [{{delimit $classDump.Tags ", "}}]</p>
+			<div class="tags">Tags: [{{delimit $classDump.Tags ", "}}]</div>
 		{{- end }}
 	</section>
 

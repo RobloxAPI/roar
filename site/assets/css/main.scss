@@ -407,5 +407,9 @@ ul ul, ul ol, ol ul, ol ol {
 	}
 }
 
+.tags {
+	font-size: smaller;
+	text-align: right;
+}
 // Page types.
 @import "class"
