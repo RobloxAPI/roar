@@ -412,6 +412,18 @@ ul ul, ul ol, ol ul, ol ol {
 	text-align: right;
 }
 
+.metadata-pairs {
+	text-align: left;
+	border-collapse: collapse;
+	th {
+		font-weight: bold;
+		&::after {
+			content: ": ";
+			white-space: pre-wrap;
+		}
+	}
+}
+
 // Technical control widgets.
 @import "controls";
 

@@ -49,39 +49,39 @@
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
 						<tbody>
-							<tr><td>Member Type</td><td>Property</td></tr>
-							<tr><td>Value Type</td><td>{{partial "member/type.html" $dump.ValueType}}</td></tr>
+							<tr><th>Member Type</th><td>Property</td></tr>
+							<tr><th>Value Type</th><td>{{partial "member/type.html" $dump.ValueType}}</td></tr>
 							{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
-									<tr><td>Security</td><td>{{$dump.ReadSecurity}}</td></tr>
+									<tr><th>Security</th><td>{{$dump.ReadSecurity}}</td></tr>
 								{{- end }}
 							{{- else }}
 								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
-									<tr><td>Read Security</td><td>{{$dump.ReadSecurity}}</td></tr>
+									<tr><th>Read Security</th><td>{{$dump.ReadSecurity}}</td></tr>
 								{{- end }}
 								{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None" "") }}
-									<tr><td>Write Security</td><td>{{$dump.WriteSecurity}}</td></tr>
+									<tr><th>Write Security</th><td>{{$dump.WriteSecurity}}</td></tr>
 								{{- end }}
 							{{- end }}
-							<tr><td>Category</td><td>{{$dump.Category}}</td></tr>
-							<tr><td>Can Load</td><td>{{$dump.CanLoad}}</td></tr>
-							<tr><td>Can Save</td><td>{{$dump.CanSave}}</td></tr>
+							<tr><th>Category</th><td>{{$dump.Category}}</td></tr>
+							<tr><th>Can Load</th><td>{{$dump.CanLoad}}</td></tr>
+							<tr><th>Can Save</th><td>{{$dump.CanSave}}</td></tr>
 							{{/* TODO: reflection metadata */}}
 						</tbody>
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
 					<table class="metadata-pairs">
 						<tbody>
-							<tr><td>Member Type</td><td>Function</td></tr>
-							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
+							<tr><th>Member Type</th><td>Function</td></tr>
+							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
 						<tbody>
-							<tr><td>Returns</td><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
+							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
 							{{- if and .Security (ne .Security "None" "") }}
-								<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
+								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
 							{{- end }}
 							{{/* TODO: reflection metadata */}}
 						</tbody>
@@ -89,15 +89,15 @@
 				{{- else if eq $dump.MemberType "Event"}}
 					<table class="metadata-pairs">
 						<tbody>
-							<tr><td>Member Type</td><td>Event</td></tr>
-							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
+							<tr><th>Member Type</th><td>Event</td></tr>
+							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
 						<tbody>
 							{{- if and .Security (ne .Security "None" "") }}
-								<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
+								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
 							{{- end }}
 							{{/* TODO: reflection metadata */}}
 						</tbody>
@@ -105,16 +105,16 @@
 				{{- else if eq $dump.MemberType "Callback"}}
 					<table class="metadata-pairs">
 						<tbody>
-							<tr><td>Member Type</td><td>Callback</td></tr>
-							<tr><td>Parameters</td><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
+							<tr><th>Member Type</th><td>Callback</td></tr>
+							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
 						<tbody>
-							<tr><td>Returns</td><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
+							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
 							{{- if and .Security (ne .Security "None" "") }}
-								<tr><td>Security</td><td>{{$dump.Security}}</td></tr>
+								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
 							{{- end }}
 							{{/* TODO: reflection metadata */}}
 						</tbody>
