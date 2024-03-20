@@ -288,7 +288,8 @@ body {
 			}
 		}
 
-		&.kind-home {
+		&.kind-home,
+		&.kind-section:is(.type-class, .type-enum, .type-type) > article {
 			display: flex;
 			flex-flow: wrap row;
 			column-gap: var(--section-spacing);
