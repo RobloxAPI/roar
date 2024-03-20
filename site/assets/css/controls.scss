@@ -1,0 +1,32 @@
+// Filter containers: Contains elements that are filtered by an input.
+//
+// - .filter-container: Generic name for root of filter. Usually accompanied by
+//   a specific filter type.
+// - .filter-controls: Outer container for filter input.
+// - .filter-input: The input element that controls the filter.
+// - .filter-element: The element that is filtered.
+// - .element-count: Counts the number of visible filter-elements.
+//
+
+// History member filter: Hide history changes of a primary entity that are
+// related to its secondary entities.
+.filter-container {
+	&.history-member-filter {
+		&:has(.filter-input:checked) {
+			.filter-element:not(
+				[data-element="Class"],
+				[data-element="Enum"]
+			) {
+				display: none;
+			}
+		}
+		> header:has(> .filter-controls) {
+			display: flex;
+			flex-flow: wrap row;
+			align-items: baseline;
+		}
+		> header > .filter-controls {
+			margin-left: auto;
+		}
+	}
+}

@@ -411,5 +411,9 @@ ul ul, ul ol, ol ul, ol ol {
 	font-size: smaller;
 	text-align: right;
 }
+
+// Technical control widgets.
+@import "controls";
+
 // Page types.
-@import "class"
+@import "class";

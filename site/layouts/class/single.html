@@ -309,12 +309,20 @@
 	{{- end }}
 
 	{{- if $changes }}
-		<section id="history">
-			<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
+		<section id="history" class="filter-container history-member-filter">
+			<header>
+				<h2>History {{partial "element-count.html" (len $changes)}}</h2>
+				<aside class="filter-controls">
+					<label>
+						<input class="filter-input" type="checkbox">
+						<span>Hide member changes</span>
+					</label>
+				</aside>
+			</header>
 			<ul class="change-list truncated-list">
 				{{- range $changes | sort | collections.Reverse }}
 					{{- $change := index site.Data.History.Change (int .) }}
-					<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
+					<li class="filter-element" data-element="{{$change.Action.Element}}">{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
 				{{- end }}
 			</ul>
 		</section>
