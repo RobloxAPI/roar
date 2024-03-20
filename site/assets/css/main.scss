@@ -287,6 +287,12 @@ body {
 				}
 			}
 		}
+
+		&.kind-home {
+			display: flex;
+			flex-flow: wrap row;
+			column-gap: var(--section-spacing);
+		}
 	}
 
 	// Main footer.
