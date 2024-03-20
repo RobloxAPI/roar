@@ -252,7 +252,7 @@ body {
 		display: grid;
 		grid-gap: 0 var(--section-spacing);
 		grid-template-columns: minmax(0, max-content) auto;
-		grid-template-areas: "nav content";
+		grid-template-areas: "nav article";
 		> nav {
 			grid-area: nav;
 			overflow-x: clip;
@@ -264,8 +264,8 @@ body {
 				}
 			}
 		}
-		> #content {
-			grid-area: content;
+		> article {
+			grid-area: article;
 			justify-self: center;
 			overflow-x: clip;
 		}
