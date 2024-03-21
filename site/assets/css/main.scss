@@ -291,11 +291,17 @@ body {
 			}
 		}
 
-		&.kind-home,
+		&.kind-home > section,
 		&.kind-section:is(.type-class, .type-enum, .type-type) > article {
 			display: flex;
 			flex-flow: wrap row;
 			column-gap: var(--section-spacing);
+		}
+
+		&.kind-home {
+			display: grid;
+			grid-template-columns: auto;
+			justify-items: center;
 		}
 	}
 
