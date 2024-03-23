@@ -28,13 +28,13 @@
 	{{- else if eq $value "__api_dump_write_only_property__" -}}
 		<span class="api-default-write-only">(write-only)</span>
 	{{- else if eq $type.Category "Class" -}}
-		<a class="type" href="{{ref site.Home (path.Join `class` $type.Name)}}">{{$value}}</a>
+		<a class="type" href="{{relref site.Home (path.Join `class` $type.Name)}}">{{$value}}</a>
 	{{- else if eq $type.Category "Enum" -}}
-		<a class="type" href="{{ref site.Home (path.Join `enum` $type.Name)}}">{{$value}}</a>
+		<a class="type" href="{{relref site.Home (path.Join `enum` $type.Name)}}">{{$value}}</a>
 	{{- else if eq $type.Name "bool" "int" "int64" "float" "double" -}}
-		<a class="type" href="{{ref site.Home (path.Join `type` $type.Name)}}">{{$value}}</a>
+		<a class="type" href="{{relref site.Home (path.Join `type` $type.Name)}}">{{$value}}</a>
 	{{- else if eq $type.Name "string" "BinaryString" "ProtectedString" "Content" -}}
-		<a class="type" href="{{ref site.Home (path.Join `type` $type.Name)}}">{{printf "%q" $value}}</a>
+		<a class="type" href="{{relref site.Home (path.Join `type` $type.Name)}}">{{printf "%q" $value}}</a>
 	{{- else -}}
 		{{- partial "member/type.html" $type}}({{$value}})
 	{{- end -}}

@@ -69,7 +69,7 @@
 				{{- if $members }}
 					<thead>
 						<tr>
-							<th class="inherited-members" colspan="3"><label><input type="checkbox">{{len $members}} members</label> inherited from <a href="{{ref page (print (path.Join `class` $class) `#members-index`) }}">{{$class}}</a></th>
+							<th class="inherited-members" colspan="3"><label><input type="checkbox">{{len $members}} members</label> inherited from <a href="{{relref page (print (path.Join `class` $class) `#members-index`) }}">{{$class}}</a></th>
 						</tr>
 					</thead>
 					{{- template "member-index-body" (slice $className $members true) }}
@@ -243,7 +243,7 @@
 					<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $superclasses }}
-							<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+							<li><a href="{{relref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
 						{{- end }}
 					</ul>
 				</section>
@@ -253,7 +253,7 @@
 					<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $subclasses }}
-							<li><a href="{{ref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+							<li><a href="{{relref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
 						{{- end }}
 					</ul>
 				</section>

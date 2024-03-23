@@ -17,13 +17,13 @@ member, enum, enumitem, or type */ -}}
 {{- $mode := index . 3 -}}
 
 {{- if eq $type "class" -}}
-	<a href="{{ref site.Home (path.Join `class` $primary)}}">{{$primary}}</a>
+	<a href="{{relref site.Home (path.Join `class` $primary)}}">{{$primary}}</a>
 {{- else if eq $type "member" -}}
-	<a href="{{ref site.Home (print (path.Join `class` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
+	<a href="{{relref site.Home (print (path.Join `class` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
 {{- else if eq $type "enum" -}}
-	<a href="{{ref site.Home (path.Join `enum` $primary)}}">{{$primary}}</a>
+	<a href="{{relref site.Home (path.Join `enum` $primary)}}">{{$primary}}</a>
 {{- else if eq $type "enumitem" -}}
-	<a href="{{ref site.Home (print (path.Join `enum` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
+	<a href="{{relref site.Home (print (path.Join `enum` $primary) `#member-` $secondary)}}">{{if ne $mode "simple"}}{{$primary}}.{{end}}{{$secondary}}</a>
 {{- else if eq $type "type" -}}
-	<a href="{{ref site.Home (path.Join `type` $primary)}}">{{$primary}}</a>
+	<a href="{{relref site.Home (path.Join `type` $primary)}}">{{$primary}}</a>
 {{- end -}}

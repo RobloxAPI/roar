@@ -6,4 +6,4 @@
 {{- else if eq .Category "Enum" -}}
 	{{- $cat = "enum" }}
 {{- end -}}
-<a class="type" href="{{ref site.Home (path.Join $cat .Name)}}">{{.Name}}{{if .Optional}}?{{end}}</a>
+<a class="type" href="{{relref site.Home (path.Join $cat .Name)}}">{{.Name}}{{if .Optional}}?{{end}}</a>
