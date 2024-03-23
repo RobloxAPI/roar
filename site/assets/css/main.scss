@@ -48,7 +48,7 @@ $theme: {{site.Params.theme}};
 	--header-height: calc(var(--header-step) * var(--baseline));
 	--header-bottom: var(--baseline);
 	// header-height > vh/12
-	@media (max-height: 850px) {
+	@media (max-height: $hbp-header) {
 		--header-step: 2;
 	}
 
