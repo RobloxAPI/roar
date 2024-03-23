@@ -555,6 +555,9 @@ blockquote > :last-child::after {
 // Related to history and updates.
 @import "history";
 
+// Decoration for API values and statuses.
+@import "api";
+
 // Page types.
 @import "class";
 @import "enum";

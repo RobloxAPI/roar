@@ -1,0 +1,17 @@
+.api-string-empty,
+.api-value-empty,
+.api-default-not-creatable,
+.api-default-no-string-value,
+.api-default-skipped-class,
+.api-default-write-only {
+	&::before {
+		opacity: 0.5;
+	}
+}
+
+.api-value-empty::before { content: "(empty)" }
+.api-string-empty::before { content: "(empty)" }
+.api-default-not-creatable::before { content: "(not creatable)" }
+.api-default-no-string-value::before { content: "(no value)" }
+.api-default-skipped-class::before { content: "(skipped)" }
+.api-default-write-only::before { content: "(write only)" }

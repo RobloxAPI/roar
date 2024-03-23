@@ -20,13 +20,13 @@
 	{{- if eq $value "" -}}
 		<span class="api-value-empty"></span>
 	{{- else if eq $value "__api_dump_class_not_creatable__" -}}
-		<span class="api-default-not-creatable">(not creatable)</span>
+		<span class="api-default-not-creatable"></span>
 	{{- else if eq $value "__api_dump_no_string_value__" -}}
-		<span class="api-default-no-string-value">(no value)</span>
+		<span class="api-default-no-string-value"></span>
 	{{- else if eq $value "__api_dump_skipped_class__" -}}
-		<span class="api-default-skipped-class">(skipped)</span>
+		<span class="api-default-skipped-class"></span>
 	{{- else if eq $value "__api_dump_write_only_property__" -}}
-		<span class="api-default-write-only">(write-only)</span>
+		<span class="api-default-write-only"></span>
 	{{- else if eq $type.Category "Class" -}}
 		<a class="type" href="{{relref site.Home (path.Join `class` $type.Name)}}">{{$value}}</a>
 	{{- else if eq $type.Category "Enum" -}}
