@@ -1,0 +1,7 @@
+{{$field := ""}}
+{{if eq (int .Action.Type) 0}}
+	{{range $name,$_ := .Action.Fields}}
+		{{$field = $name}}
+	{{end}}
+{{end}}
+{{return $field}}

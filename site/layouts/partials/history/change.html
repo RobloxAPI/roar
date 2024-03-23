@@ -1,17 +1,7 @@
 {{/* Change // Render history change. */}}
-{{- $type := "Change" }}
-{{- if lt .Action.Type 0 }}
-	{{- $type = "Remove" }}
-{{- else if gt .Action.Type 0 }}
-	{{- $type = "Add" }}
-{{- end }}
-{{- $field := "" }}
-{{$type}} {{if eq $type "Change"}}
-	{{- range $name,$_ := .Action.Fields}}
-		{{- $name}} of {{/**/}}
-		{{- $field = $name }}
-	{{- end}}
-{{- end}}
+{{- $type := partial "history/type.html" . }}
+{{- $field := partial "history/field.html" . }}
+{{$type}} {{if $field}}{{$field}} of {{end}}
 {{- if eq .Action.Element "Class" }}
 	{{- partial "link/entity.html" (slice "class" .Action.Primary) }}
 {{- else if eq .Action.Element "Property" }}
@@ -27,7 +17,7 @@
 {{- else if eq .Action.Element "EnumItem" }}
 	{{- partial "link/entity.html" (slice "enumitem" .Action.Primary .Action.Secondary) }}
 {{- end }}
-{{if eq $type "Change"}}
+{{- if eq (int .Action.Type) 0}}
 	<span class="diff-values">
 		<span class="row-from">
 			<span class="col-label">from</span>

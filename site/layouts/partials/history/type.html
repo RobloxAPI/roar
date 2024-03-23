@@ -1,0 +1,7 @@
+{{$type := "Change"}}
+{{if lt (int .Action.Type) 0}}
+	{{$type = "Remove"}}
+{{else if gt (int .Action.Type) 0}}
+	{{$type = "Add"}}
+{{end}}
+{{return $type}}

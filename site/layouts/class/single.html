@@ -165,7 +165,9 @@
 				<ul class="change-list truncated-list">
 					{{- range $changes | sort | collections.Reverse }}
 						{{- $change := index site.Data.History.Change (int .) }}
-						<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
+						{{- $type := partial "history/type.html" $change }}
+						{{- $field := partial "history/field.html" $change }}
+						<li data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
 					{{- end }}
 				</ul>
 			{{- if $dump.Tags }}
@@ -362,7 +364,9 @@
 			<ul class="change-list truncated-list">
 				{{- range $changes | sort | collections.Reverse }}
 					{{- $change := index site.Data.History.Change (int .) }}
-					<li class="filter-element" data-element="{{$change.Action.Element}}">{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
+					{{- $type := partial "history/type.html" $change }}
+					{{- $field := partial "history/field.html" $change }}
+					<li class="filter-element" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
 				{{- end }}
 			</ul>
 		</section>
