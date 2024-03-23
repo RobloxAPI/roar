@@ -552,6 +552,9 @@ blockquote > :last-child::after {
 // Technical control widgets.
 @import "controls";
 
+// Related to history and updates.
+@import "history";
+
 // Page types.
 @import "class";
 @import "enum";
