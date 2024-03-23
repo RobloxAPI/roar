@@ -46,7 +46,7 @@
 {{- $change := index . 0 -}}
 {{/* string // The field name, providing context. */}}
 {{- $field := index . 1 -}}
-{{/* any // The value to render, type depdning on context. */}}
+{{/* any // The value to render, type depending on context. */}}
 {{- $value := index . 2 -}}
 {{- if eq $field "Parameters" -}}
 	{{- partial "member/parameters.html" $value -}}
@@ -54,6 +54,8 @@
 	{{- partial "member/returns.html" $value -}}
 {{- else if eq $field "ValueType" -}}
 	{{- partial "member/type.html" $value -}}
+{{- else if eq $field "Tags" -}}
+	[{{- delimit $value ", " -}}]
 {{- else if eq $field "PreferredDescriptor" -}}
 	{{- template "preferred-descriptor" slice $change $value -}}
 {{- else if eq $field "Default" -}}
