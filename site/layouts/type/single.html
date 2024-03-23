@@ -1,10 +1,11 @@
 {{- define "main" }}
 {{- $typeName := .Title }}
 {{- $typeIndex := index site.Data.Index.Type $typeName }}
+{{- $removed := $typeIndex.Removed }}
 
 {{- $relatedMembers := slice }}
 {{- range $typeIndex.Related}}
-	{{- if and (not .Removed) }}
+	{{- if eq .Removed $removed }}
 		{{- $relatedMembers = $relatedMembers | append . }}
 	{{- end }}
 {{- end }}
