@@ -15,7 +15,7 @@
 	{{- if $relatedMembers }}
 		<section id="related-members">
 			<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-			<ul class="truncated-list element-list">
+			<ul class="element-list">
 				{{- range $relatedMembers }}
 					{{- $type := "class" }}
 					{{- if .Member }}
