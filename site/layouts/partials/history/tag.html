@@ -6,6 +6,6 @@
 	{{- $type = "added" }}
 {{- end }}
 {{- $event := index site.Data.History.Event (int .Event) }}
-<a class="history-tag {{$type}}" href="{{relref site.Home (print (path.Join `updates` (time $event.Date).Year) `#` $event.GUID `-` .Index ) }}" title="{{humanize $type}} on {{$event.Date}}
+<a class="history-tag {{$type}}" href="{{relref site.Home (path.Join `updates` (time $event.Date).Year)}}#{{$event.GUID}}-{{.Index}}" title="{{humanize $type}} on {{$event.Date}}
 {{$event.Version}}
 {{$event.GUID}}">{{index (split $event.Version ".") 1}}</a>

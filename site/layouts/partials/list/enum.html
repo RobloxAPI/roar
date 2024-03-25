@@ -13,7 +13,7 @@
 		<ul class="enum-list element-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if not $enum.Removed }}
-					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
+					<li><a href="{{relref page (path.Join `enum` $name)}}">{{$name}}</a></li>
 				{{- end }}
 			{{- end }}
 		</ul>
@@ -23,7 +23,7 @@
 		<ul class="enum-list element-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if $enum.Removed }}
-					<li><a href="{{relref page (path.Join `enum` $name) }}">{{$name}}</a></li>
+					<li><a href="{{relref page (path.Join `enum` $name)}}">{{$name}}</a></li>
 				{{- end }}
 			{{- end }}
 		</ul>
