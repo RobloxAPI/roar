@@ -53,7 +53,7 @@ page]({{<param "issues">}}).
 
 <a rel="license" href="{{<param `license`>}}">
 	<img alt="Creative Commons License" style="border-width:0" src="license-badge.png"/>
-</a><br>This site and non-derivative documentation is licensed under a <a rel="license" href="{{<param `license`>}}">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+</a><br>This site and non-derivative content is licensed under a <a rel="license" href="{{<param `license`>}}">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
 
 The source code of the `roar` tool is available under the [MIT
 license](https://github.com/RobloxAPI/roar/blob/master/LICENSE).
