@@ -80,6 +80,7 @@ $theme: {{site.Params.theme}};
 
 	/* Misc. */
 	--scrollbar-width: 4ch;
+	--para-width: 90ch;
 }
 
 html {
@@ -252,7 +253,7 @@ body {
 
 		// Squeeze and center pages considered articles.
 		&.article {
-			max-width: 90ch;
+			max-width: var(--para-width);
 			margin: var(--halfbase) auto;
 			padding: 0 var(--halfbase);
 		}
@@ -298,7 +299,7 @@ body {
 			// Specific content styling.
 			#content {
 				p {
-					max-width: 90ch;
+					max-width: var(--para-width);
 				}
 			}
 		}
@@ -558,7 +559,7 @@ blockquote > :last-child::after {
 
 .param-index-card {
 	width: calc(100% - var(--card-margin)*2);
-	max-width: 90ch;
+	max-width: var(--para-width);
 }
 
 // Technical control widgets.
