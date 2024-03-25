@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime/pprof"
 	"strings"
 
 	"github.com/anaminus/snek"
@@ -42,12 +43,13 @@ var Def = snek.Def{
 }
 
 type Command struct {
-	Site    string
-	Source  string
-	Docs    string
-	Update  bool
-	NoCache bool
-	Disable Disable
+	Site       string
+	Source     string
+	Docs       string
+	Update     bool
+	NoCache    bool
+	Disable    Disable
+	CPUProfile string
 }
 
 type Disable struct {
@@ -59,6 +61,8 @@ type Disable struct {
 }
 
 func (c *Command) SetFlags(flagset snek.FlagSet) {
+	flagset.StringVar(&c.CPUProfile, "cpuprofile", "", "Write profile to given path.")
+
 	flagset.StringVar(&c.Site, "site", "", "Location of Hugo site.")
 	flagset.StringVar(&c.Source, "source", "", "Location of builds.")
 	flagset.StringVar(&c.Docs, "docs", "", "Location of documentation.")
@@ -75,6 +79,18 @@ func (c *Command) SetFlags(flagset snek.FlagSet) {
 func (c *Command) Run(opt snek.Options) error {
 	if err := opt.Parse(opt.Arguments); err != nil {
 		return err
+	}
+
+	if c.CPUProfile != "" {
+		f, err := os.Create(c.CPUProfile)
+		if err != nil {
+			return fmt.Errorf("could not start CPU profile: %w", err)
+		}
+		defer f.Close()
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return fmt.Errorf("could not start CPU profile: %w", err)
+		}
+		defer pprof.StopCPUProfile()
 	}
 
 	if c.Source == "" {
