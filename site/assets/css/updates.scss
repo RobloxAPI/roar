@@ -1,0 +1,8 @@
+// Updates page style.
+body > main.type-updates {
+	#toc {
+		align-self: flex-start;
+		border-right: 1px solid var(--theme-border);
+		padding-right: var(--section-spacing);
+	}
+}
