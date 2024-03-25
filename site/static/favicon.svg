@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+	<g>
+		<path d="m128 192v32h96v192h192v-32h-160v-160h160v-32z" color="#000000" fill="#6f8097" style="paint-order:stroke fill markers"/>
+		<g stroke-linecap="square" stroke-width="64">
+			<path d="m86.46 46.588-39.872 154.95 154.95 39.872 39.872-154.95zm46.032 77.93 30.99 7.9743-7.9743 30.99-30.99-7.9743z" color="#000000" fill="#f6dd98" stroke="#e1aa14" style="paint-order:stroke fill markers"/>
+			<path d="m365.48 149.55-23.923 92.971 92.971 23.923 23.923-92.971zm27.619 46.758 18.594 4.7846-4.7846 18.594-18.594-4.7846z" color="#000000" fill="#e9b2e9" stroke="#d265d3" style="paint-order:stroke fill markers"/>
+			<path d="m365.48 341.55-23.923 92.971 92.971 23.923 23.923-92.971zm27.619 46.758 18.594 4.7846-4.7846 18.594-18.594-4.7846z" color="#000000" fill="#afcfec" stroke="#5b9bd8" style="paint-order:stroke fill markers"/>
+		</g>
+	</g>
+</svg>
