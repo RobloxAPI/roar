@@ -37,7 +37,7 @@
 	<tbody>
 		{{- range $items }}
 			{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
-			<tr class="{{partial `status-class.html` (slice `enumitem` .Enum .Name)}}">
+			<tr id="member-{{.Name}}" class="{{partial `status-class.html` (slice `enumitem` .Enum .Name)}}">
 				{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
 				{{- $change := false }}
 				{{- if $changes }}
@@ -46,7 +46,7 @@
 				{{- end }}
 				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
 				<td class="col-icon">EI</td>
-				<td class="col-name"><span>{{.Name}}</span></td>
+				<td class="col-name">{{partial "link/entity.html" (slice "enumitem" .Enum .Name "simple")}}</td>
 				<td class="col-value"><span>{{$itemDump.Value}}</span></td>
 				{{- if $hasLegacyNames }}
 					<td class="col-legacy-names">{{if $itemDump.LegacyNames}}<span>{{delimit $itemDump.LegacyNames ", "}}</span>{{end}}</td>
