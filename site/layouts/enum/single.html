@@ -142,8 +142,16 @@
 	{{- end }}
 
 	{{- if $changes }}
-		<section id="history">
-			<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
+		<section id="history" class="filter-container history-member-filter">
+			<header>
+				<h2>History {{partial "element-count.html" (len $changes)}}</h2>
+				<aside class="filter-controls">
+					<label>
+						<input class="filter-input" type="checkbox">
+						<span>Hide item changes</span>
+					</label>
+				</aside>
+			</header>
 			{{- partial "history/change-list.html" (slice $changes true) }}
 		</section>
 	{{- end }}
