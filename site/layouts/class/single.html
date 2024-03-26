@@ -162,14 +162,7 @@
 				{{- end }}
 				{{- $changes := slice | append (index site.Data.History.Object.Member .Class .Name) }}
 				<h4>History {{partial "element-count.html" (len $changes)}}</h4>
-				<ul class="change-list truncated-list">
-					{{- range $changes | sort | collections.Reverse }}
-						{{- $change := index site.Data.History.Change (int .) }}
-						{{- $type := partial "history/type.html" $change }}
-						{{- $field := partial "history/field.html" $change }}
-						<li data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
-					{{- end }}
-				</ul>
+				{{- partial "history/change-list.html" (slice $changes true) }}
 			{{- if $dump.Tags }}
 				<div class="tags">Tags: [{{delimit $dump.Tags ", "}}]</div>
 			{{- end }}
@@ -361,14 +354,7 @@
 					</label>
 				</aside>
 			</header>
-			<ul class="change-list truncated-list">
-				{{- range $changes | sort | collections.Reverse }}
-					{{- $change := index site.Data.History.Change (int .) }}
-					{{- $type := partial "history/type.html" $change }}
-					{{- $field := partial "history/field.html" $change }}
-					<li class="filter-element" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
-				{{- end }}
-			</ul>
+			{{- partial "history/change-list.html" (slice $changes true) }}
 		</section>
 	{{- end }}
 

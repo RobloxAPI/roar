@@ -128,12 +128,7 @@
 	{{- if $changes }}
 		<section id="history">
 			<header><h2>History {{partial "element-count.html" (len $changes)}}</h2></header>
-			<ul class="change-list truncated-list">
-				{{- range $changes | sort | collections.Reverse }}
-					{{- $change := index site.Data.History.Change (int .) }}
-					<li>{{partial "history/tag.html" $change}} {{partial "history/change.html" $change}}</li>
-				{{- end }}
-			</ul>
+			{{- partial "history/change-list.html" (slice $changes true) }}
 		</section>
 	{{- end }}
 
