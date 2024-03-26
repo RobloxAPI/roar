@@ -54,8 +54,12 @@
 	{{- partial "member/returns.html" $value -}}
 {{- else if eq $field "ValueType" -}}
 	{{- partial "member/type.html" $value -}}
-{{- else if eq $field "Tags" -}}
-	[{{- delimit $value ", " -}}]
+{{- else if eq $field "Tags" "LegacyNames" -}}
+	{{- if $value -}}
+		[{{- delimit $value ", " -}}]
+	{{- else -}}
+		[]
+	{{- end -}}
 {{- else if eq $field "PreferredDescriptor" -}}
 	{{- template "preferred-descriptor" slice $change $value -}}
 {{- else if eq $field "Default" -}}
