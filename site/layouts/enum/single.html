@@ -10,43 +10,59 @@
 		{{- break }}
 	{{- end }}
 {{- end }}
-	<table class="index-card enumitem-index">
-		<thead>
+{{- $hasTags := false }}
+{{- range $items }}
+	{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
+	{{- $tags := $itemDump.Tags | complement (slice "Deprecated" "NotBrowsable" "Hidden" ) }}
+	{{- if $tags }}
+		{{- $hasTags = true }}
+		{{- break }}
+	{{- end }}
+{{- end }}
+<table class="index-card enumitem-index">
+	<thead>
+		<tr>
+			<th class="col-history">History</th>
+			<th class="col-icon"></th>
+			<th class="col-name">Name</th>
+			<th class="col-value">Value</th>
+			{{- if $hasLegacyNames }}
+				<th class="col-lagacy-names">Legacy Names</th>
+			{{- end}}
+			{{- if $hasTags }}
+				<th class="col-tags">Tags</td>
+			{{- end}}
+		</tr>
+	</thead>
+	<tbody>
+		{{- range $items }}
+			{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 			<tr>
-				<th class="col-history">History</th>
-				<th class="col-icon"></th>
-				<th class="col-name">Name</th>
-				<th class="col-value">Value</th>
+				{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
+				{{- $change := false }}
+				{{- if $changes }}
+					{{- $latest := int (index (last 1 $changes) 0) }}
+					{{- $change = index site.Data.History.Change $latest }}
+				{{- end }}
+				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
+				<td class="col-icon">EnumItem</td>
+				<td class="col-name">{{.Name}}</td>
+				<td class="col-value">{{$itemDump.Value}}</td>
 				{{- if $hasLegacyNames }}
-					<th class="col-lagacy-names">Legacy Names</th>
+					<td class="col-legacy-names">{{if $itemDump.LegacyNames}}{{delimit $itemDump.LegacyNames ", "}}{{end}}</td>
+				{{- end}}
+				{{- if $hasTags }}
+					{{- $tags := $itemDump.Tags | complement (slice "Deprecated" "NotBrowsable" "Hidden" ) }}
+					<td class="col-tags">{{if $tags}}{{delimit $tags ", "}}{{end}}</td>
 				{{- end}}
 			</tr>
-		</thead>
-		<tbody>
-			{{- range $items }}
-				{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
-				<tr>
-					{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
-					{{- $change := false }}
-					{{- if $changes }}
-						{{- $latest := int (index (last 1 $changes) 0) }}
-						{{- $change = index site.Data.History.Change $latest }}
-					{{- end }}
-					<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
-					<td class="col-icon">EnumItem</td>
-					<td class="col-name">{{.Name}}</td>
-					<td class="col-value">{{$itemDump.Value}}</td>
-					{{- if $hasLegacyNames }}
-						<td class="col-legacy-names">{{if $itemDump.LegacyNames}}{{delimit $itemDump.LegacyNames ", "}}{{end}}</td>
-					{{- end}}
-				</tr>
-			{{- else }}
-				<tr class="empty">
-					<td colspan="4">No members defined by {{$enum}}.</td>
-				</tr>
-			{{- end }}
-		</tbody>
-	</table>
+		{{- else }}
+			<tr class="empty">
+				<td colspan="4">No members defined by {{$enum}}.</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
 {{- end }}
 
 {{- define "main" }}
