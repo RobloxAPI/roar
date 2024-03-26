@@ -1,0 +1,41 @@
+{{- $type := index . 0 -}}
+{{- $primary := index . 1 -}}
+{{- $secondary := index . 2 -}}
+
+{{- $dump := false -}}
+{{- $index := false -}}
+{{- if eq (lower $type) "class" -}}
+	{{- $dump = index site.Data.Dump.Classes $primary -}}
+	{{- $index = index site.Data.Index.Class $primary -}}
+{{- else if eq (lower $type) "member" -}}
+	{{- $dump = index site.Data.Dump.Classes $primary "Members" $secondary -}}
+	{{- $index = index site.Data.Index.Member $primary $secondary -}}
+{{- else if eq (lower $type) "enum" -}}
+	{{- $dump = index site.Data.Dump.Enums $primary -}}
+	{{- $index = index site.Data.Index.Enum $primary -}}
+{{- else if eq (lower $type) "enumitem" -}}
+	{{- $dump = index site.Data.Dump.Enums $primary "Items" $secondary -}}
+	{{- $index = index site.Data.Index.EnumItem $primary $secondary -}}
+{{- else if eq (lower $type) "type" -}}
+	{{- $index = index site.Data.Index.Type $primary -}}
+{{- end -}}
+
+{{- if $dump -}}
+	{{- if $dump.Tags -}}
+		{{- if in $dump.Tags "Deprecated" }} api-deprecated{{- end -}}
+		{{- if in $dump.Tags "Hidden" }} api-hidden{{- end -}}
+		{{- if in $dump.Tags "NotBrowsable" }} api-unbrowsable{{- end -}}
+	{{- end -}}
+	{{- if and $dump.ReadSecurity $dump.WriteSecurity -}}
+		{{- if ne $dump.ReadSecurity "None" }} api-sec-{{$dump.ReadSecurity}}{{- end -}}
+		{{- if ne $dump.WriteSecurity $dump.ReadSecurity -}}
+			{{- if ne $dump.WriteSecurity "None" }} api-sec-{{$dump.WriteSecurity}}{{- end -}}
+		{{- end -}}
+	{{- end -}}
+	{{- if $dump.Security -}}
+		{{- if ne $dump.Security "None" }} api-sec-{{$dump.Security}}{{- end -}}
+	{{- end -}}
+{{- end -}}
+{{- if $index -}}
+	{{- if $index.Removed }} api-removed{{- end -}}
+{{- end -}}

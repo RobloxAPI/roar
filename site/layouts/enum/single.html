@@ -37,7 +37,7 @@
 	<tbody>
 		{{- range $items }}
 			{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
-			<tr>
+			<tr class="{{partial `status-class.html` (slice `enumitem` .Enum .Name)}}">
 				{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
 				{{- $change := false }}
 				{{- if $changes }}
