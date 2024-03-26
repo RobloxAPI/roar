@@ -1,0 +1,4 @@
+{{- $level := index . 0 }}
+{{- $header := index . 1 }}
+{{- $text := index . 2 }}
+<div class="status-box{{if $level}} status-{{$level}}{{end}}">{{if $text}}<span class="status-header">{{$header}}</span> {{$text}}{{else}}{{$header}}{{end}}</div>

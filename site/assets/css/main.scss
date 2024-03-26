@@ -565,6 +565,22 @@ blockquote > :last-child::after {
 	max-width: var(--para-width);
 }
 
+.status-list {
+	margin: var(--baseline) 0;
+	max-width: max-content;
+}
+.status-box {
+	background-color: var(--theme-TableItem);
+	border-left: 0.5ch solid;
+	padding: 0.5ch 1ch;
+}
+.status-header {
+	font-weight: bold;
+}
+.status-low { border-left-color: var(--theme-status-low) }
+.status-medium { border-left-color: var(--theme-status-medium) }
+.status-high { border-left-color: var(--theme-status-high) }
+
 // Technical control widgets.
 @import "controls";
 
