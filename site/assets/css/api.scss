@@ -15,3 +15,31 @@
 .api-default-no-string-value::before { content: "(no value)" }
 .api-default-skipped-class::before { content: "(skipped)" }
 .api-default-write-only::before { content: "(write only)" }
+
+@mixin deprecated {
+	text-decoration: line-through;
+}
+@mixin hidden {
+	opacity: 0.5;
+}
+@mixin unbrowsable {
+	opacity: 0.8;
+}
+
+table.members-index {
+	tr.api-deprecated .member-text { @include deprecated }
+	tr.api-hidden .member-text { @include hidden }
+	tr.api-unbrowsable .member-text { @include unbrowsable }
+}
+
+table.enumitem-index {
+	tr.api-deprecated .col-name > * { @include deprecated }
+	tr.api-hidden > .col-name > * { @include hidden }
+	tr.api-unbrowsable > .col-name > * { @include unbrowsable }
+}
+
+:is(#toc, ul.element-list) {
+	.api-deprecated { @include deprecated }
+	.api-hidden { @include hidden }
+	.api-unbrowsable { @include unbrowsable }
+}

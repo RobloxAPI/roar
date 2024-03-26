@@ -46,14 +46,14 @@
 				{{- end }}
 				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
 				<td class="col-icon">EI</td>
-				<td class="col-name">{{.Name}}</td>
-				<td class="col-value">{{$itemDump.Value}}</td>
+				<td class="col-name"><span>{{.Name}}</span></td>
+				<td class="col-value"><span>{{$itemDump.Value}}</span></td>
 				{{- if $hasLegacyNames }}
-					<td class="col-legacy-names">{{if $itemDump.LegacyNames}}{{delimit $itemDump.LegacyNames ", "}}{{end}}</td>
+					<td class="col-legacy-names">{{if $itemDump.LegacyNames}}<span>{{delimit $itemDump.LegacyNames ", "}}</span>{{end}}</td>
 				{{- end}}
 				{{- if $hasTags }}
 					{{- $tags := $itemDump.Tags | complement (slice "Deprecated" "NotBrowsable" "Hidden" ) }}
-					<td class="col-tags">{{if $tags}}{{delimit $tags ", "}}{{end}}</td>
+					<td class="col-tags">{{if $tags}}<span>{{delimit $tags ", "}}</span>{{end}}</td>
 				{{- end}}
 			</tr>
 		{{- else }}
