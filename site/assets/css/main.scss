@@ -81,6 +81,9 @@ $theme: {{site.Params.theme}};
 	/* Misc. */
 	--scrollbar-width: 4ch;
 	--para-width: 90ch;
+	@supports (width: 90rch) {
+		--para-width: 90rch;
+	};
 }
 
 html {
