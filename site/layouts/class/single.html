@@ -14,7 +14,7 @@
 							{{- $latest := int (index (last 1 $changes) 0) }}
 							{{- $change := index site.Data.History.Change $latest }}
 							<td class="col-history">{{partial "history/tag.html" $change}}</td>
-							<td class="col-icon">{{$memberDump.MemberType}}</td>
+							<td class="col-icon">{{first 2 $memberDump.MemberType}}</td>
 							<td class="col-member">
 								<span class="member-text">
 									{{- if eq $memberDump.MemberType "Property" }}

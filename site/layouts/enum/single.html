@@ -45,7 +45,7 @@
 					{{- $change = index site.Data.History.Change $latest }}
 				{{- end }}
 				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
-				<td class="col-icon">EnumItem</td>
+				<td class="col-icon">EI</td>
 				<td class="col-name">{{.Name}}</td>
 				<td class="col-value">{{$itemDump.Value}}</td>
 				{{- if $hasLegacyNames }}
