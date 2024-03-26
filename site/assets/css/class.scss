@@ -6,6 +6,7 @@ body > main.kind-page.type-class {
 				color: var(--theme-link);
 				cursor: pointer;
 				> input {
+					pointer-events: none;
 					appearance: none;
 					font: inherit;
 					margin: 0;
