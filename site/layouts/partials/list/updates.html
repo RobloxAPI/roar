@@ -1,0 +1,64 @@
+{{- $all := site.Data.History.Event | collections.Reverse }}
+{{- $updates := slice }}
+{{- $recent := site.GetPage "updates" }}
+{{- $latestNonEmpty := false }}
+{{- range $all }}
+	{{- if gt .ChangesCount 0 }}
+		{{- $latestNonEmpty = . }}
+		{{- break }}
+	{{- end }}
+{{- end }}
+{{- $startTime := (now.AddDate 0 0 -14) }}
+{{- if $latestNonEmpty }}
+	{{- $startTime = (time $latestNonEmpty.Date).AddDate 0 0 -14 }}
+{{- end }}
+{{- range $all }}
+	{{- if $startTime.Before (time .Date) }}
+		{{- $updates = $updates | append . }}
+	{{- end }}
+{{- end }}
+<article id="updates">
+	<header><h2>Recent updates</h2></header>
+	<ul id="update-list" class="element-list">
+		{{- range $updates }}
+			{{- if .ChangesCount }}
+				<li>
+					<section class="update">
+						<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time> (v{{.Version}})</a>
+						{{- $major := index (split .Version ".") 1 }}
+						{{- partial "link/hub.html" (slice "releasenotes" $major)}}
+						<ul class="change-list">
+							{{- $event := . }}
+							{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
+
+							{{/* For added primary elements, subsequent matching
+							secondary elements are indented within it. Assumes that
+							such elements are ordered correctly. */}}
+							{{- $parent := false }}
+
+							{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
+								{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
+								{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
+								{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
+								{{- range seq $start $max }}
+									{{- $change := index site.Data.History.Change . }}
+									{{- if and ($parent) (ne $change.Action.Primary $parent.Action.Primary) }}
+										{{- $parent = false }}
+									{{- end }}
+									{{- $type := partial "history/type.html" $change }}
+									{{- $field := partial "history/field.html" $change }}
+									{{- if not $parent }}
+										<li class="{{$type|lower}}"> {{partial "history/entity.html" $change}}</li>
+									{{- end }}
+									{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
+										{{- $parent = $change }}
+									{{- end }}
+								{{- end }}
+							{{- end }}
+						</ul>
+					</section>
+				</li>
+			{{- end }}
+		{{- end }}
+	</ul>
+</article>

@@ -329,6 +329,26 @@ body {
 			display: grid;
 			grid-template-columns: auto;
 			justify-items: center;
+			#updates {
+				white-space: nowrap;
+				max-width: 50ch;
+				* {
+					overflow: clip;
+					text-overflow: ellipsis;
+				}
+				.add {
+					list-style: "+" inside;
+					&::marker { color: var(--theme-history-add-text) }
+				}
+				.change {
+					list-style: "Δ" inside;
+					&::marker { color: var(--theme-history-change-text) }
+				}
+				.remove {
+					list-style: "−" inside;
+					&::marker { color: var(--theme-history-remove-text) }
+				}
+			}
 		}
 	}
 
