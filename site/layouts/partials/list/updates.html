@@ -55,6 +55,7 @@
 									{{- end }}
 								{{- end }}
 							{{- end }}
+							<li><a href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}">more...</a></li>
 						</ul>
 					</section>
 				</li>
