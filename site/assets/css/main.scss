@@ -581,6 +581,13 @@ blockquote > :last-child::after {
 .status-medium { border-left-color: var(--theme-status-medium) }
 .status-high { border-left-color: var(--theme-status-high) }
 
+main :target > header,
+.index-card :target,
+.update:target > .change-list-toggle,
+.change-list > li:target {
+	background-color: var(--theme-highlight);
+}
+
 // Technical control widgets.
 @import "controls";
 
