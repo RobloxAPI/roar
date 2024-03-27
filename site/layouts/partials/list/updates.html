@@ -48,7 +48,7 @@
 									{{- $type := partial "history/type.html" $change }}
 									{{- $field := partial "history/field.html" $change }}
 									{{- if not $parent }}
-										<li class="{{$type|lower}}"> {{partial "history/entity.html" $change}}</li>
+										<li class="{{$type|lower}}">{{partial "history/entity.html" $change}}</li>
 									{{- end }}
 									{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
 										{{- $parent = $change }}
