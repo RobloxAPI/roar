@@ -32,6 +32,10 @@
 			<section id="{{.GUID}}" class="update">
 				<span class="change-list-toggle"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time>  (v{{.Version}})</span>
 				<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><span>{{.GUID}}</span></a>
+				{{- $major := index (split .Version ".") 1 }}
+				{{- if .ChangesCount }}
+					{{- partial "link/hub.html" (slice "releasenotes" $major)}}
+				{{- end }}
 				<ul class="change-list">
 					{{- if .ChangesCount }}
 						{{- $event := . }}

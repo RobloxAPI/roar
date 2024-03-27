@@ -612,6 +612,9 @@ main .icon {
 .hub-icon {
 	background-image: url("hub.svg");
 }
+.update .hub-link {
+	float: right;
+}
 
 // Technical control widgets.
 @import "controls";
