@@ -2,23 +2,9 @@
 {{- $primary := index . 1 -}}
 {{- $secondary := index . 2 -}}
 
-{{- $dump := false -}}
-{{- $index := false -}}
-{{- if eq (lower $type) "class" -}}
-	{{- $dump = index site.Data.Dump.Classes $primary -}}
-	{{- $index = index site.Data.Index.Class $primary -}}
-{{- else if eq (lower $type) "member" -}}
-	{{- $dump = index site.Data.Dump.Classes $primary "Members" $secondary -}}
-	{{- $index = index site.Data.Index.Member $primary $secondary -}}
-{{- else if eq (lower $type) "enum" -}}
-	{{- $dump = index site.Data.Dump.Enums $primary -}}
-	{{- $index = index site.Data.Index.Enum $primary -}}
-{{- else if eq (lower $type) "enumitem" -}}
-	{{- $dump = index site.Data.Dump.Enums $primary "Items" $secondary -}}
-	{{- $index = index site.Data.Index.EnumItem $primary $secondary -}}
-{{- else if eq (lower $type) "type" -}}
-	{{- $index = index site.Data.Index.Type $primary -}}
-{{- end -}}
+{{- $data := partial "func/dump-index.html" . }}
+{{- $dump := $data.Dump }}
+{{- $index := $data.Index }}
 
 {{- if $dump -}}
 	{{- if $dump.Tags -}}

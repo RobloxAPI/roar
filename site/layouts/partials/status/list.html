@@ -1,45 +1,61 @@
-{{- if .Tags }}
+{{- $type := index . 0 | lower }}
+{{- $primary := index . 1 }}
+{{- $secondary := index . 2 }}
+
+{{- $data := partial "func/dump-index.html" . }}
+{{- $dump := $data.Dump }}
+
+{{- if $dump.Tags }}
 	<div class="status-list">
-		{{- if in .Tags "NotCreatable" }}
+		{{- if in $dump.Tags "NotCreatable" }}
 			{{- partial "status/box.html" (slice "low" "This class is not creatable." "An object of this class cannot be created with Instance.new.") }}
 		{{- end }}
-		{{- if in .Tags "PlayerReplicated" }}
+		{{- if in $dump.Tags "PlayerReplicated" }}
 			{{- partial "status/box.html" (slice "low" "This class is player-replicated." "Its data is replicated between the server and only a single client.") }}
 		{{- end }}
-		{{- if in .Tags "Service" }}
+		{{- if in $dump.Tags "Service" }}
 			{{- partial "status/box.html" (slice "low" "This class is a service." "It is a singleton that may be acquired with GetService.") }}
 		{{- end }}
-		{{- if in .Tags "Settings" }}
+		{{- if in $dump.Tags "Settings" }}
 			{{- partial "status/box.html" (slice "low" "This class is a settings container." "It contains settings that affect the behavior of the peer.") }}
 		{{- end }}
-		{{- if in .Tags "ReadOnly" }}
+		{{- if in $dump.Tags "ReadOnly" }}
 			{{- partial "status/box.html" (slice "low" "This property is read-only." "Its value can be read, but it cannot be modified.") }}
 		{{- end }}
-		{{- if in .Tags "noyield" }}
+		{{- if in $dump.Tags "noyield" }}
 			{{- partial "status/box.html" (slice "medium" "This callback cannot yield." "Attempting to yield within this callback will result in an error.") }}
 		{{- end }}
-		{{- if in .Tags "CanYield" }}
+		{{- if in $dump.Tags "CanYield" }}
 			{{- partial "status/box.html" (slice "medium" "This function can yield." "It may or may not block the calling thread until completion.") }}
 		{{- end }}
-		{{- if in .Tags "CustomLuaState" }}
+		{{- if in $dump.Tags "CustomLuaState" }}
 			{{- partial "status/box.html" (slice "low" "This function has a custom lua state." "It may behave in a non-standard way.") }}
 		{{- end }}
-		{{- if in .Tags "Yields" }}
+		{{- if in $dump.Tags "Yields" }}
 			{{- partial "status/box.html" (slice "medium" "This function yields." "It will block the calling thread until completion.") }}
 		{{- end }}
-		{{- if in .Tags "Hidden" }}
+		{{- if in $dump.Tags "Hidden" }}
 			{{- partial "status/box.html" (slice "low" "This member is hidden." "It is not meant to be used, and may have unresolved issues.") }}
 		{{- end }}
-		{{- if in .Tags "NotScriptable" }}
+		{{- if in $dump.Tags "NotScriptable" }}
 			{{- partial "status/box.html" (slice "medium" "This member is not scriptable." "It cannot be accessed by Lua code.") }}
 		{{- end }}
-		{{- if in .Tags "Deprecated" }}
-			{{- partial "status/box.html" (slice "high" "This item is deprecated." "It exists for backwards-compatibility only, and should not be used for new work.") }}
+		{{- if in $dump.Tags "Deprecated" }}
+			{{- $text := "It exists only for backward compatibility, and should not be used for new work." }}
+			{{- $preferred := false }}
+			{{- if $dump.PreferredDescriptor.Name }}
+				{{- if eq $type "class" "enum" }}
+					{{- $preferred = (slice $type $dump.PreferredDescriptor.Name "" "" " should be used instead.") }}
+				{{- else }}
+					{{- $preferred = (slice $type $primary $dump.PreferredDescriptor.Name "simple" " should be used instead.") }}
+				{{- end }}
+			{{- end }}
+			{{- partial "status/box.html" (slice "high" "This item is deprecated." $text $preferred) }}
 		{{- end }}
-		{{- if in .Tags "NotBrowsable" }}
+		{{- if in $dump.Tags "NotBrowsable" }}
 			{{- partial "status/box.html" (slice "low" "This item is not browsable." "It is not visible in Studio's object browser.") }}
 		{{- end }}
-		{{- if in .Tags "NotReplicated" }}
+		{{- if in $dump.Tags "NotReplicated" }}
 			{{- partial "status/box.html" (slice "medium" "This item is not replicated." "Its interface does not cross the network boundary.") }}
 		{{- end }}
 	</div>

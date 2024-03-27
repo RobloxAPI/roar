@@ -125,7 +125,7 @@
 	{{- if $enumDump.Tags }}
 		<section id="summary">
 			<header><h2>Summary</h2></header>
-			{{- partial "status/list.html" $enumDump }}
+			{{- partial "status/list.html" (slice "enum" $enumName) }}
 			<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
 		</section>
 	{{- end }}

@@ -85,7 +85,7 @@
 			{{- $dump := index site.Data.Dump.Classes .Class "Members" .Name }}
 			<section id="member-{{.Name}}">
 				<header><h3>{{.Name}}</h3></header>
-				{{- partial "status/list.html" $dump }}
+				{{- partial "status/list.html" (slice "member" .Class .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
 						<tbody>
@@ -321,7 +321,7 @@
 	<header><h1>{{$className}}</h1></header>
 	<section id="summary">
 		<header><h2>Summary</h2></header>
-		{{- partial "status/list.html" $classDump }}
+		{{- partial "status/list.html" (slice "class" $className) }}
 		<table class="metadata-pairs">
 			<tbody>
 				<tr><th>Memory Category</th><td>{{$classDump.MemoryCategory}}</td></tr>
