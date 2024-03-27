@@ -84,7 +84,7 @@
 		{{- range . }}
 			{{- $dump := index site.Data.Dump.Classes .Class "Members" .Name }}
 			<section id="member-{{.Name}}">
-				<header><h3>{{.Name}}</h3></header>
+				<header><h3>{{.Name}}<aside>{{partial "link/hub.html" (slice "member" .Class .Name)}}</aside></h3></header>
 				{{- partial "status/list.html" (slice "member" .Class .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
@@ -318,7 +318,7 @@
 	</section>
 </nav>
 <article id="content">
-	<header><h1>{{$className}}</h1></header>
+	<header><h1>{{$className}}<aside>{{partial "link/hub.html" (slice "class" $className)}}</aside></h1></header>
 	<section id="summary">
 		<header><h2>Summary</h2></header>
 		{{- partial "status/list.html" (slice "class" $className) }}
@@ -347,13 +347,14 @@
 	{{- if $changes }}
 		<section id="history" class="filter-container history-member-filter">
 			<header>
-				<h2>History {{partial "element-count.html" (len $changes)}}</h2>
-				<aside class="filter-controls">
-					<label>
-						<input class="filter-input" type="checkbox">
-						<span>Hide member changes</span>
-					</label>
-				</aside>
+				<h2>History {{partial "element-count.html" (len $changes)}}
+					<aside class="filter-controls">
+						<label>
+							<input class="filter-input" type="checkbox">
+							<span>Hide member changes</span>
+						</label>
+					</aside>
+				</h2>
 			</header>
 			{{- partial "history/change-list.html" (slice $changes true) }}
 		</section>

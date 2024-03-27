@@ -58,8 +58,8 @@ $theme: {{site.Params.theme}};
 
 	/* Icon sizing */
 	--icon-size-constant: 16px;
-	--icon-size-dynamic: calc(var(--font-size) * 1.2);
-	--icon-scale: var(--icon-size-constant);
+	--icon-size-dynamic: calc(var(--font-size) * 1);
+	--icon-scale: var(--icon-size-dynamic);
 	--icon-spacing: 0.5ch;
 
 	/* Fonts */
@@ -301,6 +301,17 @@ body {
 
 			// Specific content styling.
 			#content {
+				header > :is(h1,h2,h3,h4,h5,h6) {
+					display: flex;
+					flex-flow: wrap row;
+					align-items: baseline;
+					gap: 0.5ch;
+					aside {
+						font-size: var(--font-size);
+						font-weight: normal;
+						margin-left: auto;
+					}
+				}
 				p {
 					max-width: var(--para-width);
 				}
@@ -586,6 +597,20 @@ main :target > header,
 .update:target > .change-list-toggle,
 .change-list > li:target {
 	background-color: var(--theme-highlight);
+}
+
+main .icon {
+	display: inline-block;
+	height: var(--icon-scale);
+	width: var(--icon-scale);
+	background-size: auto var(--icon-scale);
+	background-repeat: repeat-x;
+	background-position: calc(-1 * var(--icon-index,0) * var(--icon-scale,0));
+	margin: 0 var(--icon-spacing);
+}
+
+.hub-icon {
+	background-image: url("hub.svg");
 }
 
 // Technical control widgets.

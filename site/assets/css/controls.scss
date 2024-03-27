@@ -20,13 +20,5 @@
 				display: none;
 			}
 		}
-		> header:has(> .filter-controls) {
-			display: flex;
-			flex-flow: wrap row;
-			align-items: baseline;
-		}
-		> header > .filter-controls {
-			margin-left: auto;
-		}
 	}
 }

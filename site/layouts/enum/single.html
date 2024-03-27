@@ -120,7 +120,7 @@
 </nav>
 
 <article id="content">
-	<header><h1>{{$enumName}}</h1></header>
+	<header><h1>{{$enumName}}<aside>{{partial "link/hub.html" (slice "enum" $enumName)}}</aside></h1></header>
 
 	{{- if $enumDump.Tags }}
 		<section id="summary">

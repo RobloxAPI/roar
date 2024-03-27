@@ -11,7 +11,7 @@
 {{- end }}
 
 <article id="content">
-	<header><h1>{{$typeName}}</h1></header>
+	<header><h1>{{$typeName}}<aside>{{partial "link/hub.html" (slice "type" $typeName)}}</aside></h1></header>
 
 	{{- if $relatedMembers }}
 		<section id="related-members">
