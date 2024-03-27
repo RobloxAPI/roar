@@ -16,6 +16,7 @@ member, enum, enumitem, or type */ -}}
 */ -}}
 {{- $mode := index . 3 -}}
 
+{{- $text := "CreatorHub" -}}
 {{- $href := "" -}}
 {{- if eq $type "class" -}}
 	{{- $href = printf "https://create.roblox.com/docs/reference/engine/classes/%s" $primary -}}
@@ -28,8 +29,9 @@ member, enum, enumitem, or type */ -}}
 {{- else if eq $type "type" -}}
 	{{- $href = printf "https://create.roblox.com/docs/reference/engine/datatypes/%s#%s" $primary $secondary -}}
 {{- else if eq $type "releasenotes" -}}
+	{{- $text = "Release notes" -}}
 	{{- $href = printf "https://create.roblox.com/docs/release-notes/release-notes-%s" $primary -}}
 {{- end -}}
 {{- if $href -}}
-	<a class="hub-link" href="{{$href}}">{{if ne $mode "simple"}}<span class="icon hub-icon"></span>{{end}}CreatorHub</a>
+	<a class="hub-link" href="{{$href}}">{{if ne $mode "simple"}}<span class="icon hub-icon"></span>{{end}}{{$text}}</a>
 {{- end -}}
