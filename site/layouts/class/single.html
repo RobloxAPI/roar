@@ -198,6 +198,7 @@
 {{- range index site.Data.History.Object.Member $className }}
 	{{- $changes = $changes | append . }}
 {{- end }}
+{{- $changes = $changes | sort | uniq }}
 
 {{- $relatedClasses := slice }}
 {{- range $classIndex.Related }}

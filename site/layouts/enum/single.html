@@ -90,6 +90,7 @@
 {{- range index site.Data.History.Object.EnumItem $enumName }}
 	{{- $changes = $changes | append . }}
 {{- end }}
+{{- $changes = $changes | sort | uniq }}
 
 {{- $relatedMembers := slice }}
 {{- range $enumIndex.Related}}
