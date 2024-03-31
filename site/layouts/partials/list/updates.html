@@ -35,6 +35,7 @@
 							secondary elements are indented within it. Assumes that
 							such elements are ordered correctly. */}}
 							{{- $parent := false }}
+							{{- $prev := false }}
 
 							{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
 								{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
@@ -48,7 +49,17 @@
 									{{- $type := partial "history/type.html" $change }}
 									{{- $field := partial "history/field.html" $change }}
 									{{- if not $parent }}
-										<li class="{{$type|lower}}">{{partial "history/entity.html" $change}}</li>
+										{{/* Because changes are abbreviated, multiple changed fields will look the same.
+										Only display them once. */}}
+										{{- $matching := $prev }}
+										{{- $matching := and $matching (eq (int $change.Action.Type) 0) }}
+										{{- $matching := and $matching (eq (int $prev.Action.Type) 0) }}
+										{{- $matching := and $matching (eq $change.Action.Primary $prev.Action.Primary) }}
+										{{- $matching := and $matching (eq $change.Action.Secondary $prev.Action.Secondary) }}
+										{{- if not $matching }}
+											<li class="{{$type|lower}}">{{partial "history/entity.html" $change}}</li>
+											{{- $prev = $change }}
+										{{- end }}
 									{{- end }}
 									{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
 										{{- $parent = $change }}
