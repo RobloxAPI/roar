@@ -45,9 +45,13 @@
 			{{- $preferred := false }}
 			{{- if $dump.PreferredDescriptor.Name }}
 				{{- if eq $type "class" "enum" }}
-					{{- $preferred = (slice $type $dump.PreferredDescriptor.Name "" "" " should be used instead.") }}
+					{{- if ne $dump.PreferredDescriptor.Name $primary }}
+						{{- $preferred = (slice $type $dump.PreferredDescriptor.Name "" "" " should be used instead.") }}
+					{{- end }}
 				{{- else }}
-					{{- $preferred = (slice $type $primary $dump.PreferredDescriptor.Name "simple" " should be used instead.") }}
+					{{- if ne $dump.PreferredDescriptor.Name $secondary }}
+						{{- $preferred = (slice $type $primary $dump.PreferredDescriptor.Name "simple" " should be used instead.") }}
+					{{- end }}
 				{{- end }}
 			{{- end }}
 			{{- partial "status/box.html" (slice "high" "This item is deprecated." $text $preferred) }}
