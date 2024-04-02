@@ -515,6 +515,10 @@ blockquote > :last-child::after {
 	}
 }
 
+#removed-classes .entity-link:not(.api-removed) {
+	opacity: 0.33;
+}
+
 // Contained within a heading to display the number of elements.
 :is(h1,h2,h3,h4,h5,h6) .element-count {
 	font-size: 75%;
