@@ -58,7 +58,7 @@ $theme: {{site.Params.theme}};
 
 	/* Icon sizing */
 	--icon-size-constant: 16px;
-	--icon-size-dynamic: calc(var(--font-size) * 1);
+	--icon-size-dynamic: calc(var(--font-size) * 1/0.875);
 	--icon-scale: var(--icon-size-dynamic);
 	--icon-spacing: 0.5ch;
 
