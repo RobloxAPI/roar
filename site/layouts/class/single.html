@@ -14,7 +14,7 @@
 							{{- $latest := int (index (last 1 $changes) 0) }}
 							{{- $change := index site.Data.History.Change $latest }}
 							<td class="col-history">{{partial "history/tag.html" $change}}</td>
-							<td class="col-icon">{{first 2 $memberDump.MemberType}}</td>
+							<td class="col-icon">{{partial "icon.html" (slice "member" .Class .Name)}}</td>
 							<td class="col-member">
 								<span class="member-text">
 									{{- if eq $memberDump.MemberType "Property" }}
@@ -84,7 +84,7 @@
 		{{- range . }}
 			{{- $dump := index site.Data.Dump.Classes .Class "Members" .Name }}
 			<section id="member-{{.Name}}">
-				<header><h3>{{.Name}}<aside>{{partial "link/hub.html" (slice "member" .Class .Name)}}</aside></h3></header>
+				<header><h3>{{partial "icon.html" (slice "member" .Class .Name)}}{{.Name}}<aside>{{partial "link/entity.html" (slice "member" .Class .Name "hub")}}</aside></h3></header>
 				{{- partial "status/list.html" (slice "member" .Class .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
@@ -321,7 +321,7 @@
 	</section>
 </nav>
 <article id="content">
-	<header><h1>{{$className}}<aside>{{partial "link/hub.html" (slice "class" $className)}}</aside></h1></header>
+	<header><h1>{{partial "icon.html" (slice "class" $className)}}{{$className}}<aside>{{partial "link/entity.html" (slice "class" $className "" "hub")}}</aside></h1></header>
 	<section id="summary">
 		<header><h2>Summary</h2></header>
 		{{- partial "status/list.html" (slice "class" $className) }}
@@ -399,10 +399,12 @@
 								{{- $type = "member" }}
 							{{- end }}
 							<li>
-								{{- partial "link/entity.html" (slice $type .Class .Member) }}
-								{{- if eq .Kind "Parameter" }} (
-									{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
-								{{- end -}}
+								<span>
+									{{- partial "link/entity.html" (slice $type .Class .Member) }}
+									{{- if eq .Kind "Parameter" }} (
+										{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+									{{- end -}}
+								</span>
 							</li>
 						{{- end }}
 					</ul>

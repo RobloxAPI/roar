@@ -1,0 +1,64 @@
+main .icon {
+	display: inline-block;
+	height: calc(var(--icon-scale) * var(--heading-scale,1));
+	width: calc(var(--icon-scale) * var(--heading-scale,1));
+}
+
+.col-icon .icon, header .icon {
+	margin: 0;
+}
+
+// Undo any scaling from headings.
+.hub-link {
+	--heading-scale: 1;
+}
+
+.update .hub-link {
+	float: right;
+}
+
+// Event icon is purple for some reason. Shift it to yellow.
+picture[data-type="member"][data-kind="Event"] {
+	filter: hue-rotate(130deg);
+}
+
+// No unique icon for callbacks. Use flipped function icon.
+picture[data-type="member"][data-kind="Callback"] > img {
+	transform: scaleX(-1);
+}
+
+// Definitions are distributed according to the best fit for the icon's size in
+// relation to the font-size. If any heading's calculated size is changed, then
+// these definitions must be redistributed accordingly.
+
+// Maximum dimension at which font-size is calculated as base icon size (16px).
+// $bp-icon: 963px;
+// .entity-icon {
+// 	background-image: url("icons/light/32/base.png");
+// 	@media (prefers-color-scheme: dark) {
+// 		background-image: url("icons/dark/32/base.png");
+// 	}
+// }
+
+// // Any font-size not in h1,2,3 crosses 16px size.
+// :not(:is(h1,h2,h3)) > .entity-icon {
+// 	@media (max-width: $bp-icon), (max-height: $bp-icon) {
+// 		background-image: url("icons/light/16/base.png");
+// 		@media (prefers-color-scheme: dark) {
+// 			background-image: url("icons/dark/16/base.png");
+// 		}
+// 	}
+// }
+// // font-size in h1 crosses 32px size.
+// h1 .entity-icon {
+// 	background-image: url("icons/light/48/base.png");
+// 	@media (prefers-color-scheme: dark) {
+// 		background-image: url("icons/dark/48/base.png");
+// 	}
+// 	@media (max-width: $bp-icon), (max-height: $bp-icon) {
+// 		background-image: url("icons/light/32/base.png");
+// 		@media (prefers-color-scheme: dark) {
+// 			background-image: url("icons/dark/32/base.png");
+// 		}
+// 	}
+// }

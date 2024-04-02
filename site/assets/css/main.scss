@@ -513,6 +513,25 @@ blockquote > :last-child::after {
 		--indent: var(--element-list-indent);
 		list-style: none;
 	}
+	li {
+		display: flex;
+		flex-flow: nowrap column;
+	}
+}
+
+.entity-link {
+	// Force element to shrink to content.
+	max-width: max-content;
+	> picture {
+		margin-right: 0.25em;
+		vertical-align: middle;
+	}
+}
+
+picture {
+	display: inline-flex;
+	vertical-align: middle;
+	align-self: center;
 }
 
 #removed-classes .entity-link:not(.api-removed) {
@@ -623,23 +642,6 @@ main :target > header,
 	background-color: var(--theme-highlight);
 }
 
-main .icon {
-	display: inline-block;
-	height: var(--icon-scale);
-	width: var(--icon-scale);
-	background-size: auto var(--icon-scale);
-	background-repeat: repeat-x;
-	background-position: calc(-1 * var(--icon-index,0) * var(--icon-scale,0));
-	margin: 0 var(--icon-spacing);
-}
-
-.hub-icon {
-	background-image: url("hub.svg");
-}
-.update .hub-link {
-	float: right;
-}
-
 // Technical control widgets.
 @import "controls";
 
@@ -648,6 +650,9 @@ main .icon {
 
 // Decoration for API values and statuses.
 @import "api";
+
+// Related to icons.
+@import "icons";
 
 // Page types.
 @import "class";

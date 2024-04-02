@@ -1,0 +1,16 @@
+{{/* (string, string): Resource? // Returns the icon resource that best matches
+the second argument, which is a class name. The first argument is a resource
+path formatted with the class name. */}}
+
+{{$path := index . 0}}
+{{$class := index . 1}}
+{{$res := resources.Get (printf $path $class)}}
+{{if not $res}}
+	{{range index site.Data.Index.Class $class "Superclasses"}}
+		{{$res = resources.Get (printf $path .)}}
+		{{if $res}}
+			{{break}}
+		{{end}}
+	{{end}}
+{{end}}
+{{return $res}}

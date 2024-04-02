@@ -34,7 +34,7 @@
 				<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><span>{{.GUID}}</span></a>
 				{{- if .ChangesCount }}
 					{{- $major := index (split .Version ".") 1 }}
-					{{- partial "link/hub.html" (slice "releasenotes" $major)}}
+					{{- partial "link/entity.html" (slice "releasenotes" $major)}}
 				{{- end }}
 				<ul class="change-list">
 					{{- if .ChangesCount }}

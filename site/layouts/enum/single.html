@@ -45,7 +45,7 @@
 					{{- $change = index site.Data.History.Change $latest }}
 				{{- end }}
 				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
-				<td class="col-icon">EI</td>
+				<td class="col-icon">{{partial "icon.html" (slice "enumitem" .Enum .Name)}}</td>
 				<td class="col-name">{{partial "link/entity.html" (slice "enumitem" .Enum .Name "simple")}}</td>
 				<td class="col-value"><span>{{$itemDump.Value}}</span></td>
 				{{- if $hasLegacyNames }}
@@ -121,7 +121,7 @@
 </nav>
 
 <article id="content">
-	<header><h1>{{$enumName}}<aside>{{partial "link/hub.html" (slice "enum" $enumName)}}</aside></h1></header>
+	<header><h1>{{$enumName}}<aside>{{partial "link/entity.html" (slice "enum" $enumName "" "hub")}}</aside></h1></header>
 
 	{{- if $enumDump.Tags }}
 		<section id="summary">
@@ -168,10 +168,12 @@
 						{{- $type = "member" }}
 					{{- end }}
 					<li>
-						{{- partial "link/entity.html" (slice $type .Class .Member) }}
-						{{- if eq .Kind "Parameter" }} (
-							{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
-						{{- end -}}
+						<span>
+							{{- partial "link/entity.html" (slice $type .Class .Member) }}
+							{{- if eq .Kind "Parameter" }} (
+								{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+							{{- end -}}
+						</span>
 					</li>
 				{{- end }}
 			</ul>
