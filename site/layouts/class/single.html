@@ -76,7 +76,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- if $members }}
 					<thead>
 						<tr>
-							<th class="inherited-members" colspan="3"><label><input type="checkbox">{{len $members}} members</label> inherited from <a href="{{relref page (print (path.Join `class` $class) `#members-index`) }}">{{$class}}</a></th>
+							<th class="inherited-members" colspan="3"><label><input type="checkbox">{{len $members}} members</label> inherited from {{partial "link/entity.html" (dict "type" "class" "primary" $class)}}</th>
 						</tr>
 					</thead>
 					{{- template "member-index-body" (dict "class" $className "members" $members "inherited" true) }}
