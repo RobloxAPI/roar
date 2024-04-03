@@ -1,9 +1,9 @@
-{{/* Renders a preferred descriptor value.
+{{- /* Renders a preferred descriptor value.
 
 change: Change // Provides context for the descriptor name.
 value: PreferredDescriptor
 
-*/}}
+*/ -}}
 {{- define "preferred-descriptor" -}}
 	{{- if eq .value "" -}}
 		<span class="api-value-empty"></span>
@@ -12,12 +12,12 @@ value: PreferredDescriptor
 	{{- end -}}
 {{- end -}}
 
-{{/* Renders the default value of a property.
+{{- /* Renders the default value of a property.
 
 type: Type // The property's value type.
 value: string // The default value.
 
-*/}}
+*/ -}}
 {{- define "default" -}}
 	{{- if eq .value "" -}}
 		<span class="api-value-empty"></span>
@@ -42,13 +42,13 @@ value: string // The default value.
 	{{- end -}}
 {{- end -}}
 
-{{/* Renders a field value of a change.
+{{- /* Renders a field value of a change.
 
 change: Change // The change, providing context.
 field: string // The field name, providing context.
 value: any // The value to render, the type depending on context.
 
-*/}}
+*/ -}}
 {{- if eq .field "Parameters" -}}
 	{{- partial "member/parameters.html" .value -}}
 {{- else if eq .field "ReturnType" -}}
@@ -64,7 +64,7 @@ value: any // The value to render, the type depending on context.
 {{- else if eq .field "PreferredDescriptor" -}}
 	{{- template "preferred-descriptor" . -}}
 {{- else if eq .field "Default" -}}
-	{{/* TODO: Type must reflect state of element at time of change, not latest. */}}
+	{{- /* TODO: Type must reflect state of element at time of change, not latest. */ -}}
 	{{- $type := index site.Data.Dump.Classes .change.Action.Primary "Members" .change.Action.Secondary "ValueType" -}}
 	{{- template "default" (dict "type" $type "value" .value) -}}
 {{- else if eq .value "" -}}
