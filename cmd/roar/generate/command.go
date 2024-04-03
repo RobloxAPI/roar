@@ -13,6 +13,7 @@ import (
 	"github.com/robloxapi/rbxdump/diff"
 	"github.com/robloxapi/roar/archive"
 	"github.com/robloxapi/roar/history"
+	"github.com/robloxapi/roar/icons"
 	"github.com/robloxapi/roar/index"
 )
 
@@ -22,8 +23,9 @@ const (
 
 	jsonIndent = "\t"
 
-	siteData    = "data"
+	siteAssets  = "assets"
 	siteContent = "content"
+	siteData    = "data"
 
 	historyData = "History.json"
 	indexData   = "Index.json"
@@ -58,6 +60,7 @@ type Disable struct {
 	Dump    bool // Don't generate dump data.
 	Reflect bool // Don't generate reflection metadata.
 	Pages   bool // Don't generate website pages.
+	Icons   bool // Don't generate icon resources.
 }
 
 func (c *Command) SetFlags(flagset snek.FlagSet) {
@@ -74,6 +77,7 @@ func (c *Command) SetFlags(flagset snek.FlagSet) {
 	flagset.BoolVar(&c.Disable.Dump, "disable-dump", false, "Don't generate dump data.")
 	flagset.BoolVar(&c.Disable.Reflect, "disable-reflect", false, "Don't generate reflection metadata.")
 	flagset.BoolVar(&c.Disable.Pages, "disable-pages", false, "Don't generate website pages.")
+	flagset.BoolVar(&c.Disable.Icons, "disable-icons", false, "Don't generate website icons.")
 }
 
 func (c *Command) Run(opt snek.Options) error {
@@ -169,6 +173,13 @@ func (c *Command) Run(opt snek.Options) error {
 	// Generate pages.
 	if !c.Disable.Pages {
 		GeneratePages(indexRoot, filepath.Join(c.Site, siteContent))
+	}
+
+	// Generate icons.
+	if !c.Disable.Icons {
+		if err := icons.Write(filepath.Join(c.Site, siteAssets)); err != nil {
+			return err
+		}
 	}
 
 	return nil

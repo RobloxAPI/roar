@@ -65,4 +65,9 @@ The following flags can be specified:
 
 	Whether pages will be generated.
 
+--disable-icons
+
+	Whether icons will be generated. Icons are added to the site under
+	assets/icons.
+
 `

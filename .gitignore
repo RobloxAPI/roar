@@ -1,8 +1,9 @@
 *.lock
 /site/public/
-/site/data/
+/site/assets/icons/
 /site/content/class/
 /site/content/enum/
 /site/content/type/
 /site/content/updates/
+/site/data/
 /site/resources/_gen/
