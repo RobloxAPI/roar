@@ -234,8 +234,18 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 			byIndex = append(byIndex, item)
 			byValue = append(byValue, item)
 		}
-		sort.Slice(byIndex, func(i, j int) bool { return byIndex[i].Index < byIndex[j].Index })
-		sort.Slice(byValue, func(i, j int) bool { return byValue[i].Value < byValue[j].Value })
+		sort.Slice(byIndex, func(i, j int) bool {
+			if byIndex[i].Index != byIndex[j].Index {
+				return byIndex[i].Index < byIndex[j].Index
+			}
+			return byIndex[i].Name < byIndex[j].Name
+		})
+		sort.Slice(byValue, func(i, j int) bool {
+			if byValue[i].Value != byValue[j].Value {
+				return byValue[i].Value < byValue[j].Value
+			}
+			return byValue[i].Name < byValue[j].Name
+		})
 		enumIndex.ItemsByIndex = make([]string, len(byIndex))
 		for i, item := range byIndex {
 			enumIndex.ItemsByIndex[i] = item.Name
