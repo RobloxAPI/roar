@@ -81,8 +81,7 @@ items: []EnumItemIndex
 {{- end }}
 
 {{- $removedItems := slice }}
-{{- range index site.Data.Index.Enum $enumName "ItemsByIndex" }}
-	{{- $index := index site.Data.Index.EnumItem $enumName . }}
+{{- range $index := index site.Data.Index.EnumItem $enumName }}
 	{{- if $index.Removed }}
 		{{- $removedItems = $removedItems | append $index }}
 	{{- end }}
