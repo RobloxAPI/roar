@@ -57,7 +57,7 @@
 										{{- $matching := and $matching (eq $change.Action.Primary $prev.Action.Primary) }}
 										{{- $matching := and $matching (eq $change.Action.Secondary $prev.Action.Secondary) }}
 										{{- if not $matching }}
-											<li class="{{$type|lower}}">{{partial "history/entity.html" $change}}</li>
+											<li class="{{$type|lower}}">{{partial "history/entity.html" (slice $change)}}</li>
 											{{- $prev = $change }}
 										{{- end }}
 									{{- end }}

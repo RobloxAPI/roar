@@ -1,15 +1,20 @@
-{{- if eq .Action.Element "Class" }}
-	{{- partial "link/entity.html" (slice "class" .Action.Primary) }}
-{{- else if eq .Action.Element "Property" }}
-	{{- partial "link/entity.html" (slice "member" .Action.Primary .Action.Secondary) }}
-{{- else if eq .Action.Element "Function" }}
-	{{- partial "link/entity.html" (slice "member" .Action.Primary .Action.Secondary) }}
-{{- else if eq .Action.Element "Event" }}
-	{{- partial "link/entity.html" (slice "member" .Action.Primary .Action.Secondary) }}
-{{- else if eq .Action.Element "Callback" }}
-	{{- partial "link/entity.html" (slice "member" .Action.Primary .Action.Secondary) }}
-{{- else if eq .Action.Element "Enum" }}
-	{{- partial "link/entity.html" (slice "enum" .Action.Primary) }}
-{{- else if eq .Action.Element "EnumItem" }}
-	{{- partial "link/entity.html" (slice "enumitem" .Action.Primary .Action.Secondary) }}
+{{- $change := index . 0 }}
+{{- $secondary := index . 1 }}
+{{- if $secondary }}
+	{{- $secondary = "secondary" }}
+{{- end }}
+{{- if eq $change.Action.Element "Class" }}
+	{{- partial "link/entity.html" (slice "class" $change.Action.Primary) }}
+{{- else if eq $change.Action.Element "Property" }}
+	{{- partial "link/entity.html" (slice "member" $change.Action.Primary $change.Action.Secondary $secondary) }}
+{{- else if eq $change.Action.Element "Function" }}
+	{{- partial "link/entity.html" (slice "member" $change.Action.Primary $change.Action.Secondary $secondary) }}
+{{- else if eq $change.Action.Element "Event" }}
+	{{- partial "link/entity.html" (slice "member" $change.Action.Primary $change.Action.Secondary $secondary) }}
+{{- else if eq $change.Action.Element "Callback" }}
+	{{- partial "link/entity.html" (slice "member" $change.Action.Primary $change.Action.Secondary $secondary) }}
+{{- else if eq $change.Action.Element "Enum" }}
+	{{- partial "link/entity.html" (slice "enum" $change.Action.Primary) }}
+{{- else if eq $change.Action.Element "EnumItem" }}
+	{{- partial "link/entity.html" (slice "enumitem" $change.Action.Primary $change.Action.Secondary $secondary) }}
 {{- end }}
