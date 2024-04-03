@@ -241,7 +241,7 @@
 					<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $superclasses }}
-							<li><a href="{{relref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+							<li>{{partial "link/entity.html" (slice "class" .Name)}}</li>
 						{{- end }}
 					</ul>
 				</section>
@@ -251,7 +251,7 @@
 					<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $subclasses }}
-							<li><a href="{{relref page (path.Join `class` .Name) }}">{{.Name}}</a></li>
+							<li>{{partial "link/entity.html" (slice "class" .Name)}}</li>
 						{{- end }}
 					</ul>
 				</section>
@@ -285,7 +285,7 @@
 				<li class="toc-members"><a href="#members">Members</a>
 					<ol>
 						{{- range $members}}
-							<li class="{{partial `status-class.html` (slice `member` $className .Name)}}"><a href="#member-{{.Name}}">{{.Name}}</a></li>
+							<li class="{{partial `status-class.html` (slice `member` $className .Name)}}">{{partial "link/entity.html" (slice "member" $className .Name "secondary")}}</li>
 						{{- end }}
 					</ol>
 				</li>
@@ -294,7 +294,7 @@
 				<li class="toc-removed-members"><a href="#removed-members">Removed members</a>
 					<ol>
 						{{- range $removedMembers}}
-							<li class="{{partial `status-class.html` (slice `member` $className .Name)}}"><a href="#member-{{.Name}}">{{.Name}}</a></li>
+							<li class="{{partial `status-class.html` (slice `member` $className .Name)}}">{{partial "link/entity.html" (slice "member" $className .Name "secondary")}}</li>
 						{{- end }}
 					</ol>
 				</li>
