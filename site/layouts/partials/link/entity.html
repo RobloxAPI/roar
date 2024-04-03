@@ -13,6 +13,7 @@ member, enum, enumitem, or type */ -}}
 {{- /* string... // How to render the link.
 	- (none): Render full link with icon.
 	- "simple": Include only the name of the referred element (no primary or icon).
+	- "secondary": Include only the name of the referred element (no primary).
 	- "nolink": Do not make a link.
 	- "hub": Link to external hub instead of internal site.
 */ -}}
@@ -77,11 +78,11 @@ member, enum, enumitem, or type */ -}}
 	{{- if eq $type "class" -}}
 		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary)}}{{- end -}}{{$primary}}
 	{{- else if eq $type "member" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary $secondary)}}{{$primary}}.{{end}}{{$secondary}}
+		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary $secondary)}}{{if not (in $modes "secondary")}}{{$primary}}.{{end}}{{end}}{{$secondary}}
 	{{- else if eq $type "enum" -}}
 		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type)}}{{end}}{{$primary}}
 	{{- else if eq $type "enumitem" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type)}}{{$primary}}.{{end}}{{$secondary}}
+		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type)}}{{if not (in $modes "secondary")}}{{$primary}}.{{end}}{{end}}{{$secondary}}
 	{{- else if eq $type "type" -}}
 		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary)}}{{end}}{{$primary}}
 	{{- end -}}
