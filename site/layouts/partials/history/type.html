@@ -1,3 +1,9 @@
+{{/* Returns a string representation of a Change's type.
+
+Change
+return string
+
+*/}}
 {{$type := "Change"}}
 {{if lt (int .Action.Type) 0}}
 	{{$type = "Remove"}}

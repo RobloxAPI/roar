@@ -1,4 +1,8 @@
-{{/* []Type // Render member return types as function type definition. */}}
+{{/* Render member return types as function type definition.
+
+[]Type
+
+*/}}
 {{- $n := sub (len .) 1 -}}
 {{- if eq $n 0 -}}
 	<span class="returns return">{{partial "member/type.html" (index . 0)}}</span>

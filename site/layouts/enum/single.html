@@ -1,9 +1,11 @@
-{{/* []EnumItemIndex // Render item index table. */}}
+{{/* Render item index table.
+
+items: []EnumItemIndex
+
+*/}}
 {{- define "item-index" }}
-{{- $enum := index . 0 }}
-{{- $items := index . 1 }}
 {{- $hasLegacyNames := false }}
-{{- range $items }}
+{{- range .items }}
 	{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 	{{- if $itemDump.LegacyNames }}
 		{{- $hasLegacyNames = true }}
@@ -11,7 +13,7 @@
 	{{- end }}
 {{- end }}
 {{- $hasTags := false }}
-{{- range $items }}
+{{- range .items }}
 	{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
 	{{- $tags := $itemDump.Tags | complement (slice "Deprecated" "NotBrowsable" "Hidden" ) }}
 	{{- if $tags }}
@@ -35,9 +37,9 @@
 		</tr>
 	</thead>
 	<tbody>
-		{{- range $items }}
+		{{- range .items }}
 			{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
-			<tr id="member-{{.Name}}" class="{{partial `status-class.html` (slice `enumitem` .Enum .Name)}}">
+			<tr id="member-{{.Name}}" class="{{partial `status-class.html` (dict `type` `enumitem` `primary` .Enum `secondary` .Name)}}">
 				{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
 				{{- $change := false }}
 				{{- if $changes }}
@@ -45,8 +47,8 @@
 					{{- $change = index site.Data.History.Change $latest }}
 				{{- end }}
 				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
-				<td class="col-icon">{{partial "icon.html" (slice "enumitem" .Enum .Name)}}</td>
-				<td class="col-name">{{partial "link/entity.html" (slice "enumitem" .Enum .Name "simple")}}</td>
+				<td class="col-icon">{{partial "icon.html" (dict "type" "enumitem" "primary" .Enum "secondary" .Name)}}</td>
+				<td class="col-name">{{partial "link/entity.html" (dict "type" "enumitem" "primary" .Enum "secondary" .Name "simple" true)}}</td>
 				<td class="col-value"><span>{{$itemDump.Value}}</span></td>
 				{{- if $hasLegacyNames }}
 					<td class="col-legacy-names">{{if $itemDump.LegacyNames}}<span>{{delimit $itemDump.LegacyNames ", "}}</span>{{end}}</td>
@@ -58,7 +60,7 @@
 			</tr>
 		{{- else }}
 			<tr class="empty">
-				<td colspan="4">No members defined by {{$enum}}.</td>
+				<td colspan="4">No members defined by {{.enum}}.</td>
 			</tr>
 		{{- end }}
 	</tbody>
@@ -121,25 +123,25 @@
 </nav>
 
 <article id="content">
-	<header><h1>{{$enumName}}<aside>{{partial "link/entity.html" (slice "enum" $enumName "" "hub")}}</aside></h1></header>
+	<header><h1>{{$enumName}}<aside>{{partial "link/entity.html" (dict "type" "enum" "primary" $enumName "hub" true)}}</aside></h1></header>
 
 	{{- if $enumDump.Tags }}
 		<section id="summary">
 			<header><h2>Summary</h2></header>
-			{{- partial "status/list.html" (slice "enum" $enumName) }}
+			{{- partial "status/list.html" (dict "type" "enum" "primary" $enumName) }}
 			<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
 		</section>
 	{{- end }}
 
 	<section id="members-index">
 		<header><h2>Items {{partial "element-count.html" (len $items)}}</h2></header>
-		{{- template "item-index" (slice $enumName $items) }}
+		{{- template "item-index" (dict "enum" $enumName "items" $items) }}
 	</section>
 
 	{{- if $removedItems }}
 		<section id="removed-members-index">
 			<header><h2>Removed items {{partial "element-count.html" (len $removedItems)}}</h2></header>
-			{{- template "item-index" (slice $enumName $removedItems) }}
+			{{- template "item-index" (dict "enum" $enumName "items" $removedItems) }}
 		</section>
 	{{- end }}
 
@@ -154,7 +156,7 @@
 					</label>
 				</aside>
 			</header>
-			{{- partial "history/change-list.html" (slice $changes true true) }}
+			{{- partial "history/change-list.html" (dict "changes" $changes "truncated" true "hascontext" true) }}
 		</section>
 	{{- end }}
 
@@ -169,7 +171,7 @@
 					{{- end }}
 					<li>
 						<span>
-							{{- partial "link/entity.html" (slice $type .Class .Member) }}
+							{{- partial "link/entity.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
 							{{- if eq .Kind "Parameter" }} (
 								{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
 							{{- end -}}

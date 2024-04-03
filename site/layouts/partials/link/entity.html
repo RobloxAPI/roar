@@ -1,93 +1,74 @@
-{{- /* string, string, string?, string... // Render a link to an API element. */ -}}
+{{- /* Render a link to an API element.
 
-{{- /* string // Type of referred element. Case-insensitive. May be class,
-member, enum, enumitem, or type */ -}}
-{{- $type := index . 0 | lower -}}
+type: string // Entity type (releasenotes|class|member|enum|enumitem|type).
+primary: string // Primary entity ID.
+secondary: string? // Secondary entity ID.
+simple: bool? // If true, include only the name of the referred element (no primary or icon).
+hascontext: bool? // If true, include only the name of the referred element (no primary).
+nolink: bool? // If true, do not make a link.
+hub: bool? // If true, link to external hub instead of internal site.
 
-{{- /* string // Name of primary element. */ -}}
-{{- $primary := index . 1 -}}
-
-{{- /* string? // Name of secondary element. */ -}}
-{{- $secondary := index . 2 -}}
-
-{{- /* string... // How to render the link.
-	- (none): Render full link with icon.
-	- "simple": Include only the name of the referred element (no primary or icon).
-	- "secondary": Include only the name of the referred element (no primary).
-	- "nolink": Do not make a link.
-	- "hub": Link to external hub instead of internal site.
 */ -}}
-{{- $modes := after 3 . -}}
-{{- $ishub := or (in $modes "hub") (eq $type "releasenotes") -}}
+{{- $ishub := or .hub (eq .type "releasenotes") -}}
 
 {{- $status := partial `status-class.html` . -}}
-{{- if in $modes "nolink" -}}
+{{- if .nolink -}}
 	<span class="entity-link{{if $ishub}} hub-link{{else}} {{$status}}{{end}}">
 {{- else -}}
 	{{- $href := "" -}}
-	{{- if eq $type "releasenotes" -}}
-		{{- $href = printf "https://create.roblox.com/docs/release-notes/release-notes-%s" $primary -}}
-	{{- else if in $modes "hub" -}}
-		{{- if eq $type "class" -}}
-			{{- $href = printf "https://create.roblox.com/docs/reference/engine/classes/%s" $primary -}}
-		{{- else if eq $type "member" -}}
-			{{- $href = printf "https://create.roblox.com/docs/reference/engine/classes/%s#%s" $primary $secondary -}}
-		{{- else if eq $type "enum" -}}
-			{{- $href = printf "https://create.roblox.com/docs/reference/engine/enums/%s" $primary -}}
-		{{- else if eq $type "enumitem" -}}
-			{{- $href = printf "https://create.roblox.com/docs/reference/engine/enums/%s#%s" $primary $secondary -}}
-		{{- else if eq $type "type" -}}
-			{{- if $secondary -}}
-				{{- $href = printf "https://create.roblox.com/docs/reference/engine/datatypes/%s#%s" $primary $secondary -}}
+	{{- if eq .type "releasenotes" -}}
+		{{- $href = printf "https://create.roblox.com/docs/release-notes/release-notes-%s" .primary -}}
+	{{- else if .hub -}}
+		{{- if eq .type "class" -}}
+			{{- $href = printf "https://create.roblox.com/docs/reference/engine/classes/%s" .primary -}}
+		{{- else if eq .type "member" -}}
+			{{- $href = printf "https://create.roblox.com/docs/reference/engine/classes/%s#%s" .primary .secondary -}}
+		{{- else if eq .type "enum" -}}
+			{{- $href = printf "https://create.roblox.com/docs/reference/engine/enums/%s" .primary -}}
+		{{- else if eq .type "enumitem" -}}
+			{{- $href = printf "https://create.roblox.com/docs/reference/engine/enums/%s#%s" .primary .secondary -}}
+		{{- else if eq .type "type" -}}
+			{{- if .secondary -}}
+				{{- $href = printf "https://create.roblox.com/docs/reference/engine/datatypes/%s#%s" .primary .secondary -}}
 			{{- else -}}
-				{{- $href = printf "https://create.roblox.com/docs/reference/engine/datatypes/%s" $primary -}}
+				{{- $href = printf "https://create.roblox.com/docs/reference/engine/datatypes/%s" .primary -}}
 			{{- end -}}
 		{{- end -}}
 	{{- else -}}
-		{{- if eq $type "class" -}}
-			{{- $href = relref site.Home (path.Join `class` $primary) -}}
-		{{- else if eq $type "member" -}}
-			{{- $href = print (relref site.Home (path.Join `class` $primary)) "#member-" $secondary -}}
-		{{- else if eq $type "enum" -}}
-			{{- $href = relref site.Home (path.Join `enum` $primary) -}}
-		{{- else if eq $type "enumitem" -}}
-			{{- $href = print (relref site.Home (path.Join `enum` $primary)) "#member-" $secondary -}}
-		{{- else if eq $type "type" -}}
-			{{- $href = relref site.Home (path.Join `type` $primary) -}}
+		{{- if eq .type "class" -}}
+			{{- $href = relref site.Home (path.Join `class` .primary) -}}
+		{{- else if eq .type "member" -}}
+			{{- $href = print (relref site.Home (path.Join `class` .primary)) "#member-" .secondary -}}
+		{{- else if eq .type "enum" -}}
+			{{- $href = relref site.Home (path.Join `enum` .primary) -}}
+		{{- else if eq .type "enumitem" -}}
+			{{- $href = print (relref site.Home (path.Join `enum` .primary)) "#member-" .secondary -}}
+		{{- else if eq .type "type" -}}
+			{{- $href = relref site.Home (path.Join `type` .primary) -}}
 		{{- end -}}
 	{{- end -}}
 	<a class="entity-link{{if $ishub}} hub-link{{else}} {{$status}}{{end}}" href="{{$href}}">
 {{- end -}}
-{{- if eq $type "releasenotes" -}}
-	{{- if not (in $modes "simple") -}}{{partial "icon.html" (slice "hub")}}{{- end -}}
+{{- if eq .type "releasenotes" -}}
+	{{- if not .simple -}}{{partial "icon.html" (dict "type" "hub")}}{{- end -}}
 	Release notes
-{{- else if in $modes "hub" -}}
-	{{- if not (in $modes "simple") -}}{{partial "icon.html" (slice "hub")}}{{- end -}}
-	{{- if eq $type "class" -}}
-		CreatorHub
-	{{- else if eq $type "member" -}}
-		CreatorHub
-	{{- else if eq $type "enum" -}}
-		CreatorHub
-	{{- else if eq $type "enumitem" -}}
-		CreatorHub
-	{{- else if eq $type "type" -}}
-		CreatorHub
-	{{- end -}}
+{{- else if .hub -}}
+	{{- if not .simple -}}{{partial "icon.html" (dict "type" "hub")}}{{- end -}}
+	CreatorHub
 {{- else -}}
-	{{- if eq $type "class" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary)}}{{- end -}}{{$primary}}
-	{{- else if eq $type "member" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary $secondary)}}{{if not (in $modes "secondary")}}{{$primary}}.{{end}}{{end}}{{$secondary}}
-	{{- else if eq $type "enum" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type)}}{{end}}{{$primary}}
-	{{- else if eq $type "enumitem" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type)}}{{if not (in $modes "secondary")}}{{$primary}}.{{end}}{{end}}{{$secondary}}
-	{{- else if eq $type "type" -}}
-		{{- if not (in $modes "simple")}}{{partial "icon.html" (slice $type $primary)}}{{end}}{{$primary}}
+	{{- if eq .type "class" -}}
+		{{- if not .simple}}{{partial "icon.html" (dict "type" .type "primary" .primary)}}{{- end -}}{{.primary}}
+	{{- else if eq .type "member" -}}
+		{{- if not .simple}}{{partial "icon.html" (dict "type" .type "primary" .primary "secondary" .secondary)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
+	{{- else if eq .type "enum" -}}
+		{{- if not .simple}}{{partial "icon.html" (dict "type" .type)}}{{end}}{{.primary}}
+	{{- else if eq .type "enumitem" -}}
+		{{- if not .simple}}{{partial "icon.html" (dict "type" .type)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
+	{{- else if eq .type "type" -}}
+		{{- if not .simple}}{{partial "icon.html" (dict "type" .type "primary" .primary)}}{{end}}{{.primary}}
 	{{- end -}}
 {{- end -}}
-{{- if in $modes "nolink" -}}
+{{- if .nolink -}}
 	</span>
 {{- else -}}
 	</a>

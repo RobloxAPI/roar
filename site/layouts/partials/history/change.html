@@ -1,19 +1,22 @@
-{{/* Change, bool // Render history change. */}}
-{{- $change := index . 0 }}
-{{- $secondary := index . 1 }}
-{{- $type := partial "history/type.html" $change }}
-{{- $field := partial "history/field.html" $change }}
+{{/* Renders a single history change.
+
+change: Change
+hascontext: bool // If true, any primary context is excluded.
+
+*/}}
+{{- $type := partial "history/type.html" .change }}
+{{- $field := partial "history/field.html" .change }}
 {{$type}} {{if $field}}{{$field}} of {{end}}
-{{- partial "history/entity.html" (slice $change $secondary) }}
-{{- if eq (int $change.Action.Type) 0}}
+{{- partial "history/entity.html" . }}
+{{- if eq (int .change.Action.Type) 0}}
 	<span class="diff-values">
 		<span class="row-from">
 			<span class="col-label">from</span>
-			<span class="col-value">{{partial "history/value.html" (slice $change $field (index $change.Prev $field))}}</span>
+			<span class="col-value">{{partial "history/value.html" (dict "change" .change "field" $field "value" (index .change.Prev $field))}}</span>
 		</span>
 		<span class="row-to">
 			<span class="col-label">to</span>
-			<span class="col-value">{{partial "history/value.html" (slice $change $field (index $change.Action.Fields $field))}}</span>
+			<span class="col-value">{{partial "history/value.html" (dict "change" .change "field" $field "value" (index .change.Action.Fields $field))}}</span>
 		</span>
 	</span>
 {{- end }}

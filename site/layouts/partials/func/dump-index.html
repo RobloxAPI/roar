@@ -1,22 +1,28 @@
-{{$type := index . 0 | lower}}
-{{$primary := index . 1}}
-{{$secondary := index . 2}}
+{{/* Returns the dump and index object associated with the given entity.
 
+type: string // Type of entity (class|member|enum|enumitem|type).
+primary: string // Primary entity index.
+secondary: string // Secondary entity index.
+return {Dump: Dump?, Index: Index?}
+
+*/}}
+
+{{$type := .type | lower}}
 {{$dump := false}}
 {{$index := false}}
 {{if eq $type "class"}}
-	{{$dump = index site.Data.Dump.Classes $primary}}
-	{{$index = index site.Data.Index.Class $primary}}
+	{{$dump = index site.Data.Dump.Classes .primary}}
+	{{$index = index site.Data.Index.Class .primary}}
 {{else if eq $type "member"}}
-	{{$dump = index site.Data.Dump.Classes $primary "Members" $secondary}}
-	{{$index = index site.Data.Index.Member $primary $secondary}}
+	{{$dump = index site.Data.Dump.Classes .primary "Members" .secondary}}
+	{{$index = index site.Data.Index.Member .primary .secondary}}
 {{else if eq $type "enum"}}
-	{{$dump = index site.Data.Dump.Enums $primary}}
-	{{$index = index site.Data.Index.Enum $primary}}
+	{{$dump = index site.Data.Dump.Enums .primary}}
+	{{$index = index site.Data.Index.Enum .primary}}
 {{else if eq $type "enumitem"}}
-	{{$dump = index site.Data.Dump.Enums $primary "Items" $secondary}}
-	{{$index = index site.Data.Index.EnumItem $primary $secondary}}
+	{{$dump = index site.Data.Dump.Enums .primary "Items" .secondary}}
+	{{$index = index site.Data.Index.EnumItem .primary .secondary}}
 {{else if eq $type "type"}}
-	{{$index = index site.Data.Index.Type $primary}}
+	{{$index = index site.Data.Index.Type .primary}}
 {{end}}
 {{return (dict "Dump" $dump "Index" $index)}}

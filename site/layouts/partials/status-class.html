@@ -1,27 +1,29 @@
-{{- $type := index . 0 -}}
-{{- $primary := index . 1 -}}
-{{- $secondary := index . 2 -}}
+{{/* Renders HTML classes associated with the status/tags of the given entity.
 
-{{- $data := partial "func/dump-index.html" . }}
-{{- $dump := $data.Dump }}
-{{- $index := $data.Index }}
+type: string // Type of entity (class|member|enum|enumitem|type).
+primary: string // Primary entity index.
+secondary: string // Secondary entity index.
 
-{{- if $dump -}}
-	{{- if $dump.Tags -}}
-		{{- if in $dump.Tags "Deprecated" }} api-deprecated{{- end -}}
-		{{- if in $dump.Tags "Hidden" }} api-hidden{{- end -}}
-		{{- if in $dump.Tags "NotBrowsable" }} api-unbrowsable{{- end -}}
-	{{- end -}}
-	{{- if and $dump.ReadSecurity $dump.WriteSecurity -}}
-		{{- if ne $dump.ReadSecurity "None" }} api-sec-{{$dump.ReadSecurity}}{{- end -}}
-		{{- if ne $dump.WriteSecurity $dump.ReadSecurity -}}
-			{{- if ne $dump.WriteSecurity "None" }} api-sec-{{$dump.WriteSecurity}}{{- end -}}
+*/}}
+
+{{- with partial "func/dump-index.html" . -}}
+	{{- if .Dump -}}
+		{{- if .Dump.Tags -}}
+			{{- if in .Dump.Tags "Deprecated" }} api-deprecated{{- end -}}
+			{{- if in .Dump.Tags "Hidden" }} api-hidden{{- end -}}
+			{{- if in .Dump.Tags "NotBrowsable" }} api-unbrowsable{{- end -}}
+		{{- end -}}
+		{{- if and .Dump.ReadSecurity .Dump.WriteSecurity -}}
+			{{- if ne .Dump.ReadSecurity "None" }} api-sec-{{.Dump.ReadSecurity}}{{- end -}}
+			{{- if ne .Dump.WriteSecurity .Dump.ReadSecurity -}}
+				{{- if ne .Dump.WriteSecurity "None" }} api-sec-{{.Dump.WriteSecurity}}{{- end -}}
+			{{- end -}}
+		{{- end -}}
+		{{- if .Dump.Security -}}
+			{{- if ne .Dump.Security "None" }} api-sec-{{.Dump.Security}}{{- end -}}
 		{{- end -}}
 	{{- end -}}
-	{{- if $dump.Security -}}
-		{{- if ne $dump.Security "None" }} api-sec-{{$dump.Security}}{{- end -}}
+	{{- if .Index -}}
+		{{- if .Index.Removed }} api-removed{{- end -}}
 	{{- end -}}
-{{- end -}}
-{{- if $index -}}
-	{{- if $index.Removed }} api-removed{{- end -}}
 {{- end -}}

@@ -1,5 +1,10 @@
-{{/* ([]string): []ClassIndex // Returns a list of classes from class names.
-Only present classes are included. */}}
+{{/* Returns a list of classes from class names. Only present classes are
+included.
+
+[]string // List of class names.
+return []ClassIndex
+
+*/}}
 
 {{$classes := slice}}
 {{range .}}

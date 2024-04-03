@@ -20,7 +20,7 @@
 				<ul class="type-list">
 					{{- range $name, $type := site.Data.Index.Type }}
 						{{- if and (eq $type.Category $category) (not $type.Removed) }}
-							<li>{{partial `link/entity.html` (slice "type" $name)}}</li>
+							<li>{{partial `link/entity.html` (dict "type" "type" "primary" $name)}}</li>
 						{{- end }}
 					{{- end }}
 				</ul>
@@ -36,7 +36,7 @@
 					<ul class="type-list">
 						{{- range $name, $type := site.Data.Index.Type }}
 							{{- if and (eq $type.Category $category) $type.Removed }}
-								<li>{{partial `link/entity.html` (slice "type" $name)}}</li>
+								<li>{{partial `link/entity.html` (dict "type" "type" "primary" $name)}}</li>
 							{{- end }}
 						{{- end }}
 					</ul>

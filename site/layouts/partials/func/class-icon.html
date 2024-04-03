@@ -1,9 +1,13 @@
-{{/* (string, string): Resource? // Returns the icon resource that best matches
-the second argument, which is a class name. The first argument is a resource
-path formatted with the class name. */}}
+{{/* Returns the icon resource that best matches the given class.
 
-{{$path := index . 0}}
-{{$class := index . 1}}
+path: string // A resource path formatted with the class name.
+class: string // The name of the class.
+return Resource?
+
+*/}}
+
+{{$path := .path}}
+{{$class := .class}}
 {{$res := resources.Get (printf $path $class)}}
 {{if not $res}}
 	{{range index site.Data.Index.Class $class "Superclasses"}}

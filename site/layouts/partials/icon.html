@@ -1,7 +1,11 @@
-{{- $type := (index . 0) | lower }}
-{{- $primary := index . 1 }}
-{{- $secondary := index . 2 }}
+{{- /* Renders an icon for the given entity.
 
+type: string // The type of entity (hub|class|member|enum|enumitem|type)
+primary: string // The primary identifier.
+secondary: string // The secondary identifier.
+
+*/}}
+{{- $type := .type | lower }}
 {{- $resLight := false }}
 {{- $resDark := false }}
 {{- $kind := false }}
@@ -9,12 +13,12 @@
 	{{$resLight = resources.Get "images/hub.svg"}}
 {{- else }}
 	{{- if eq $type "class" }}
-		{{- if not $resLight}}{{$resLight = partial "func/class-icon.html" (slice "icons/light/%s.png" $primary)}}{{end}}
+		{{- if not $resLight}}{{$resLight = partial "func/class-icon.html" (dict "path" "icons/light/%s.png" "class" .primary)}}{{end}}
 		{{- if not $resLight}}{{$resLight = resources.Get "icons/light/Placeholder.png"}}{{end}}
-		{{- if not $resDark}}{{$resDark = partial "func/class-icon.html" (slice "icons/dark/%s.png" $primary)}}{{end}}
+		{{- if not $resDark}}{{$resDark = partial "func/class-icon.html" (dict "path" "icons/dark/%s.png" "class" .primary)}}{{end}}
 		{{- if not $resDark}}{{$resDark = resources.Get "icons/dark/Placeholder.png"}}{{end}}
 	{{- else if eq $type "member" }}
-		{{- $kind = index site.Data.Dump.Classes $primary "Members" $secondary "MemberType" }}
+		{{- $kind = index site.Data.Dump.Classes .primary "Members" .secondary "MemberType" }}
 		{{- if eq $kind "Property" }}
 			{{$resLight = resources.Get "icons/light/ACProperty.png"}}
 			{{$resDark = resources.Get "icons/dark/ACProperty.png"}}
@@ -35,7 +39,7 @@
 		{{$resLight = resources.Get "icons/light/ACEnum.png"}}
 		{{$resDark = resources.Get "icons/dark/ACEnum.png"}}
 	{{- else if eq $type "type" }}
-		{{- $kind = index site.Data.Index.Type $primary "Category" }}
+		{{- $kind = index site.Data.Index.Type .primary "Category" }}
 		{{- if eq $kind "DataType" }}
 			{{$resLight = resources.Get "icons/light/ACCodeSnippet.png"}}
 			{{$resDark = resources.Get "icons/dark/ACCodeSnippet.png"}}

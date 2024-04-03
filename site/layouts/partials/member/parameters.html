@@ -1,4 +1,8 @@
-{{/* []Parameter // Render member parameters as function type definition. */}}
+{{/* Render member parameters as function type definition.
+
+[]Parameter
+
+*/}}
 {{- $n := sub (len .) 1 -}}
 <span class="parameters open">(</span>
 {{- range $i, $param := . -}}

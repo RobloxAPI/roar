@@ -11,7 +11,7 @@
 {{- end }}
 
 <article id="content">
-	<header><h1>{{$typeName}}<aside>{{partial "link/entity.html" (slice "type" $typeName "" "hub")}}</aside></h1></header>
+	<header><h1>{{$typeName}}<aside>{{partial "link/entity.html" (dict "type" "type" "primary" $typeName "hub" true)}}</aside></h1></header>
 
 	{{- if $relatedMembers }}
 		<section id="related-members">
@@ -24,7 +24,7 @@
 					{{- end }}
 					<li>
 						<span>
-							{{- partial "link/entity.html" (slice $type .Class .Member) }}
+							{{- partial "link/entity.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
 							{{- if eq .Kind "Parameter" }} (
 								{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
 							{{- end -}}

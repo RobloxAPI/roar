@@ -1,4 +1,8 @@
-{{/* Change // Renders a Change object as a compact tag element. */}}
+{{/* Renders a Change as a compact tag element.
+
+Change
+
+*/}}
 {{- $type := "changed" }}
 {{- if lt .Action.Type 0 }}
 	{{- $type = "removed" }}

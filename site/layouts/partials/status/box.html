@@ -1,5 +1,12 @@
-{{- $level := index . 0 }}
-{{- $header := index . 1 }}
-{{- $text := index . 2 }}
-{{- $preferred := index . 3 }}
-<div class="status-box{{if $level}} status-{{$level}}{{end}}">{{if $text}}<span class="status-header">{{$header}}</span> {{$text}}{{if $preferred}} {{partial "link/entity.html" $preferred}}{{index $preferred 4}}{{end}}{{else}}{{$header}}{{end}}</div>
+{{/* Renders a status box.
+
+level: string // The severity level (low|medium|high).
+header: string // Header text.
+text: string // body text.
+preferred: { // If specified
+	@link/entity.html // Arguments to produce an entity link.
+	text: string // Text to render after the link.
+}?
+
+*/}}
+<div class="status-box{{if .level}} status-{{.level}}{{end}}">{{if .text}}<span class="status-header">{{.header}}</span> {{.text}}{{if .preferred}} {{partial "link/entity.html" .preferred}}{{.preferred.text}}{{end}}{{else}}{{.header}}{{end}}</div>

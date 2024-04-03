@@ -1,11 +1,16 @@
-{{- $changes := index . 0 }}
-{{- $truncated := index . 1 }}
-{{- $secondary := index . 2 }}
-<ul class="change-list{{if $truncated}} truncated-list{{end}}">
-	{{- range $changes | sort | collections.Reverse }}
+{{/* Render a given list of changes.
+
+changes: []ChangeID
+truncated: bool? // If true, container fits within viewport.
+hascontext: bool? // If true, any primary context is excluded.
+
+*/}}
+{{- $hascontext := .hascontext }}
+<ul class="change-list{{if .truncated}} truncated-list{{end}}">
+	{{- range .changes | sort | collections.Reverse }}
 		{{- $change := index site.Data.History.Change (int .) }}
 		{{- $type := partial "history/type.html" $change }}
 		{{- $field := partial "history/field.html" $change }}
-		<li class="filter-element" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" (slice $change $secondary)}}</li>
+		<li class="filter-element" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" (dict "change" $change "hascontext" $hascontext)}}</li>
 	{{- end }}
 </ul>

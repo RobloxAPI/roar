@@ -1,3 +1,10 @@
+{{/* Returns the name of the field of a change's action. An action is expected
+to have only one field.
+
+Change
+return string
+
+*/}}
 {{$field := ""}}
 {{if eq (int .Action.Type) 0}}
 	{{range $name,$_ := .Action.Fields}}

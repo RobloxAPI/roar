@@ -1,3 +1,7 @@
+{{- /* Renders a list of updates for the current page. If the current page is
+the root updates, then recent updates are rendered. Otherwise, updates for the
+year corresponding to the page title are rendered. */}}
+
 {{- $all := site.Data.History.Event | collections.Reverse }}
 {{- $updates := slice }}
 {{- $recent := site.GetPage "updates" }}
@@ -34,7 +38,7 @@
 				<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><span>{{.GUID}}</span></a>
 				{{- if .ChangesCount }}
 					{{- $major := index (split .Version ".") 1 }}
-					{{- partial "link/entity.html" (slice "releasenotes" $major)}}
+					{{- partial "link/entity.html" (dict "type" "releasenotes" "primary" $major)}}
 				{{- end }}
 				<ul class="change-list">
 					{{- if .ChangesCount }}
@@ -59,7 +63,7 @@
 								{{- end }}
 								{{- $type := partial "history/type.html" $change }}
 								{{- $field := partial "history/field.html" $change }}
-								<li id="{{$event.GUID}}-{{$change.Index}}" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{- partial "history/change.html" (slice $change) -}}
+								<li id="{{$event.GUID}}-{{$change.Index}}" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{- partial "history/change.html" (dict "change" $change) -}}
 								{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
 									{{- $parent = $change }}
 									<ul>
