@@ -43,3 +43,5 @@ table.enumitem-index {
 	.api-hidden { @include hidden }
 	.api-unbrowsable { @include unbrowsable }
 }
+
+.entity-link.api-deprecated { @include deprecated }
