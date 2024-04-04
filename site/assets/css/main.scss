@@ -514,10 +514,6 @@ blockquote > :last-child::after {
 		--indent: var(--element-list-indent);
 		list-style: none;
 	}
-	li {
-		display: flex;
-		flex-flow: nowrap column;
-	}
 }
 
 .entity-link {
