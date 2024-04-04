@@ -5,7 +5,7 @@
 .api-default-skipped-class,
 .api-default-write-only {
 	&::before {
-		opacity: 0.5;
+		opacity: 0.6;
 	}
 }
 
@@ -20,7 +20,7 @@
 	text-decoration: line-through;
 }
 @mixin hidden {
-	opacity: 0.5;
+	opacity: 0.6;
 }
 @mixin unbrowsable {
 	opacity: 0.8;
