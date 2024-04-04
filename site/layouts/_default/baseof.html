@@ -14,6 +14,8 @@
 	<footer>
 		{{- partial "footer.html" . }}
 	</footer>
+{{- if site.Params.debug }}
 	<div class="debug"></div>
+{{- end }}
 </body>
 </html>
