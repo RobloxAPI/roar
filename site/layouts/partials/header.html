@@ -1,6 +1,6 @@
 <a class="icon logo" href="{{site.Home.RelPermalink}}">
-	<object data="{{relURL `favicon.svg`}}" type="image/svg+xml">
-		<img src="{{relURL `favicon-48x48.png`}}" />
+	<object data="{{(resources.Get `favicons/favicon.svg`).RelPermalink}}" type="image/svg+xml">
+		<img src="{{(resources.Get `favicons/favicon-48x48.png`).RelPermalink}}" />
 	</object>
 </a>
 <h1><a href="{{site.Home.RelPermalink}}">{{site.Title}}</a></h1>

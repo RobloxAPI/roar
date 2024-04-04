@@ -1,8 +1,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width">
-<link rel="icon" type="image/png" sizes="32x32" href="{{relURL `favicon-32x32.png`}}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{relURL `favicon-16x16.png`}}">
-<link rel="shortcut icon" href="{{relURL `favicon.png`}}">
-<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+<link rel="icon" type="image/png" sizes="32x32" href="{{(resources.Get `favicons/favicon-32x32.png`).RelPermalink}}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{(resources.Get `favicons/favicon-16x16.png`).RelPermalink}}">
+<link rel="shortcut icon" href="{{(resources.Get `favicons/favicon.ico`).RelPermalink}}">
+{{- $title := site.Title }}
+{{- if not .IsHome }}
+	{{- $title = printf "%s | %s" .Title site.Title }}
+{{- end }}
+{{- $desc := "" }}
+{{- if eq .Type "updates" }}
+	{{- $desc = printf "Updates to the Roblox Lua API." }}
+{{- else if eq .Kind "section" }}
+	{{- $desc = printf "List of API %s." (pluralize .Type) }}
+{{- else if eq .Type "class" "enum" "type" }}
+	{{- $desc = printf "Reference for the %s %s." .Title .Type }}
+{{- else if .Summary }}
+	{{- $desc = .Summary }}
+{{- else }}
+	{{- $desc = "Reference for the Roblox Lua API." }}
+{{- end }}
+<title>{{$title}}</title>
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{$title}}">
+<meta name="twitter:description" content="{{$desc}}">
+<meta name="twitter:image" content="{{(resources.Get `favicons/favicon-512x512.png`).Permalink}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{$title}}">
+<meta property="og:description" content="{{$desc}}">
+<meta property="og:image" content="{{(resources.Get `favicons/favicon-512x512.png`).Permalink}}">
 {{- partialCached "head/css.html" . }}
 {{- partialCached "head/js.html" . }}
