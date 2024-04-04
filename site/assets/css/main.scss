@@ -502,7 +502,6 @@ blockquote > :last-child::after {
 .truncated-list {
 	max-height: 38.2vh;
 	overflow-y: auto;
-	padding-right: var(--scrollbar-width);
 }
 
 // List where each element has an icon.
