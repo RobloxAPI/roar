@@ -50,7 +50,7 @@ page]({{<param "issues">}}).
 > object-oriented programming, functional programming, data-driven programming,
 > and data description.
 
-### Licenses
+## Licenses
 
 <a rel="license" href="{{<param `license`>}}">
 	<img alt="Creative Commons License" style="border-width:0" src="about/license-badge.png"/>
