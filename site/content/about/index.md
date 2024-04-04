@@ -52,7 +52,7 @@ page]({{<param "issues">}}).
 ### Licenses
 
 <a rel="license" href="{{<param `license`>}}">
-	<img alt="Creative Commons License" style="border-width:0" src="license-badge.png"/>
+	<img alt="Creative Commons License" style="border-width:0" src="about/license-badge.png"/>
 </a><br>This site and non-derivative content is licensed under a <a rel="license" href="{{<param `license`>}}">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
 
 The source code of the `roar` tool is available under the [MIT
