@@ -6,6 +6,9 @@ disablePathToLower = true
 
 markup.goldmark.renderer.unsafe = true
 
+[build]
+noJSConfigInAssets = true
+
 [params]
 debug = false
 theme = "auto"
