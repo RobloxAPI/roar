@@ -116,7 +116,7 @@ html {
 // Elements displayed only when javascript is enabled. The related script
 // manually removes the js class when it is ready.
 .js {
-	//TODO: display: none;
+	display: none;
 }
 
 body {
