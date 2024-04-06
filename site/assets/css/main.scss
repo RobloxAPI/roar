@@ -116,7 +116,7 @@ html {
 // Elements displayed only when javascript is enabled. The related script
 // manually removes the js class when it is ready.
 .js {
-	display: none;
+	display: none !important;
 }
 
 body {
@@ -636,6 +636,12 @@ main :target > header,
 .update:target > .change-list-toggle,
 .change-list > li:target {
 	background-color: var(--theme-highlight);
+}
+
+.class-sort {
+	display: flex;
+	flex-flow: wrap row;
+	gap: var(--halfbase);
 }
 
 // Technical control widgets.
