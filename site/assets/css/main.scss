@@ -462,6 +462,15 @@ input[type="search"] {
 	width: 24ch;
 }
 
+select {
+	font: inherit;
+	background-color: var(--theme-MainBackground);
+	color: var(--theme-text);
+	border: 1px solid var(--theme-border);
+	-moz-appearance: none;
+}
+
+
 // Headings.
 h1,h2,h3,h4,h5,h6 {
 	--heading-font-size: calc(var(--heading-scale,1) * var(--font-size));
@@ -643,6 +652,9 @@ main :target > header,
 	flex-flow: wrap row;
 	gap: var(--halfbase);
 }
+
+// Settings panel.
+@import "settings";
 
 // Technical control widgets.
 @import "controls";

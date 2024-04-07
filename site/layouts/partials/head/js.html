@@ -1,4 +1,7 @@
-{{- with resources.Get "js/main.js" }}
+{{- $sources := slice }}
+{{- $sources = $sources | append (resources.Get "js/quick-theme.js") }}
+{{- $sources = $sources | append (resources.Get "js/main.js") }}
+{{- range $sources }}
 	{{- if eq hugo.Environment "development" }}
 		{{- with . | js.Build }}
 			<script src="{{ .RelPermalink }}"></script>

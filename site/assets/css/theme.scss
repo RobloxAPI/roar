@@ -11,5 +11,11 @@
 		@media (prefers-color-scheme: dark) {
 			@include theme-dark;
 		}
+		&.Light {
+			@include theme-light;
+		}
+		&.Dark {
+			@include theme-dark;
+		}
 	}
 }

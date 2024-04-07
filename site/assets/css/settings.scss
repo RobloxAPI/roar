@@ -1,0 +1,58 @@
+#settings-menu {
+	z-index: 1;
+	position: fixed;
+	left: unset;
+	right: 0;
+	top: var(--header-height);
+	background-color: var(--theme-Tab);
+	border: 0;
+	color: var(--theme-text);
+	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
+	padding: 0 var(--baseline);
+	margin: 0;
+	> form > div {
+		display: flex;
+		margin: var(--halfbase) 0;
+	}
+	label {
+		--border-size: 2px;
+		flex-grow: 1;
+		display: inline-block;
+		cursor: pointer;
+		font-size: var(--font-size);
+		line-height: var(--line-height);
+		padding: var(--halfbase);
+	}
+	.radio {
+		input {
+			display: none;
+		}
+		input+label {
+			padding-top: var(--halfbase);
+			padding-bottom: calc(var(--halfbase) - var(--border-size));
+			border-bottom: var(--border-size) solid transparent;
+			transition: border-bottom 100ms linear;
+			text-align: center;
+		}
+		input:checked+label {
+			border-bottom-color: var(--theme-border);
+		}
+	}
+	.select {
+		> label { order: 1 }
+		> select { order: 2 }
+		label {
+			margin-right: var(--halfbase);
+		}
+	}
+	.checkbox {
+		input {
+			margin: var(--halfbase);
+			margin-left: 0;
+		}
+	}
+	input:disabled+label,
+	select:disabled+label {
+		opacity: 0.5;
+	}
+}
