@@ -7,13 +7,16 @@ simple: bool? // If true, include only the name of the referred element (no prim
 hascontext: bool? // If true, include only the name of the referred element (no primary).
 nolink: bool? // If true, do not make a link.
 hub: bool? // If true, link to external hub instead of internal site.
+nostatus: bool? // If true, status classes are excluded.
+statuskind: string? = "deco" // Set status kind.
 
 */ -}}
 {{- $ishub := or .hub (eq .type "releasenotes") -}}
 
 {{- $status := partial `status-class.html` . -}}
+{{- $statuskind := or .statuskind "deco" -}}
 {{- if .nolink -}}
-	<span class="entity-link{{if $ishub}} hub-link{{else}} {{$status}}{{end}}">
+	<span class="entity-link{{if $ishub}} hub-link{{else if not .nostatus}} {{$statuskind}} {{$status}}{{end}}">
 {{- else -}}
 	{{- $href := "" -}}
 	{{- if eq .type "releasenotes" -}}
@@ -47,7 +50,7 @@ hub: bool? // If true, link to external hub instead of internal site.
 			{{- $href = relref site.Home (path.Join `type` .primary) -}}
 		{{- end -}}
 	{{- end -}}
-	<a class="entity-link{{if $ishub}} hub-link{{else}} {{$status}}{{end}}" href="{{$href}}">
+	<a class="entity-link{{if $ishub}} hub-link{{else if not .nostatus}} {{$statuskind}} {{$status}}{{end}}" href="{{$href}}">
 {{- end -}}
 {{- if eq .type "releasenotes" -}}
 	{{- if not .simple -}}{{partial "icon.html" (dict "type" "hub")}}{{- end -}}

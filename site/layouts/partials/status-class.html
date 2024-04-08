@@ -1,29 +1,44 @@
-{{/* Renders HTML classes associated with the status/tags of the given entity.
+{{/* Returns HTML classes associated with the status/tags of the given entity.
 
 type: string // Type of entity (class|member|enum|enumitem|type).
 primary: string // Primary entity index.
 secondary: string // Secondary entity index.
 
 */}}
-
-{{- with partial "func/dump-index.html" . -}}
-	{{- if .Dump -}}
-		{{- if .Dump.Tags -}}
-			{{- if in .Dump.Tags "Deprecated" }} api-deprecated{{- end -}}
-			{{- if in .Dump.Tags "Hidden" }} api-hidden{{- end -}}
-			{{- if in .Dump.Tags "NotBrowsable" }} api-unbrowsable{{- end -}}
-		{{- end -}}
-		{{- if and .Dump.ReadSecurity .Dump.WriteSecurity -}}
-			{{- if ne .Dump.ReadSecurity "None" }} api-sec-{{.Dump.ReadSecurity}}{{- end -}}
-			{{- if ne .Dump.WriteSecurity .Dump.ReadSecurity -}}
-				{{- if ne .Dump.WriteSecurity "None" }} api-sec-{{.Dump.WriteSecurity}}{{- end -}}
-			{{- end -}}
-		{{- end -}}
-		{{- if .Dump.Security -}}
-			{{- if ne .Dump.Security "None" }} api-sec-{{.Dump.Security}}{{- end -}}
-		{{- end -}}
-	{{- end -}}
-	{{- if .Index -}}
-		{{- if .Index.Removed }} api-removed{{- end -}}
-	{{- end -}}
-{{- end -}}
+{{$status := slice}}
+{{with partial "func/dump-index.html" .}}
+	{{if .Dump}}
+		{{if .Dump.Tags}}
+			{{if in .Dump.Tags "Deprecated" }}
+				{{$status = $status | append "deprecated"}}
+			{{end}}
+			{{if in .Dump.Tags "Hidden" }}
+				{{$status = $status | append "hidden"}}
+			{{end}}
+			{{if in .Dump.Tags "NotBrowsable" }}
+				{{$status = $status | append "unbrowsable"}}
+			{{end}}
+		{{end}}
+		{{if and .Dump.ReadSecurity .Dump.WriteSecurity}}
+			{{if ne .Dump.ReadSecurity "None" }}
+				{{$status = $status | append (print "sec-" .Dump.ReadSecurity)}}
+			{{end}}
+			{{if ne .Dump.WriteSecurity .Dump.ReadSecurity}}
+				{{if ne .Dump.WriteSecurity "None" }}
+					{{$status = $status | append (print "sec-" .Dump.WriteSecurity)}}
+				{{end}}
+			{{end}}
+		{{end}}
+		{{if .Dump.Security}}
+			{{if ne .Dump.Security "None" }}
+				{{$status = $status | append (print "sec-" .Dump.Security)}}
+			{{end}}
+		{{end}}
+	{{end}}
+	{{if .Index}}
+		{{if .Index.Removed }}
+			{{$status = $status | append "removed"}}
+		{{end}}
+	{{end}}
+{{end}}
+{{return (delimit $status " ")}}

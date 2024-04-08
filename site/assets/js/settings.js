@@ -1,5 +1,5 @@
 "use strict";
-{
+
 const settings = [
 	{
 		"name": "Theme",
@@ -11,6 +11,30 @@ const settings = [
 			{"text": "Dark",  "value": "Dark"},
 		],
 	},
+	{
+		"name": "ShowDeprecated",
+		"type": "checkbox",
+		"default": true,
+		"text": "Show deprecated",
+	},
+	{
+		"name": "ShowNotBrowsable",
+		"type": "checkbox",
+		"default": true,
+		"text": "Show unbrowsable",
+	},
+	{
+		"name": "ShowHidden",
+		"type": "checkbox",
+		"default": true,
+		"text": "Show hidden",
+	},
+	{
+		"name": "ShowRemoved",
+		"type": "checkbox",
+		"default": true,
+		"text": "Show removed",
+	}
 ];
 
 function generateMenu(parent, settings, changed) {
@@ -190,6 +214,58 @@ rbxapiSettings.Listen("Theme", function(name, value, initial) {
 	document.documentElement.className = value;
 });
 
+let showDeprecated = document.createElement("style");
+showDeprecated.innerHTML = `
+	.set.deprecated { display:none }
+	.class-tree .set.deprecated + ul { padding-left:0; border-left:none }
+`;
+rbxapiSettings.Listen("ShowDeprecated", function(name, value, initial) {
+	if (value) {
+		showDeprecated.remove();
+	} else {
+		document.head.appendChild(showDeprecated);
+	};
+});
+
+let showNotBrowsable = document.createElement("style");
+showNotBrowsable.innerHTML = `
+	.set.unbrowsable { display: none }
+	.class-tree .set.unbrowsable + ul { padding-left:0; border-left:none }
+`;
+rbxapiSettings.Listen("ShowNotBrowsable", function(name, value, initial) {
+	if (value) {
+		showNotBrowsable.remove();
+	} else {
+		document.head.appendChild(showNotBrowsable);
+	};
+});
+
+let showHidden = document.createElement("style");
+showHidden.innerHTML = `
+	.set.hidden { display:none }
+	.class-tree .set.hidden + ul { padding-left:0; border-left:none }
+`;
+rbxapiSettings.Listen("ShowHidden", function(name, value, initial) {
+	if (value) {
+		showHidden.remove();
+	} else {
+		document.head.appendChild(showHidden);
+	};
+});
+
+let showRemoved = document.createElement("style");
+showRemoved.innerHTML = `
+	.set.removed { display:none }
+	.class-tree .set.removed + ul { padding-left:0; border-left:none }
+`;
+rbxapiSettings.Listen("ShowRemoved", function(name, value, initial) {
+	if (value) {
+		showRemoved.remove();
+	} else {
+		document.head.appendChild(showRemoved);
+	};
+});
+
 window.rbxapiSettings = rbxapiSettings;
 window.dispatchEvent(new Event("rbxapiSettings"));
 
@@ -197,5 +273,4 @@ if (document.readyState === "loading") {
 	document.addEventListener("DOMContentLoaded", initSettingsMenu);
 } else {
 	initSettingsMenu();
-};
 };

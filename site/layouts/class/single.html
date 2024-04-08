@@ -13,22 +13,23 @@ inherited: bool // Whether members are inherited from an ancestor class.
 				{{- range $members }}
 					{{- $memberDump := index site.Data.Dump "Classes" .Class "Members" .Name }}
 					{{- if eq $memberDump.MemberType $memberType }}
-						<tr class="{{partial `status-class.html` (dict `type` `member` `primary` .Class `secondary` .Name)}}">
+						{{- $status := partial `status-class.html` (dict `type` `member` `primary` .Class `secondary` .Name)}}
+						<tr class="set {{$status}}">
 							{{- $changes := index site.Data.History.Object.Member .Class .Name}}
 							{{- $latest := int (index (last 1 $changes) 0) }}
 							{{- $change := index site.Data.History.Change $latest }}
 							<td class="col-history">{{partial "history/tag.html" $change}}</td>
 							<td class="col-icon">{{partial "icon.html" (dict "type" "member" "primary" .Class "secondary" .Name)}}</td>
 							<td class="col-member">
-								<span class="member-text">
+								<span class="member-text deco {{$status}}">
 									{{- if eq $memberDump.MemberType "Property" }}
-										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true)}}</span>: <span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
+										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>: <span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
 									{{- else if eq $memberDump.MemberType "Function" }}
-										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
+										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
 									{{- else if eq $memberDump.MemberType "Event" }}
-										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}
+										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}
 									{{- else if eq $memberDump.MemberType "Callback" }}
-										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
+										<span class="name">{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
 									{{- end -}}
 								</span>
 							</td>
@@ -95,7 +96,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	<div id="members-sections">
 		{{- range . }}
 			{{- $dump := index site.Data.Dump.Classes .Class "Members" .Name }}
-			<section id="member-{{.Name}}">
+			<section id="member-{{.Name}}" class="set {{partial `status-class.html` (dict `type` `member` `primary` .Class `secondary` .Name)}}">
 				<header><h3>{{partial "icon.html" (dict "type" "member" "primary" .Class "secondary" .Name)}}{{.Name}}<aside>{{partial "link/entity.html" (dict "type" "member" "primary" .Class "secondary" .Name "hub" true)}}</aside></h3></header>
 				{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
@@ -253,7 +254,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $superclasses }}
-							<li>{{partial "link/entity.html" (dict "type" "class" "primary" .Name)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "link/entity.html" (dict "type" "class" "primary" .Name)}}</li>
 						{{- end }}
 					</ul>
 				</section>
@@ -263,7 +264,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $subclasses }}
-							<li>{{partial "link/entity.html" (dict "type" "class" "primary" .Name)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "link/entity.html" (dict "type" "class" "primary" .Name)}}</li>
 						{{- end }}
 					</ul>
 				</section>
@@ -288,7 +289,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- end }}
 			<li class="toc-members-index"><a href="#members-index">Member index</a></li>
 			{{- if $removedMembers }}
-				<li class="toc-removed-members-index"><a href="#removed-members-index">Removed member index</a></li>
+				<li class="toc-removed-members-index set removed"><a href="#removed-members-index">Removed member index</a></li>
 			{{- end }}
 			{{- if $changes }}
 				<li class="toc-history"><a href="#history">History</a></li>
@@ -297,16 +298,16 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				<li class="toc-members"><a href="#members">Members</a>
 					<ol>
 						{{- range $members}}
-							<li class="{{partial `status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "link/entity.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "link/entity.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
 						{{- end }}
 					</ol>
 				</li>
 			{{- end }}
 			{{- if $removedMembers }}
-				<li class="toc-removed-members"><a href="#removed-members">Removed members</a>
+				<li class="toc-removed-members set removed"><a href="#removed-members">Removed members</a>
 					<ol>
 						{{- range $removedMembers}}
-							<li class="{{partial `status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "link/entity.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "link/entity.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
 						{{- end }}
 					</ol>
 				</li>
@@ -353,7 +354,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	</section>
 
 	{{- if $removedMembers }}
-		<section id="removed-members-index">
+		<section id="removed-members-index" class="set removed">
 			<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
 			{{- template "member-index" (dict "class" $className "members" $removedMembers "inherited" false) }}
 		</section>
@@ -383,7 +384,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	{{- end }}
 
 	{{- if $removedMembers }}
-		<section id="removed-members">
+		<section id="removed-members" class="set removed">
 			<header><h2>Removed members</h2></header>
 			{{template "members" $removedMembers}}
 		</section>

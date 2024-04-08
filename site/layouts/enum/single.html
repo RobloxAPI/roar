@@ -39,7 +39,7 @@ items: []EnumItemIndex
 	<tbody>
 		{{- range .items }}
 			{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
-			<tr id="member-{{.Name}}" class="{{partial `status-class.html` (dict `type` `enumitem` `primary` .Enum `secondary` .Name)}}">
+			<tr id="member-{{.Name}}" class="set {{partial `status-class.html` (dict `type` `enumitem` `primary` .Enum `secondary` .Name)}}">
 				{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
 				{{- $change := false }}
 				{{- if $changes }}
@@ -109,7 +109,7 @@ items: []EnumItemIndex
 			{{- end }}
 			<li><a href="#members-index">Items</a></li>
 			{{- if $removedItems }}
-				<li id="toc-removed-members-index"><a href="#removed-members-index">Removed item index</a></li>
+				<li id="toc-removed-members-index" class="set removed"><a href="#removed-members-index">Removed item index</a></li>
 			{{- end }}
 			{{- if $changes }}
 				<li><a href="#history">History</a></li>
@@ -138,7 +138,7 @@ items: []EnumItemIndex
 	</section>
 
 	{{- if $removedItems }}
-		<section id="removed-members-index">
+		<section id="removed-members-index" class="set removed">
 			<header><h2>Removed items {{partial "element-count.html" (len $removedItems)}}</h2></header>
 			{{- template "item-index" (dict "enum" $enumName "items" $removedItems) }}
 		</section>
