@@ -11,7 +11,7 @@ secondary: string // The secondary identifier.
 {{- $kind := false }}
 {{- $private := false }}
 {{- if eq $type "hub" }}
-	{{$resLight = resources.Get "images/hub.svg"}}
+	{{- $resLight = resources.Get "images/hub.svg"}}
 {{- else }}
 	{{- if eq $type "class" }}
 		{{- if not $resLight}}{{$resLight = partial "func/class-icon.html" (dict "path" "icons/light/%s.png" "class" .primary)}}{{end}}
@@ -22,39 +22,39 @@ secondary: string // The secondary identifier.
 		{{- $kind = index site.Data.Dump.Classes .primary "Members" .secondary "MemberType" }}
 		{{- $private = strings.Contains (partial "status-class.html" .) "sec-" }}
 		{{- if eq $kind "Property" }}
-			{{$resLight = resources.Get "icons/light/ACProperty.png"}}
-			{{$resDark = resources.Get "icons/dark/ACProperty.png"}}
+			{{- $resLight = resources.Get "icons/light/ACProperty.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACProperty.png"}}
 		{{- else if eq $kind "Function" }}
-			{{$resLight = resources.Get "icons/light/ACFunction.png"}}
-			{{$resDark = resources.Get "icons/dark/ACFunction.png"}}
+			{{- $resLight = resources.Get "icons/light/ACFunction.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
 		{{- else if eq $kind "Event" }}
 			{{- /* Event icon is purple for some reason. Shift it to yellow. */}}
-			{{$resLight = (resources.Get "icons/light/ACEvent.png").Filter (images.Hue 130)}}
-			{{$resDark = (resources.Get "icons/dark/ACEvent.png").Filter (images.Hue 115)}}
+			{{- $resLight = (resources.Get "icons/light/ACEvent.png").Filter (images.Hue 130)}}
+			{{- $resDark = (resources.Get "icons/dark/ACEvent.png").Filter (images.Hue 115)}}
 		{{- else if eq $kind "Callback" }}
-			{{$resLight = resources.Get "icons/light/ACFunction.png"}}
-			{{$resDark = resources.Get "icons/dark/ACFunction.png"}}
+			{{- $resLight = resources.Get "icons/light/ACFunction.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
 		{{- end }}
 	{{- else if eq $type "enum" }}
-		{{$resLight = resources.Get "icons/light/ACEnum.png"}}
-		{{$resDark = resources.Get "icons/dark/ACEnum.png"}}
+		{{- $resLight = resources.Get "icons/light/ACEnum.png"}}
+		{{- $resDark = resources.Get "icons/dark/ACEnum.png"}}
 	{{- else if eq $type "enumitem" }}
-		{{$resLight = resources.Get "icons/light/ACEnum.png"}}
-		{{$resDark = resources.Get "icons/dark/ACEnum.png"}}
+		{{- $resLight = resources.Get "icons/light/ACEnum.png"}}
+		{{- $resDark = resources.Get "icons/dark/ACEnum.png"}}
 	{{- else if eq $type "type" }}
 		{{- $kind = index site.Data.Index.Type .primary "Category" }}
 		{{- if eq $kind "DataType" }}
-			{{$resLight = resources.Get "icons/light/ACCodeSnippet.png"}}
-			{{$resDark = resources.Get "icons/dark/ACCodeSnippet.png"}}
+			{{- $resLight = resources.Get "icons/light/ACCodeSnippet.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACCodeSnippet.png"}}
 		{{- else if eq $kind "Group" }}
-			{{$resLight = resources.Get "icons/light/Group.png"}}
-			{{$resDark = resources.Get "icons/dark/Group.png"}}
+			{{- $resLight = resources.Get "icons/light/Group.png"}}
+			{{- $resDark = resources.Get "icons/dark/Group.png"}}
 		{{- else if eq $kind "Primitive" }}
-			{{$resLight = resources.Get "icons/light/Value.png"}}
-			{{$resDark = resources.Get "icons/dark/Value.png"}}
+			{{- $resLight = resources.Get "icons/light/Value.png"}}
+			{{- $resDark = resources.Get "icons/dark/Value.png"}}
 		{{- else }}
-			{{$resLight = resources.Get "icons/light/Value.png"}}
-			{{$resDark = resources.Get "icons/dark/Value.png"}}
+			{{- $resLight = resources.Get "icons/light/Value.png"}}
+			{{- $resDark = resources.Get "icons/dark/Value.png"}}
 		{{- end }}
 	{{- end }}
 	{{- if not $resLight}}{{$resLight = resources.Get (print "icons/light/Placeholder.png")}}{{end}}
