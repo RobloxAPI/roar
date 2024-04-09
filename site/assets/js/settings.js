@@ -12,6 +12,12 @@ const settings = [
 		],
 	},
 	{
+		"name": "ExpandMembers",
+		"type": "checkbox",
+		"default": false,
+		"text": "Expand all members",
+	},
+	{
 		"name": "ShowDeprecated",
 		"type": "checkbox",
 		"default": true,
@@ -189,6 +195,25 @@ function initSettingsMenu() {
 	});
 };
 
+function initSettings() {
+	initSettingsMenu();
+
+	rbxapiSettings.Listen("ExpandMembers", function(name, value, initial) {
+		if (initial && value) {
+			let id = document.location.hash.slice(1);
+			if (id !== "") {
+				if (document.getElementById(id)) {
+					// Don't auto-expand if there's a target.
+					return;
+				};
+			};
+		};
+		for (const input of document.querySelectorAll(".inherited-members input")) {
+			input.checked = value;
+		};
+	});
+};
+
 let rbxapiSettings = new Settings()
 for (let setting of settings) {
 	rbxapiSettings.settings.set(setting.name, {
@@ -270,7 +295,7 @@ window.rbxapiSettings = rbxapiSettings;
 window.dispatchEvent(new Event("rbxapiSettings"));
 
 if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initSettingsMenu);
+	document.addEventListener("DOMContentLoaded", initSettings);
 } else {
-	initSettingsMenu();
+	initSettings();
 };
