@@ -57,6 +57,12 @@ const settings = [
 		"text": "Show unbrowsable",
 	},
 	{
+		"name": "ShowNotScriptable",
+		"type": "checkbox",
+		"default": true,
+		"text": "Show unscriptable",
+	},
+	{
 		"name": "ShowHidden",
 		"type": "checkbox",
 		"default": true,
@@ -289,6 +295,19 @@ rbxapiSettings.Listen("ShowNotBrowsable", function(name, value, initial) {
 		showNotBrowsable.remove();
 	} else {
 		document.head.appendChild(showNotBrowsable);
+	};
+});
+
+let showNotScriptable = document.createElement("style");
+showNotScriptable.innerHTML = `
+	.set.unscriptable { display: none }
+	.class-tree .set.unscriptable + ul { padding-left:0; border-left:none }
+`;
+rbxapiSettings.Listen("ShowNotScriptable", function(name, value, initial) {
+	if (value) {
+		showNotScriptable.remove();
+	} else {
+		document.head.appendChild(showNotScriptable);
 	};
 });
 

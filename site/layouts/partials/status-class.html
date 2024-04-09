@@ -18,6 +18,9 @@ secondary: string // Secondary entity index.
 			{{if in .Dump.Tags "NotBrowsable" }}
 				{{$status = $status | append "unbrowsable"}}
 			{{end}}
+			{{if in .Dump.Tags "NotScriptable" }}
+				{{$status = $status | append "unscriptable"}}
+			{{end}}
 		{{end}}
 		{{if and .Dump.ReadSecurity .Dump.WriteSecurity}}
 			{{if ne .Dump.ReadSecurity "None" }}
