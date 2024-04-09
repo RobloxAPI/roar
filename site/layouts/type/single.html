@@ -11,7 +11,7 @@
 {{- end }}
 
 <article id="content">
-	<header><h1>{{$typeName}}<aside>{{partial "link/entity.html" (dict "type" "type" "primary" $typeName "hub" true)}}</aside></h1></header>
+	<header><h1>{{partial "icon.html" (dict "type" "type" "primary" $typeName)}}{{$typeName}}<aside>{{partial "link/entity.html" (dict "type" "type" "primary" $typeName "hub" true)}}</aside></h1></header>
 
 	{{- if $relatedMembers }}
 		<section id="related-members">
