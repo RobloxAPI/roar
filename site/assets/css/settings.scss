@@ -10,6 +10,8 @@
 	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
 	padding: 0 var(--baseline);
 	margin: 0;
+	max-height: calc(100vh - var(--header-height));
+	overflow: auto;
 	> form > div {
 		display: flex;
 		margin: var(--halfbase) 0;
