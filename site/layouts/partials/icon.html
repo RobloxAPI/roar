@@ -9,6 +9,7 @@ secondary: string // The secondary identifier.
 {{- $resLight := false }}
 {{- $resDark := false }}
 {{- $kind := false }}
+{{- $private := false }}
 {{- if eq $type "hub" }}
 	{{$resLight = resources.Get "images/hub.svg"}}
 {{- else }}
@@ -19,6 +20,7 @@ secondary: string // The secondary identifier.
 		{{- if not $resDark}}{{$resDark = resources.Get "icons/dark/Placeholder.png"}}{{end}}
 	{{- else if eq $type "member" }}
 		{{- $kind = index site.Data.Dump.Classes .primary "Members" .secondary "MemberType" }}
+		{{- $private = strings.Contains (partial "status-class.html" .) "sec-" }}
 		{{- if eq $kind "Property" }}
 			{{$resLight = resources.Get "icons/light/ACProperty.png"}}
 			{{$resDark = resources.Get "icons/dark/ACProperty.png"}}
@@ -60,6 +62,14 @@ secondary: string // The secondary identifier.
 {{- end }}
 
 {{- if $resLight }}
+	{{- if $private }}
+		{{- $overlayLight := (resources.Get "icons/light/Stop.png").Resize "24x" }}
+		{{- $resLight = $resLight.Filter (images.Overlay $overlayLight 0 24) }}
+		{{- if $resDark }}
+			{{- $overlayDark := (resources.Get "icons/dark/Stop.png").Resize "24x" }}
+			{{- $resDark = $resDark.Filter (images.Overlay $overlayDark 0 24) }}
+		{{- end }}
+	{{- end }}
 	{{- if not $resDark}}{{$resDark = $resLight}}{{end}}
 	<picture data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}>
 		{{- if not (eq $resLight $resDark) }}
