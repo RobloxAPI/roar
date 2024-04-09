@@ -36,11 +36,11 @@ secondary: string // The secondary identifier.
 			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
 		{{- end }}
 	{{- else if eq $type "enum" }}
-		{{- $resLight = resources.Get "icons/light/ACEnum.png"}}
-		{{- $resDark = resources.Get "icons/dark/ACEnum.png"}}
+		{{- $resLight = (resources.Get "icons/light/Enum.png").Filter (images.Colorize 35 100 100) (images.Brightness 10)}}
+		{{- $resDark = (resources.Get "icons/light/Enum.png").Filter (images.Colorize 35 100 100) (images.Brightness 20)}}
 	{{- else if eq $type "enumitem" }}
-		{{- $resLight = resources.Get "icons/light/ACEnum.png"}}
-		{{- $resDark = resources.Get "icons/dark/ACEnum.png"}}
+		{{- $resLight = (resources.Get "icons/light/EnumMember.png").Filter (images.Colorize 35 100 100) (images.Brightness 10)}}
+		{{- $resDark = (resources.Get "icons/light/EnumMember.png").Filter (images.Colorize 35 100 100) (images.Brightness 20)}}
 	{{- else if eq $type "type" }}
 		{{- $kind = index site.Data.Index.Type .primary "Category" }}
 		{{- if eq $kind "DataType" }}
