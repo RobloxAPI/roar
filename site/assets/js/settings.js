@@ -49,30 +49,40 @@ const settings = [
 		"type": "checkbox",
 		"default": true,
 		"text": "Show deprecated",
+		"method": "show",
+		"class": "deprecated",
 	},
 	{
 		"name": "ShowNotBrowsable",
 		"type": "checkbox",
 		"default": true,
 		"text": "Show unbrowsable",
+		"method": "show",
+		"class": "unbrowsable",
 	},
 	{
 		"name": "ShowNotScriptable",
 		"type": "checkbox",
 		"default": true,
 		"text": "Show unscriptable",
+		"method": "show",
+		"class": "unscriptable",
 	},
 	{
 		"name": "ShowHidden",
 		"type": "checkbox",
 		"default": true,
 		"text": "Show hidden",
+		"method": "show",
+		"class": "hidden",
 	},
 	{
 		"name": "ShowRemoved",
 		"type": "checkbox",
 		"default": true,
 		"text": "Show removed",
+		"method": "show",
+		"class": "removed",
 	}
 ];
 
@@ -272,70 +282,23 @@ rbxapiSettings.Listen("Theme", function(name, value, initial) {
 	document.documentElement.className = value;
 });
 
-let showDeprecated = document.createElement("style");
-showDeprecated.innerHTML = `
-	.set.deprecated { display:none }
-	.class-tree .set.deprecated + ul { padding-left:0; border-left:none }
-`;
-rbxapiSettings.Listen("ShowDeprecated", function(name, value, initial) {
-	if (value) {
-		showDeprecated.remove();
-	} else {
-		document.head.appendChild(showDeprecated);
+for (let setting of settings) {
+	if (setting.method !== "show") {
+		continue;
 	};
-});
-
-let showNotBrowsable = document.createElement("style");
-showNotBrowsable.innerHTML = `
-	.set.unbrowsable { display: none }
-	.class-tree .set.unbrowsable + ul { padding-left:0; border-left:none }
-`;
-rbxapiSettings.Listen("ShowNotBrowsable", function(name, value, initial) {
-	if (value) {
-		showNotBrowsable.remove();
-	} else {
-		document.head.appendChild(showNotBrowsable);
-	};
-});
-
-let showNotScriptable = document.createElement("style");
-showNotScriptable.innerHTML = `
-	.set.unscriptable { display: none }
-	.class-tree .set.unscriptable + ul { padding-left:0; border-left:none }
-`;
-rbxapiSettings.Listen("ShowNotScriptable", function(name, value, initial) {
-	if (value) {
-		showNotScriptable.remove();
-	} else {
-		document.head.appendChild(showNotScriptable);
-	};
-});
-
-let showHidden = document.createElement("style");
-showHidden.innerHTML = `
-	.set.hidden { display:none }
-	.class-tree .set.hidden + ul { padding-left:0; border-left:none }
-`;
-rbxapiSettings.Listen("ShowHidden", function(name, value, initial) {
-	if (value) {
-		showHidden.remove();
-	} else {
-		document.head.appendChild(showHidden);
-	};
-});
-
-let showRemoved = document.createElement("style");
-showRemoved.innerHTML = `
-	.set.removed { display:none }
-	.class-tree .set.removed + ul { padding-left:0; border-left:none }
-`;
-rbxapiSettings.Listen("ShowRemoved", function(name, value, initial) {
-	if (value) {
-		showRemoved.remove();
-	} else {
-		document.head.appendChild(showRemoved);
-	};
-});
+	let show = document.createElement("style");
+	show.innerHTML = `
+		.set.${setting.class} { display:none }
+		.class-tree .set.${setting.class} + ul { padding-left:0; border-left:none }
+	`;
+	rbxapiSettings.Listen(setting.name, function(name, value, initial) {
+		if (value) {
+			show.remove();
+		} else {
+			document.head.appendChild(show);
+		};
+	});
+}
 
 let security = new Map();
 for (let i = 0; i < securityIdentities.length; i++) {
