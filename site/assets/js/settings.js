@@ -1,5 +1,25 @@
 "use strict";
 
+const securityIdentities = [
+	"All",
+	"Server",
+	"CoreScript",
+	"BuiltinPlugin",
+	"Command",
+	"Plugin",
+	"Script",
+];
+const securityPermissions = new Map([
+	//                          ALL SVR CSC BPL CMD PLG SCR
+	["None"                  , [ 1 , 1 , 1 , 1 , 1 , 1 , 1 ]],
+	["RobloxPlaceSecurity"   , [ 1 , 1 , 1 , 1 , 1 , 1 , 0 ]],
+	["PluginSecurity"        , [ 1 , 1 , 1 , 1 , 1 , 1 , 0 ]],
+	["LocalUserSecurity"     , [ 1 , 1 , 1 , 0 , 1 , 0 , 0 ]],
+	["RobloxScriptSecurity"  , [ 1 , 1 , 1 , 1 , 0 , 0 , 0 ]],
+	["RobloxSecurity"        , [ 1 , 1 , 0 , 0 , 0 , 0 , 0 ]],
+	["NotAccessibleSecurity" , [ 1 , 0 , 0 , 0 , 0 , 0 , 0 ]],
+]);
+
 const settings = [
 	{
 		"name": "Theme",
@@ -10,6 +30,13 @@ const settings = [
 			{"text": "Light", "value": "Light"},
 			{"text": "Dark",  "value": "Dark"},
 		],
+	},
+	{
+		"name": "SecurityIdentity",
+		"type": "select",
+		"default": "0",
+		"text": "Permission",
+		"options": securityIdentities.map((v) => ({"value": v})),
 	},
 	{
 		"name": "ExpandMembers",
@@ -288,6 +315,43 @@ rbxapiSettings.Listen("ShowRemoved", function(name, value, initial) {
 		showRemoved.remove();
 	} else {
 		document.head.appendChild(showRemoved);
+	};
+});
+
+let security = new Map();
+for (let i = 0; i < securityIdentities.length; i++) {
+	let content = "";
+	for (let primary of securityPermissions) {
+		if (primary[1][i] !== 0) {
+			continue;
+		};
+		content += ".set.sec-" + primary[0];
+		for (let secondary of securityPermissions) {
+			if (secondary[1][i] !== 1) {
+				continue;
+			};
+			content += ":not(.sec-" + secondary[0] + ")";
+		};
+		content += ",\n";
+	};
+	if (content === "") {
+		continue;
+	};
+	content = content.slice(0, -2) + " {\n\tdisplay: none;\n}\n";
+	let style = document.createElement("style");
+	style.innerHTML = content;
+	security.set(securityIdentities[i], style);
+	// console.log("CHECK", securityIdentities[i]);
+	// console.log(content);
+	// console.log("---------------------------------------------------");
+};
+rbxapiSettings.Listen("SecurityIdentity", function(name, value, initial) {
+	for (let entry of security) {
+		if (value === entry[0]) {
+			document.head.appendChild(entry[1]);
+		} else {
+			entry[1].remove();
+		};
 	};
 });
 
