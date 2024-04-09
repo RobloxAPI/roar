@@ -17,11 +17,6 @@ main .icon {
 	float: right;
 }
 
-// Event icon is purple for some reason. Shift it to yellow.
-picture[data-type="member"][data-kind="Event"] {
-	filter: hue-rotate(130deg);
-}
-
 // No unique icon for callbacks. Use flipped function icon.
 picture[data-type="member"][data-kind="Callback"] > img {
 	transform: scaleX(-1);

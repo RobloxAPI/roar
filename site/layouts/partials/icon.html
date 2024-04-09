@@ -26,8 +26,9 @@ secondary: string // The secondary identifier.
 			{{$resLight = resources.Get "icons/light/ACFunction.png"}}
 			{{$resDark = resources.Get "icons/dark/ACFunction.png"}}
 		{{- else if eq $kind "Event" }}
-			{{$resLight = resources.Get "icons/light/ACEvent.png"}}
-			{{$resDark = resources.Get "icons/dark/ACEvent.png"}}
+			{{- /* Event icon is purple for some reason. Shift it to yellow. */}}
+			{{$resLight = (resources.Get "icons/light/ACEvent.png").Filter (images.Hue 130)}}
+			{{$resDark = (resources.Get "icons/dark/ACEvent.png").Filter (images.Hue 115)}}
 		{{- else if eq $kind "Callback" }}
 			{{$resLight = resources.Get "icons/light/ACFunction.png"}}
 			{{$resDark = resources.Get "icons/dark/ACFunction.png"}}
