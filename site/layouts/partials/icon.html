@@ -63,10 +63,10 @@ secondary: string // The secondary identifier.
 
 {{- if $resLight }}
 	{{- if $private }}
-		{{- $overlayLight := (resources.Get "icons/light/Stop.png").Resize "24x" }}
+		{{- $overlayLight := (resources.Get "icons/light/Logpoint.png").Resize "24x" }}
 		{{- $resLight = $resLight.Filter (images.Overlay $overlayLight 0 24) }}
 		{{- if $resDark }}
-			{{- $overlayDark := (resources.Get "icons/dark/Stop.png").Resize "24x" }}
+			{{- $overlayDark := (resources.Get "icons/dark/Logpoint.png").Resize "24x" }}
 			{{- $resDark = $resDark.Filter (images.Overlay $overlayDark 0 24) }}
 		{{- end }}
 	{{- end }}
