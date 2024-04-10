@@ -41,7 +41,7 @@ function initSortClasses() {
 		for (let li of tree.querySelectorAll("li")) {
 			const link = li.querySelector(".entity-link");
 			const text = link.textContent.trim();
-			classes.push([li, text, !removed || li.matches(":scope:has(> .api-removed)")]);
+			classes.push([li, text, !removed || li.matches(":scope:has(> .removed)")]);
 			parents.push([li, li.parentNode]);
 		};
 		classes.sort(function(a, b) {
