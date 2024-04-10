@@ -527,16 +527,6 @@ blockquote > :last-child::after {
 .entity-link {
 	// Force element to shrink to content.
 	max-width: max-content;
-	> picture {
-		margin-right: 0.25em;
-		vertical-align: middle;
-	}
-}
-
-picture {
-	display: inline-flex;
-	vertical-align: middle;
-	align-self: center;
 }
 
 #removed-classes .entity-link:not(.removed) {

@@ -71,14 +71,7 @@ secondary: string // The secondary identifier.
 		{{- end }}
 	{{- end }}
 	{{- if not $resDark}}{{$resDark = $resLight}}{{end}}
-	<picture data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}>
-		{{- if not (eq $resLight $resDark) }}
-			<source media="(prefers-color-scheme: dark)" srcset="{{$resDark.RelPermalink}}">
-		{{- end }}
-		<img class="icon" src="{{$resLight.RelPermalink}}">
-	</picture>
+	<span class="picture" data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon" style="--light:url('{{$resLight.RelPermalink}}');--dark:url('{{$resDark.RelPermalink}}')"></span></span>
 {{- else }}
-	<picture data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}>
-		<img class="icon">
-	</picture>
+	<span class="picture" data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon"></span></span>
 {{- end }}

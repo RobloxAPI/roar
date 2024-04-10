@@ -1,7 +1,22 @@
 main .icon {
+	--scale: calc(var(--icon-scale) * var(--heading-scale,1));
 	display: inline-block;
-	height: calc(var(--icon-scale) * var(--heading-scale,1));
-	width: calc(var(--icon-scale) * var(--heading-scale,1));
+	height: var(--scale);
+	width: var(--scale);
+	background-size: auto var(--scale);
+}
+
+.Auto:root main .icon {
+	background-image: var(--light, var(--dark, none));
+	@media (prefers-color-scheme: dark) {
+		background-image: var(--dark, var(--light, none));
+	}
+}
+.Light:root main .icon {
+	background-image: var(--light, var(--dark, none));
+}
+.Dark:root main .icon {
+	background-image: var(--dark, var(--light, none));
 }
 
 .col-icon .icon, header .icon {
@@ -17,8 +32,19 @@ main .icon {
 	float: right;
 }
 
+.entity-link > .picture {
+	margin-right: 0.25em;
+	vertical-align: middle;
+}
+
+.picture {
+	display: inline-flex;
+	vertical-align: middle;
+	align-self: center;
+}
+
 // No unique icon for callbacks. Use flipped function icon.
-picture[data-type="member"][data-kind="Callback"] > img {
+.picture[data-type="member"][data-kind="Callback"] > .icon {
 	transform: scaleX(-1);
 }
 
