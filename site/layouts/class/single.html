@@ -274,9 +274,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	<section id="toc">
 		<header><h2>Contents</h2></header>
 		<ol class="toc">
-			<li class="toc-summary"><a href="#summary">Summary</a></li>
+			<li id="toc-summary"><a href="#summary">Summary</a></li>
 			{{- if or $superclasses $subclasses }}
-				<li class="toc-hierarchy">Class tree
+				<li id="toc-hierarchy">Class tree
 					<ol>
 						{{- if $superclasses }}
 							<li id="toc-superclasses"><a href="#superclasses">Inherits</a></li>
@@ -287,15 +287,15 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					</ol>
 				</li>
 			{{- end }}
-			<li class="toc-members-index"><a href="#members-index">Member index</a></li>
+			<li id="toc-members-index"><a href="#members-index">Member index</a></li>
 			{{- if $removedMembers }}
-				<li class="toc-removed-members-index set removed"><a href="#removed-members-index">Removed member index</a></li>
+				<li id="toc-removed-members-index" class="set removed"><a href="#removed-members-index">Removed member index</a></li>
 			{{- end }}
 			{{- if $changes }}
-				<li class="toc-history"><a href="#history">History</a></li>
+				<li id="toc-history"><a href="#history">History</a></li>
 			{{- end }}
 			{{- if $members }}
-				<li class="toc-members"><a href="#members">Members</a>
+				<li id="toc-members"><a href="#members">Members</a>
 					<ol>
 						{{- range $members}}
 							<li class="set {{partial `status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "link/entity.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
@@ -304,7 +304,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				</li>
 			{{- end }}
 			{{- if $removedMembers }}
-				<li class="toc-removed-members set removed"><a href="#removed-members">Removed members</a>
+				<li id="toc-removed-members" class="set removed"><a href="#removed-members">Removed members</a>
 					<ol>
 						{{- range $removedMembers}}
 							<li class="set {{partial `status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "link/entity.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
@@ -313,19 +313,19 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				</li>
 			{{- end }}
 			{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
-				<li class="toc-references">References
+				<li id="toc-references">References
 					<ol>
 						{{- if or $relatedClasses }}
-							<li><a href="#related-classes">Related classes</a></li>
+							<li id="toc-related-classes"><a href="#related-classes">Related classes</a></li>
 						{{- end }}
 						{{- if or $relatedMembers }}
-							<li><a href="#related-members">Related members</a></li>
+							<li id="toc-related-members"><a href="#related-members">Related members</a></li>
 						{{- end }}
 						{{- if or $relatedEnums }}
-							<li><a href="#related-enums">Related enums</a></li>
+							<li id="toc-related-enums"><a href="#related-enums">Related enums</a></li>
 						{{- end }}
 						{{- if or $relatedTypes }}
-							<li><a href="#related-types">Related types</a></li>
+							<li id="toc-related-types"><a href="#related-types">Related types</a></li>
 						{{- end }}
 					</ol>
 				</li>
