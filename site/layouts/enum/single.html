@@ -147,13 +147,14 @@ items: []EnumItemIndex
 	{{- if $changes }}
 		<section id="history" class="filter-container history-member-filter">
 			<header>
-				<h2>History {{partial "element-count.html" (len $changes)}}</h2>
-				<aside class="filter-controls">
-					<label>
-						<input class="filter-input" type="checkbox">
-						<span>Hide item changes</span>
-					</label>
-				</aside>
+				<h2>History {{partial "element-count.html" (len $changes)}}
+					<aside class="filter-controls">
+						<label>
+							<input class="filter-input" type="checkbox">
+							<span>Hide item changes</span>
+						</label>
+					</aside>
+				</h2>
 			</header>
 			{{- partial "history/change-list.html" (dict "changes" $changes "truncated" true "hascontext" true) }}
 		</section>
