@@ -10,35 +10,64 @@ secondary: string // The secondary identifier.
 {{- $resDark := false }}
 {{- $kind := false }}
 {{- $private := false }}
+{{- $title := false }}
 {{- if eq $type "hub" }}
 	{{- $resLight = resources.Get "images/hub.svg"}}
 {{- else }}
 	{{- if eq $type "class" }}
+		{{- $title = "Class" }}
 		{{- if not $resLight}}{{$resLight = partial "func/class-icon.html" (dict "path" "icons/light/%s.png" "class" .primary)}}{{end}}
 		{{- if not $resLight}}{{$resLight = resources.Get "icons/light/Placeholder.png"}}{{end}}
 		{{- if not $resDark}}{{$resDark = partial "func/class-icon.html" (dict "path" "icons/dark/%s.png" "class" .primary)}}{{end}}
 		{{- if not $resDark}}{{$resDark = resources.Get "icons/dark/Placeholder.png"}}{{end}}
 	{{- else if eq $type "member" }}
-		{{- $kind = index site.Data.Dump.Classes .primary "Members" .secondary "MemberType" }}
+		{{- $dump := index site.Data.Dump.Classes .primary "Members" .secondary }}
+		{{- $kind = $dump.MemberType }}
 		{{- $private = strings.Contains (partial "status-class.html" .) "sec-" }}
+		{{- $title = $kind }}
 		{{- if eq $kind "Property" }}
 			{{- $resLight = resources.Get "icons/light/ACProperty.png"}}
 			{{- $resDark = resources.Get "icons/dark/ACProperty.png"}}
+			{{- $sec := slice }}
+			{{- if and (eq $dump.ReadSecurity $dump.WriteSecurity) (ne $dump.ReadSecurity "None" "") }}
+				{{- $sec = $sec | append (print "Read/Write: " $dump.ReadSecurity) }}
+			{{- else }}
+				{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
+					{{- $sec = $sec | append (print "Read: " $dump.ReadSecurity) }}
+				{{- end }}
+				{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None") }}
+					{{- $sec = $sec | append (print "Write: " $dump.WriteSecurity) }}
+				{{- end }}
+			{{- end }}
+			{{- if $sec }}
+				{{- $title = (printf "Protected %s (%s)" $title (delimit $sec ", "))}}
+			{{- end }}
 		{{- else if eq $kind "Function" }}
 			{{- $resLight = resources.Get "icons/light/ACFunction.png"}}
 			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
+			{{- if and $dump.Security (ne $dump.Security "None") }}
+				{{- $title = (printf "Protected %s (%s)" $title $dump.Security)}}
+			{{- end }}
 		{{- else if eq $kind "Event" }}
 			{{- /* Event icon is purple for some reason. Shift it to yellow. */}}
 			{{- $resLight = (resources.Get "icons/light/ACEvent.png").Filter (images.Hue 130)}}
 			{{- $resDark = (resources.Get "icons/dark/ACEvent.png").Filter (images.Hue 115)}}
+			{{- if and $dump.Security (ne $dump.Security "None") }}
+				{{- $title = (printf "Protected %s (%s)" $title $dump.Security)}}
+			{{- end }}
 		{{- else if eq $kind "Callback" }}
 			{{- $resLight = resources.Get "icons/light/ACFunction.png"}}
 			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
+			{{- if and $dump.Security (ne $dump.Security "None") }}
+				{{- $title = (printf "Protected %s (%s)" $title $dump.Security)}}
+			{{- end }}
 		{{- end }}
 	{{- else if eq $type "enum" }}
+		{{- $title = "Enum" }}
 		{{- $resLight = (resources.Get "icons/light/Enum.png").Filter (images.Colorize 35 100 100) (images.Brightness 10)}}
 		{{- $resDark = (resources.Get "icons/light/Enum.png").Filter (images.Colorize 35 100 100) (images.Brightness 20)}}
 	{{- else if eq $type "enumitem" }}
+		{{- $title = "EnumItem" }}
 		{{- $resLight = (resources.Get "icons/light/EnumMember.png").Filter (images.Colorize 35 100 100) (images.Brightness 10)}}
 		{{- $resDark = (resources.Get "icons/light/EnumMember.png").Filter (images.Colorize 35 100 100) (images.Brightness 20)}}
 	{{- else if eq $type "type" }}
@@ -56,6 +85,7 @@ secondary: string // The secondary identifier.
 			{{- $resLight = resources.Get "icons/light/Value.png"}}
 			{{- $resDark = resources.Get "icons/dark/Value.png"}}
 		{{- end }}
+		{{- $title = print $kind " type" }}
 	{{- end }}
 	{{- if not $resLight}}{{$resLight = resources.Get (print "icons/light/Placeholder.png")}}{{end}}
 	{{- if not $resDark}}{{$resDark = resources.Get (print "icons/dark/Placeholder.png")}}{{end}}
@@ -71,7 +101,7 @@ secondary: string // The secondary identifier.
 		{{- end }}
 	{{- end }}
 	{{- if not $resDark}}{{$resDark = $resLight}}{{end}}
-	<span class="picture" data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon" style="--light:url('{{$resLight.RelPermalink}}');--dark:url('{{$resDark.RelPermalink}}')"></span></span>
+	<span class="picture"{{if $title}} title="{{$title}}"{{end}} data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon" style="--light:url('{{$resLight.RelPermalink}}');--dark:url('{{$resDark.RelPermalink}}')"></span></span>
 {{- else }}
-	<span class="picture" data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon"></span></span>
+	<span class="picture"{{if $title}} title="{{$title}}"{{end}} data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon"></span></span>
 {{- end }}
