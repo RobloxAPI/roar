@@ -126,6 +126,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Member Type</th><td>Function</td></tr>
+							{{- if and $dump.Security (ne $dump.Security "None") }}
+								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
+							{{- end }}
 							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
@@ -133,9 +136,6 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
-							{{- if and $dump.Security (ne $dump.Security "None") }}
-								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
-							{{- end }}
 							{{/* TODO: reflection metadata */}}
 						</tbody>
 					</table>
@@ -143,15 +143,15 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Member Type</th><td>Event</td></tr>
+							{{- if and $dump.Security (ne $dump.Security "None") }}
+								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
+							{{- end }}
 							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
 						<tbody>
-							{{- if and $dump.Security (ne $dump.Security "None") }}
-								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
-							{{- end }}
 							{{/* TODO: reflection metadata */}}
 						</tbody>
 					</table>
@@ -159,6 +159,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Member Type</th><td>Callback</td></tr>
+							{{- if and $dump.Security (ne $dump.Security "None") }}
+								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
+							{{- end }}
 							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 						</tbody>
 					</table>
@@ -166,9 +169,6 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
-							{{- if and $dump.Security (ne $dump.Security "None") }}
-								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
-							{{- end }}
 							{{/* TODO: reflection metadata */}}
 						</tbody>
 					</table>
