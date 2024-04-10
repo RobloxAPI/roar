@@ -10,6 +10,10 @@ secondary: string // Secondary entity index.
 {{- $dump := $data.Dump }}
 {{- if $dump.Tags }}
 	<div class="status-list">
+		{{- $kind := or $dump.MemberType $type | lower }}
+		{{- if eq $type "enumitem" }}
+			{{- $kind = "item" }}
+		{{- end }}
 		{{- if in $dump.Tags "Deprecated" }}
 			{{- $text := "It exists only for backward compatibility, and should not be used for new work." }}
 			{{- $preferred := false }}
@@ -24,46 +28,46 @@ secondary: string // Secondary entity index.
 					{{- end }}
 				{{- end }}
 			{{- end }}
-			{{- partial "status/box.html" (dict "level" "high" "header" "This item is deprecated." "text" $text "preferred" $preferred) }}
+			{{- partial "status/box.html" (dict "level" "high" "header" (printf "This %s is deprecated." $kind) "text" $text "preferred" $preferred) }}
 		{{- end }}
 		{{- if in $dump.Tags "noyield" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" "This callback cannot yield." "text" "Attempting to yield within this callback will result in an error.") }}
+			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s cannot yield." $kind) "text" "Attempting to yield within it will result in an error.") }}
 		{{- end }}
 		{{- if in $dump.Tags "CanYield" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" "This function can yield." "text" "It may or may not block the calling thread until completion.") }}
+			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s can yield." $kind) "text" "It may or may not block the calling thread until completion.") }}
 		{{- end }}
 		{{- if in $dump.Tags "Yields" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" "This function yields." "text" "It will block the calling thread until completion.") }}
+			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s yields." $kind) "text" "It will block the calling thread until completion.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotCreatable" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This class is not creatable." "text" "An object of this class cannot be created with Instance.new.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is not creatable." $kind) "text" "Instances of this class cannot be created with Instance.new.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotScriptable" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" "This member is not scriptable." "text" "It cannot be accessed by Lua code.") }}
+			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not scriptable." $kind) "text" "It cannot be accessed by Lua code.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotReplicated" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" "This item is not replicated." "text" "Its interface does not cross the network boundary.") }}
+			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not replicated." $kind) "text" "Its interface does not cross the network boundary.") }}
 		{{- end }}
 		{{- if in $dump.Tags "Service" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This class is a service." "text" "It is a singleton that may be acquired with GetService.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is a service." $kind) "text" "It is a singleton that may be acquired with GetService.") }}
 		{{- end }}
 		{{- if in $dump.Tags "Settings" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This class is a settings container." "text" "It contains settings that affect the behavior of the peer.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is a settings container." $kind) "text" "It contains settings that affect the behavior of the peer.") }}
 		{{- end }}
 		{{- if in $dump.Tags "ReadOnly" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This property is read-only." "text" "Its value can be read, but it cannot be modified.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is read-only." $kind) "text" "Its value can be read, but it cannot be modified.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotBrowsable" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This item is not browsable." "text" "It is not visible in Studio's object browser.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is not browsable." $kind) "text" "It is not visible in Studio's object browser.") }}
 		{{- end }}
 		{{- if in $dump.Tags "Hidden" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This member is hidden." "text" "It is not meant to be used, and may have unresolved issues.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is hidden." $kind) "text" "It is not meant to be used, and may have unresolved issues.") }}
 		{{- end }}
 		{{- if in $dump.Tags "PlayerReplicated" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This class is player-replicated." "text" "Its data is replicated between the server and only a single client.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is player-replicated." $kind) "text" "Its data is replicated between the server and only a single client.") }}
 		{{- end }}
 		{{- if in $dump.Tags "CustomLuaState" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" "This function has a custom lua state." "text" "It may behave in a non-standard way.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s has a custom lua state." $kind) "text" "It may behave in a non-standard way.") }}
 		{{- end }}
 	</div>
 {{- end }}
