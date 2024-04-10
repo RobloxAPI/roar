@@ -168,7 +168,7 @@ items: []EnumItemIndex
 					{{- if .Member }}
 						{{- $type = "member" }}
 					{{- end }}
-					<li>
+					<li class="set {{partial `status-class.html` (dict `type` $type `primary` .Class `secondary` .Member)}}">
 						<span>
 							{{- partial "link/entity.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
 							{{- if eq .Kind "Parameter" }} (

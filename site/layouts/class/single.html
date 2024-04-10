@@ -397,7 +397,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<header><h2>Related classes {{partial "element-count.html" (len $relatedClasses)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $relatedClasses }}
-							<li>{{partial "link/entity.html" (dict "type" "class" "primary" .)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .)}}">{{partial "link/entity.html" (dict "type" "class" "primary" .)}}</li>
 						{{- end }}
 					</ul>
 				</section>
@@ -411,7 +411,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 							{{- if .Member }}
 								{{- $type = "member" }}
 							{{- end }}
-							<li>
+							<li class="set {{partial `status-class.html` (dict `type` $type `primary` .Class `secondary` .Member)}}">
 								<span>
 									{{- partial "link/entity.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
 									{{- if eq .Kind "Parameter" }} (
@@ -428,7 +428,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<header><h2>Related enums {{partial "element-count.html" (len $relatedEnums)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $relatedEnums }}
-							<li>{{partial "link/entity.html" (dict "type" "enum" "primary" .)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `enum` `primary` .)}}">{{partial "link/entity.html" (dict "type" "enum" "primary" .)}}</li>
 						{{- end }}
 					</ul>
 				</section>
@@ -438,7 +438,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<header><h2>Related types {{partial "element-count.html" (len $relatedTypes)}}</h2></header>
 					<ul class="element-list truncated-list">
 						{{- range $relatedTypes }}
-							<li>{{partial "link/entity.html" (dict "type" "type" "primary" .)}}</li>
+							<li class="set {{partial `status-class.html` (dict `type` `type` `primary` .)}}">{{partial "link/entity.html" (dict "type" "type" "primary" .)}}</li>
 						{{- end }}
 					</ul>
 				</section>
