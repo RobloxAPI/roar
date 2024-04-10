@@ -105,14 +105,14 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 							<tr><th>Member Type</th><td>Property</td></tr>
 							<tr><th>Value Type</th><td>{{partial "member/type.html" $dump.ValueType}}</td></tr>
 							{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
-								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
+								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
 									<tr><th>Security</th><td>{{$dump.ReadSecurity}}</td></tr>
 								{{- end }}
 							{{- else }}
-								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None" "") }}
+								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
 									<tr><th>Read Security</th><td>{{$dump.ReadSecurity}}</td></tr>
 								{{- end }}
-								{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None" "") }}
+								{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None") }}
 									<tr><th>Write Security</th><td>{{$dump.WriteSecurity}}</td></tr>
 								{{- end }}
 							{{- end }}
@@ -133,7 +133,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
-							{{- if and .Security (ne .Security "None" "") }}
+							{{- if and $dump.Security (ne $dump.Security "None") }}
 								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
 							{{- end }}
 							{{/* TODO: reflection metadata */}}
@@ -149,7 +149,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
 						<tbody>
-							{{- if and .Security (ne .Security "None" "") }}
+							{{- if and $dump.Security (ne $dump.Security "None") }}
 								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
 							{{- end }}
 							{{/* TODO: reflection metadata */}}
@@ -166,7 +166,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tbody>
 							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
-							{{- if and .Security (ne .Security "None" "") }}
+							{{- if and $dump.Security (ne $dump.Security "None") }}
 								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
 							{{- end }}
 							{{/* TODO: reflection metadata */}}
