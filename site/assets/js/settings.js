@@ -1,5 +1,7 @@
 "use strict";
 
+import {actions} from "./actions.js"
+
 const securityIdentities = [
 	"All",
 	"Server",
@@ -297,6 +299,7 @@ for (let setting of settings) {
 		} else {
 			document.head.appendChild(show);
 		};
+		actions.UpdateAll();
 	});
 }
 
@@ -335,6 +338,7 @@ rbxapiSettings.Listen("SecurityIdentity", function(name, value, initial) {
 			entry[1].remove();
 		};
 	};
+	actions.UpdateAll();
 });
 
 window.rbxapiSettings = rbxapiSettings;
