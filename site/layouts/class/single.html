@@ -93,7 +93,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 
 */}}
 {{- define "members" }}
-	<div id="members-sections">
+	<div class="members-sections">
 		{{- range . }}
 			{{- $dump := index site.Data.Dump.Classes .Class "Members" .Name }}
 			<section id="member-{{.Name}}" class="set {{partial `status-class.html` (dict `type` `member` `primary` .Class `secondary` .Name)}}">
