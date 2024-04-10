@@ -39,6 +39,10 @@ function toggleAll(show, scroll) {
 };
 
 function initUpdates() {
+	if (!document.querySelector("body > main.type-updates")) {
+		return;
+	};
+
 	// Inject pointer style.
 	function initStyle() {
 		let style = document.createElement("style");
