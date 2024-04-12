@@ -132,6 +132,9 @@ func (c *Command) Run(opt snek.Options) error {
 		fmt.Println("rebuilding history database")
 		updatedHist = MergeHistory(repo, storedHist)
 
+		// Normalize tags within history.
+		NormalizeHistoryTags(updatedHist)
+
 		// Write new history file.
 		if !c.Disable.History {
 			if err := WriteFile(c.Site, historyData, updatedHist); err != nil {

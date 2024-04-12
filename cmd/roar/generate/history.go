@@ -9,6 +9,8 @@ import (
 	"os"
 	"slices"
 	"sort"
+	"strings"
+	"unicode"
 
 	"github.com/robloxapi/rbxdump"
 	"github.com/robloxapi/rbxdump/diff"
@@ -171,4 +173,64 @@ func ReadHistory(histPath string) (storedhist *history.Root, err error) {
 		}
 	}
 	return storedHist, nil
+}
+
+// Normalizes any tags and security context values within hist to their
+// canonical forms. For example, "WriteOnly" and "writeonly" are considered
+// equivalent tags, which are normalized by selecting which ever has the most
+// uppercase latters.
+func NormalizeHistoryTags(hist *history.Root) {
+	canonTags := map[string]string{}
+	history.VisitTags(hist, func(tag string) (string, bool) {
+		low := strings.ToLower(tag)
+		if cur, ok := canonTags[low]; ok {
+			canonTags[low] = normalizeTag(cur, tag)
+		} else {
+			canonTags[low] = tag
+		}
+		return "", false
+	})
+	printed := map[string]bool{}
+	history.VisitTags(hist, func(tag string) (string, bool) {
+		t := canonTags[strings.ToLower(tag)]
+		if t != tag && !printed[tag] {
+			printed[tag] = true
+			fmt.Printf("normalized tag %s => %s\n", tag, t)
+		}
+		return t, true
+	})
+}
+
+// Selects the most canon capitalization of a tag. Arguments are assumed to be
+// equivalent. Has the following preference:
+//  1. WriteOnly // Has 2 uppercase letters.
+//  2. Writeonly // Has 1 uppercase letter, first is uppercase.
+//  2. writeOnly // Has 1 uppercase letter.
+//  3. writeonly // Has 0 uppercase letters.
+func normalizeTag(current, next string) string {
+	cu := 0
+	cf := false
+	for i, c := range current {
+		if unicode.IsUpper(c) {
+			cu++
+			if i == 0 {
+				cf = true
+			}
+		}
+	}
+	nu := 0
+	for _, c := range next {
+		if unicode.IsUpper(c) {
+			nu++
+		}
+	}
+	// Prefer current if it contains more uppers.
+	if cu > nu {
+		return current
+	}
+	// Prefer current if first letter is upper.
+	if cu == nu && cf {
+		return current
+	}
+	return next
 }

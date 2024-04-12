@@ -568,3 +568,45 @@ roll:
 		return false
 	}
 }
+
+// Visits tags within a history.Root. If ok is true, then the tag will be
+// updated to next.
+func VisitTags(hist *Root, visit func(tag string) (next string, ok bool)) {
+	for _, change := range hist.Change {
+		visitFieldTags(change.Action.Fields, visit)
+		visitFieldTags(change.Prev, visit)
+	}
+}
+
+// Visits tags within an rbxdump.Fields.
+func visitFieldTags(fields rbxdump.Fields, visit func(string) (string, bool)) {
+	switch tags := fields["Tags"].(type) {
+	case []string:
+		for i, tag := range tags {
+			if t, ok := visit(tag); ok {
+				tags[i] = t
+			}
+		}
+	case rbxdump.Tags:
+		for i, tag := range tags {
+			if t, ok := visit(tag); ok {
+				tags[i] = t
+			}
+		}
+	}
+	if tag, ok := fields["Security"].(string); ok {
+		if t, ok := visit(tag); ok {
+			fields["Security"] = t
+		}
+	}
+	if tag, ok := fields["ReadSecurity"].(string); ok {
+		if t, ok := visit(tag); ok {
+			fields["ReadSecurity"] = t
+		}
+	}
+	if tag, ok := fields["WriteSecurity"].(string); ok {
+		if t, ok := visit(tag); ok {
+			fields["WriteSecurity"] = t
+		}
+	}
+}
