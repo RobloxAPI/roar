@@ -1,6 +1,7 @@
 *.lock
 /site/public/
 /site/assets/icons/
+/site/assets/search.db
 /site/content/class/
 /site/content/enum/
 /site/content/type/

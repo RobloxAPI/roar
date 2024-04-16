@@ -15,6 +15,7 @@ import (
 	"github.com/robloxapi/roar/history"
 	"github.com/robloxapi/roar/icons"
 	"github.com/robloxapi/roar/index"
+	"github.com/robloxapi/roar/search"
 )
 
 const (
@@ -32,6 +33,7 @@ const (
 	docsData    = "Docs.json"
 	dumpData    = "Dump.json"
 	reflectData = "Reflect.json"
+	searchDB    = "search.db"
 )
 
 var Def = snek.Def{
@@ -183,6 +185,11 @@ func (c *Command) Run(opt snek.Options) error {
 		if err := icons.Write(filepath.Join(c.Site, siteAssets)); err != nil {
 			return err
 		}
+	}
+
+	// Generate search database.
+	if err := search.WriteDB(filepath.Join(c.Site, siteAssets, searchDB), indexRoot, patcher.Root); err != nil {
+		return err
 	}
 
 	return nil
