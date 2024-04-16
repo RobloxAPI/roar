@@ -266,49 +266,86 @@ const F = {
 	TYPE_CAT  : [e0, 14, "cats"],
 };
 
-// Defines operations that can be passed to the COMPARE method.
-const O = {
-	EQ: (a,b) => a === b,
-	NE: (a,b) => a !== b,
-	LT: (a,b) => a < b,
-	LE: (a,b) => a <= b,
-	GT: (a,b) => a > b,
-	GE: (a,b) => a >= b,
-};
-
 // Contains methods to compare the field of a row to a value.
+//
+// Each method returns a score. A match is indicated by a positive score. A
+// non-match is indicated by negative score. A score of 0 indicates an undefined
+// field, and is also considered a non-match. Positive scores can have an
+// arbitrary magntiude, which is relative to the result of a fuzzy match.
+// Negative scores are normalized to -1.
 const M = {
 	// Returns the score of a fuzzy match of a pattern against a field. Returns
 	// zero unless the full pattern is matched.
-	FUZZY: function(row, field, value) {
-		const [matched, score] = fuzzy_match(value, row.field(field));
+	FUZZY: function(field, value) {
+		const [matched, score] = fuzzy_match(value, field);
 		if (matched) {
 			return score;
 		};
-		return 0;
+		return -1;
 	},
 	// Like FUZZY, but returns the score even without a full match.
-	FUZZY_ALL: function(row, field, value) {
-		const [matched, score] = fuzzy_match(value, row.field(field));
+	FUZZY_ALL: function(field, value) {
+		const [matched, score] = fuzzy_match(value, field);
 		return score;
 	},
-	// Returns 1 if the value is equal to the field, and 0 otherwise.
-	EQUAL: function(row, field, value) {
-		return (row.field(field) === value) ? 1 : 0;
-	},
-	// Returns 1 if the field matches the given regular expression, and 0
+	// Returns 1 if the field matches the given regular expression, and -1
 	// otherwise.
-	REGEX: function(row, field, value, flags) {
+	REGEXP: function(field, value, flags) {
 		const re = new RegExp(value, flags);
-		return (row.field(field).match(re)) ? 1 : 0;
+		return (field.match(re)) ? 1 : -1;
 	},
-	// Returns 1.
-	TRUE: function() {
+	// Returns the removed bit.
+	REMOVED: function(flags) {
+		return ((flags&(1<<0)) !== 0) ? 1 : -1;
+	},
+	// Returns 1 if the field is with the bounds of lower and upper, and -1
+	// otherwise.
+	RANGE: function(field, lower, upper) {
+		return (lower <= field && field <= upper) ? 1 : -1;
+	},
+	EQ: function(field, value) {
+		return (field === value) ? 1 : -1;
+	},
+	NE: function(field, value) {
+		return (field !== value) ? 1 : -1;
+	},
+	LT: function(field, value) {
+		return (field < value) ? 1 : -1;
+	},
+	LE: function(field, value) {
+		return (field <= value) ? 1 : -1;
+	},
+	GT: function(field, value) {
+		return (field > value) ? 1 : -1;
+	},
+	GE: function(field, value) {
+		return (field >= value) ? 1 : -1;
+	},
+	TRUE: function(field, value, flags) {
 		return 1;
 	},
-	// Returns the bit corresponding to flag within the field.
-	FLAG: function(row, field, flag) {
-		const flags = row.field(field);
+};
+
+// Recursively checks if row matches expr.
+function rowMatches(row, expr) {
+	switch (expr.expr) {
+	case "op":
+		// Skip if row and op types do not match.
+		if (!expr.types.includes(row.type)) {
+			return 0;
+		};
+		const fvalue = row.field(expr.field);
+		if (fvalue === undefined) {
+			return 0;
+		};
+		// Clamp negative scores.
+		return Math.max(-1, expr.method(fvalue, ...expr.args));
+	case "flag":
+		// Skip if row and op types do not match.
+		if (!expr.types.includes(row.type)) {
+			return 0;
+		};
+		const flags = row.field(expr.field);
 		if (flags === undefined) {
 			return 0;
 		};
@@ -316,44 +353,20 @@ const M = {
 		if (!n) {
 			return 0;
 		};
-		return ((flags&(1<<n)) !== 0) ? 1 : 0;
-	},
-	// Returns the removed bit.
-	REMOVED: function(row, field) {
-		const flags = row.field(field);
-		if (flags === undefined) {
-			return 0;
-		};
-		return ((flags&(1<<0)) !== 0) ? 1 : 0;
-	},
-	// Returns 1 if the field is with the bounds of lower and upper, and 0
-	// otherwise.
-	RANGE: function(row, field, lower, upper) {
-		const value = row.field(field);
-		return (lower <= value && value <= upper) ? 1 : 0;
-	},
-	// Returns 1 if the comparision of the field to the value returns true
-	// according to op, and 0 otherwise.
-	COMPARE: function(row, field, op, value) {
-		return op(row.field(field), value) ? 1 : 0;
-	},
-};
-
-// Recursively checks if row matches expr.
-function rowMatches(row, expr) {
-	let result = 0;
-	switch (expr.expr) {
-	case "op":
+		return ((flags&(1<<n)) !== 0) ? 1 : -1;
+	case "any":
 		// Skip if row and op types do not match.
-		if (!expr.types.includes(row.type)) {
-			return 0;
-		};
-		// Clamp negative scores to 0.
-		return Math.max(0, expr.method(row, ...expr.args));
+		return (expr.types.includes(row.type)) ? 1 : -1;
+	case "true":
+		// Returns always postive match.
+		return 1;
+	case "false":
+		// Returns always negative match.
+		return -1;
 	case "and":
 		// All operands must return a positive score. Result is the lowest
 		// score.
-		result = Infinity;
+		let result = Infinity;
 		for (let op of expr.operands) {
 			const r = rowMatches(row, op);
 			if (r < result) {
@@ -367,24 +380,22 @@ function rowMatches(row, expr) {
 	case "or":
 		// At least one operand must return a positive score. Result is the
 		// first matching score.
-		result = 0;
 		for (let op of expr.operands) {
 			const r = rowMatches(row, op);
-			if (r > result) {
-				result = r;
+			if (r > 0) {
 				//TODO: Don't short-circuit so that the highest score can be
 				//selected.
-				break;
+				return r;
 			};
 		};
-		return result;
+		return -1;
 	case "not":
-		// Returns the negation of the operand. That is, if the score is
-		// positive, then the result will be 0. If the score is 0, then the
-		// result will be 1.
-		return Math.max(0, 1 - rowMatches(row, expr.operand));
+		// Returns the negation of the operand. This turns a match into a
+		// non-match, and vise-versa. Zero, indicating undefined, is still
+		// propagated as zero.
+		return Math.max(-1, -rowMatches(row, expr.operand));
 	};
-	return result;
+	return -1;
 };
 
 // Recursively finds the types of each operation in expr.
@@ -606,7 +617,6 @@ const fields = {
 
 window.F = F;
 window.M = M;
-window.O = O;
 window.search = function(expr) {
 	getDatabase(
 		function(db) {
