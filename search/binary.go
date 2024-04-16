@@ -38,65 +38,66 @@ type field struct {
 var (
 	// Entity
 
-	_TYPE  = field{e2, 0} // Entity type
-	_FLAGS = field{f4, 5} // Entity tags
+	_PRIMARY   = field{s2, 0} // Primary identifier
+	_SECONDARY = field{s2, 2} // Secondary identifier
+	_FLAGS     = field{f4, 4} // Entity flags
 
 	// Class
 
-	_CLASS_NAME   = field{s2, 1}  // class.Name
-	_SUPERCLASSES = field{n1, 9}  // Number of superclasses of class
-	_SUBCLASSES   = field{n2, 10} // Number of subclasses of class
-	_MEMBERS      = field{n2, 12} // len(class.Members)
-	_SUPERCLASS   = field{s2, 16} // Specific superclass of class
-	_SUBCLASS     = field{s2, 18} // Specific subclass of class
-	_MEM_CAT      = field{s2, 20} // class.MemoryCategory
+	_CLASS_NAME   = field{s2, 0}  // class.Name
+	_SUPERCLASSES = field{n1, 8}  // Number of superclasses of class
+	_SUBCLASSES   = field{n2, 9}  // Number of subclasses of class
+	_MEMBERS      = field{n2, 11} // len(class.Members)
+	_SUPERCLASS   = field{s2, 15} // Specific superclass of class
+	_SUBCLASS     = field{s2, 17} // Specific subclass of class
+	_MEM_CAT      = field{s2, 19} // class.MemoryCategory
 
 	// Member (property, function, event, callback)
 
-	_MEMBER_NAME   = field{s2, 3}  // member.Name
-	_THREAD_SAFETY = field{e0, 14} // member.ThreadSafety
-	_SECURITY      = field{e1, 14} // member.Security
+	_MEMBER_NAME   = field{s2, 2}  // member.Name
+	_THREAD_SAFETY = field{e0, 13} // member.ThreadSafety
+	_SECURITY      = field{e1, 13} // member.Security
 
 	// Property
 
-	_CAN_SAVE        = field{b1, 12} // property.CanSave
-	_CAN_LOAD        = field{b1, 13} // property.CanLoad
-	_READ_SECURITY   = field{e1, 14} // property.ReadSecurity
-	_WRITE_SECURITY  = field{e0, 15} // property.WriteSecurity
-	_VALUE_TYPE_CAT  = field{e1, 15} // property.ValueType.Category
-	_VALUE_TYPE_NAME = field{s2, 16} // property.ValueType.Name
-	_CATEGORY        = field{s2, 20} // property.Category
-	_DEFAULT         = field{s2, 22} // property.Default
+	_CAN_SAVE        = field{b1, 11} // property.CanSave
+	_CAN_LOAD        = field{b1, 12} // property.CanLoad
+	_READ_SECURITY   = field{e1, 13} // property.ReadSecurity
+	_WRITE_SECURITY  = field{e0, 14} // property.WriteSecurity
+	_VALUE_TYPE_CAT  = field{e1, 14} // property.ValueType.Category
+	_VALUE_TYPE_NAME = field{s2, 15} // property.ValueType.Name
+	_CATEGORY        = field{s2, 19} // property.Category
+	_DEFAULT         = field{s2, 21} // property.Default
 
 	// Function, event, callback
 
-	_RETURNS          = field{n1, 9}  // len(member.ReturnType)
-	_PARAMETERS       = field{n2, 10} // len(member.Parameters)
-	_PARAM_TYPE_OPT   = field{b1, 12} // member.Parameters[].Type.Optional
-	_RETURN_TYPE_OPT  = field{b1, 13} // member.ReturnType[].Optional
-	_PARAM_TYPE_CAT   = field{e0, 15} // member.Parameters[].Type.Category
-	_RETURN_TYPE_CAT  = field{e1, 15} // member.ReturnType[].Category
-	_RETURN_TYPE_NAME = field{s2, 16} // member.ReturnType[].Name
-	_PARAM_TYPE_NAME  = field{s2, 18} // member.Parameters[].Type.Name
-	_PARAM_NAME       = field{s2, 20} // member.Parameters[].Name
-	_PARAM_DEFAULT    = field{s2, 22} // member.Parameters[].Default (if Optional)
+	_RETURNS          = field{n1, 8}  // len(member.ReturnType)
+	_PARAMETERS       = field{n2, 9}  // len(member.Parameters)
+	_PARAM_TYPE_OPT   = field{b1, 11} // member.Parameters[].Type.Optional
+	_RETURN_TYPE_OPT  = field{b1, 12} // member.ReturnType[].Optional
+	_PARAM_TYPE_CAT   = field{e0, 14} // member.Parameters[].Type.Category
+	_RETURN_TYPE_CAT  = field{e1, 14} // member.ReturnType[].Category
+	_RETURN_TYPE_NAME = field{s2, 15} // member.ReturnType[].Name
+	_PARAM_TYPE_NAME  = field{s2, 17} // member.Parameters[].Type.Name
+	_PARAM_NAME       = field{s2, 19} // member.Parameters[].Name
+	_PARAM_DEFAULT    = field{s2, 21} // member.Parameters[].Default (if Optional)
 
 	// Enum
 
-	_ENUM_NAME  = field{s2, 1}  // enum.Name
-	_ENUM_ITEMS = field{n2, 10} // len(enum.Items)
+	_ENUM_NAME  = field{s2, 0} // enum.Name
+	_ENUM_ITEMS = field{n2, 9} // len(enum.Items)
 
 	// EnumItem
 
-	_ITEM_NAME    = field{s2, 3}  // enumitem.Name
-	_LEGACY_NAMES = field{n1, 9}  // len(enumitem.LegacyNames)
-	_ITEM_VALUE   = field{n4, 10} // enumitem.Value
-	_LEGACY_NAME  = field{s2, 16} // enumitem.LegacyName[]
+	_ITEM_NAME    = field{s2, 2}  // enumitem.Name
+	_LEGACY_NAMES = field{n1, 8}  // len(enumitem.LegacyNames)
+	_ITEM_VALUE   = field{n4, 9}  // enumitem.Value
+	_LEGACY_NAME  = field{s2, 15} // enumitem.LegacyName[]
 
 	// Type
 
-	_TYPE_NAME = field{s2, 1}  // type.Name
-	_TYPE_CAT  = field{e0, 15} // type.Category
+	_TYPE_NAME = field{s2, 0}  // type.Name
+	_TYPE_CAT  = field{e0, 14} // type.Category
 )
 
 // 4-bit enumeration packed into lower 4 bits.
@@ -175,7 +176,7 @@ func (t *table) row(cells ...cell) {
 		if cell.method == nil {
 			continue
 		}
-		cell.method(row[:], cell.offset-1, cell.value)
+		cell.method(row[:], cell.offset, cell.value)
 	}
 	t.buf.Write(row[:])
 }
@@ -361,7 +362,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 		}
 
 		typeTables["Class"].row(
-			// cell{_TYPE, typeIndex["Class"]},
 			cell{_CLASS_NAME, b.Index(k)},
 			cell{_FLAGS, flags.bits(d, i.Removed)},
 			cell{_SUPERCLASSES, len(i.Superclasses)},
@@ -371,14 +371,12 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 		)
 		for _, sup := range i.Superclasses {
 			typeTables["Class"].row(
-				// cell{_TYPE, typeIndex["Class"]},
 				cell{_CLASS_NAME, b.Index(k)},
 				cell{_SUPERCLASS, b.Index(sup)},
 			)
 		}
 		for _, sub := range i.Subclasses {
 			typeTables["Class"].row(
-				// cell{_TYPE, typeIndex["Class"]},
 				cell{_CLASS_NAME, b.Index(k)},
 				cell{_SUBCLASS, b.Index(sub)},
 			)
@@ -391,7 +389,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 			switch d := d.(type) {
 			case *rbxdump.Property:
 				typeTables[d.MemberType()].row(
-					// cell{_TYPE, typeIndex[d.MemberType()]},
 					cell{_CLASS_NAME, b.Index(i.Class)},
 					cell{_MEMBER_NAME, b.Index(k)},
 					cell{_FLAGS, flags.bits(d, i.Removed)},
@@ -407,7 +404,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				)
 			case *rbxdump.Function:
 				typeTables[d.MemberType()].row(
-					// cell{_TYPE, typeIndex[d.MemberType()]},
 					cell{_CLASS_NAME, b.Index(i.Class)},
 					cell{_MEMBER_NAME, b.Index(k)},
 					cell{_FLAGS, flags.bits(d, i.Removed)},
@@ -418,7 +414,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				)
 				for _, ret := range d.ReturnType {
 					typeTables[d.MemberType()].row(
-						// cell{_TYPE, typeIndex[d.MemberType()]},
 						cell{_CLASS_NAME, b.Index(i.Class)},
 						cell{_MEMBER_NAME, b.Index(k)},
 						cell{_RETURN_TYPE_OPT, booli(ret.Optional)},
@@ -428,7 +423,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				}
 				for _, param := range d.Parameters {
 					typeTables[d.MemberType()].row(
-						// cell{_TYPE, typeIndex[d.MemberType()]},
 						cell{_CLASS_NAME, b.Index(i.Class)},
 						cell{_MEMBER_NAME, b.Index(k)},
 						cell{_PARAM_TYPE_OPT, booli(param.Type.Optional)},
@@ -440,7 +434,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				}
 			case *rbxdump.Event:
 				typeTables[d.MemberType()].row(
-					// cell{_TYPE, typeIndex[d.MemberType()]},
 					cell{_CLASS_NAME, b.Index(i.Class)},
 					cell{_MEMBER_NAME, b.Index(k)},
 					cell{_FLAGS, flags.bits(d, i.Removed)},
@@ -450,7 +443,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				)
 				for _, param := range d.Parameters {
 					typeTables[d.MemberType()].row(
-						// cell{_TYPE, typeIndex[d.MemberType()]},
 						cell{_CLASS_NAME, b.Index(i.Class)},
 						cell{_MEMBER_NAME, b.Index(k)},
 						cell{_PARAM_TYPE_OPT, booli(param.Type.Optional)},
@@ -461,7 +453,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				}
 			case *rbxdump.Callback:
 				typeTables[d.MemberType()].row(
-					// cell{_TYPE, typeIndex[d.MemberType()]},
 					cell{_CLASS_NAME, b.Index(i.Class)},
 					cell{_MEMBER_NAME, b.Index(k)},
 					cell{_FLAGS, flags.bits(d, i.Removed)},
@@ -472,7 +463,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				)
 				for _, ret := range d.ReturnType {
 					typeTables[d.MemberType()].row(
-						// cell{_TYPE, typeIndex[d.MemberType()]},
 						cell{_CLASS_NAME, b.Index(i.Class)},
 						cell{_MEMBER_NAME, b.Index(k)},
 						cell{_RETURN_TYPE_OPT, booli(ret.Optional)},
@@ -482,7 +472,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				}
 				for _, param := range d.Parameters {
 					typeTables[d.MemberType()].row(
-						// cell{_TYPE, typeIndex[d.MemberType()]},
 						cell{_CLASS_NAME, b.Index(i.Class)},
 						cell{_MEMBER_NAME, b.Index(k)},
 						cell{_PARAM_TYPE_OPT, booli(param.Type.Optional)},
@@ -494,7 +483,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 			default:
 				// Unknown member type.
 				typeTables[d.MemberType()].row(
-					// cell{_TYPE, typeIndex[d.MemberType()]},
 					cell{_CLASS_NAME, b.Index(i.Class)},
 					cell{_MEMBER_NAME, b.Index(k)},
 					cell{_FLAGS, flags.bits(d, i.Removed)},
@@ -508,7 +496,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 			return
 		}
 		typeTables["Enum"].row(
-			// cell{_TYPE, typeIndex["Enum"]},
 			cell{_ENUM_NAME, b.Index(k)},
 			cell{_FLAGS, flags.bits(d, i.Removed)},
 			cell{_ENUM_ITEMS, len(idx.EnumItem[k])},
@@ -519,7 +506,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 				return
 			}
 			typeTables["EnumItem"].row(
-				// cell{_TYPE, typeIndex["EnumItem"]},
 				cell{_ENUM_NAME, b.Index(i.Enum)},
 				cell{_ITEM_NAME, b.Index(k)},
 				cell{_FLAGS, flags.bits(d, i.Removed)},
@@ -528,7 +514,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 			)
 			for _, name := range d.LegacyNames {
 				typeTables["EnumItem"].row(
-					// cell{_TYPE, typeIndex["EnumItem"]},
 					cell{_ENUM_NAME, b.Index(i.Enum)},
 					cell{_ITEM_NAME, b.Index(k)},
 					cell{_LEGACY_NAME, b.Index(name)},
@@ -538,7 +523,6 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 	})
 	visit(idx.Type, func(k id.Type, i *index.Type) {
 		typeTables["Type"].row(
-			// cell{_TYPE, typeIndex["Type"]},
 			cell{_TYPE_NAME, b.Index(k)},
 			cell{_FLAGS, flags.bits(nil, i.Removed)},
 			cell{_TYPE_CAT, catIndex[i.Category]},

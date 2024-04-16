@@ -204,67 +204,66 @@ function b1(table, data, i) {
 const F = {
 	// Entity
 
-	TYPE         : [e2, 0, "types"],
-	PRIMARY      : [s2, 1],
-	SECONDARY    : [s2, 3],
-	FLAGS        : [f4, 5],
+	PRIMARY      : [s2, 0],
+	SECONDARY    : [s2, 2],
+	FLAGS        : [f4, 4],
 
 	// Class
 
-	CLASS_NAME   : [s2,  1],
-	SUPERCLASSES : [n1,  9],
-	SUBCLASSES   : [n2, 10],
-	MEMBERS      : [n2, 12],
-	SUPERCLASS   : [s2, 16],
-	SUBCLASS     : [s2, 18],
-	MEM_CAT      : [s2, 20],
+	CLASS_NAME   : [s2,  0],
+	SUPERCLASSES : [n1,  8],
+	SUBCLASSES   : [n2,  9],
+	MEMBERS      : [n2, 11],
+	SUPERCLASS   : [s2, 15],
+	SUBCLASS     : [s2, 17],
+	MEM_CAT      : [s2, 19],
 
 	// Member (property, function, event, callback)
 
-	MEMBER_NAME   : [s2,  3],
-	THREAD_SAFETY : [e0, 14, "safes"],
-	SECURITY      : [e1, 14, "secs"],
+	MEMBER_NAME   : [s2,  2],
+	THREAD_SAFETY : [e0, 13, "safes"],
+	SECURITY      : [e1, 13, "secs"],
 
 	// Property
 
-	CAN_SAVE        : [b1, 12],
-	CAN_LOAD        : [b1, 13],
-	READ_SECURITY   : [e1, 14, "secs"],
-	WRITE_SECURITY  : [e0, 15, "secs"],
-	VALUE_TYPE_CAT  : [e1, 15, "cats"],
-	VALUE_TYPE_NAME : [s2, 16],
-	CATEGORY        : [s2, 20],
-	DEFAULT         : [s2, 22],
+	CAN_SAVE        : [b1, 11],
+	CAN_LOAD        : [b1, 12],
+	READ_SECURITY   : [e1, 13, "secs"],
+	WRITE_SECURITY  : [e0, 14, "secs"],
+	VALUE_TYPE_CAT  : [e1, 14, "cats"],
+	VALUE_TYPE_NAME : [s2, 15],
+	CATEGORY        : [s2, 19],
+	DEFAULT         : [s2, 21],
 
 	// Function, event, callback
 
-	RETURNS          : [n1,  9],
-	PARAMETERS       : [n2, 10],
-	PARAM_TYPE_OPT   : [b1, 12],
-	RETURN_TYPE_OPT  : [b1, 13],
-	PARAM_TYPE_CAT   : [e0, 15, "cats"],
-	RETURN_TYPE_CAT  : [e1, 15, "cats"],
-	RETURN_TYPE_NAME : [s2, 16],
-	PARAM_TYPE_NAME  : [s2, 18],
-	PARAM_NAME       : [s2, 20],
-	PARAM_DEFAULT    : [s2, 22],
+	RETURNS          : [n1,  8],
+	PARAMETERS       : [n2,  9],
+	PARAM_TYPE_OPT   : [b1, 11],
+	RETURN_TYPE_OPT  : [b1, 12],
+	PARAM_TYPE_CAT   : [e0, 14, "cats"],
+	RETURN_TYPE_CAT  : [e1, 14, "cats"],
+	RETURN_TYPE_NAME : [s2, 15],
+	PARAM_TYPE_NAME  : [s2, 17],
+	PARAM_NAME       : [s2, 19],
+	PARAM_DEFAULT    : [s2, 21],
 
 	// Enum
 
-	ENUM_NAME  : [s2,  1],
-	ENUM_ITEMS : [n2, 10],
+	ENUM_NAME  : [s2, 0],
+	ENUM_ITEMS : [n2, 9],
 
 	// EnumItem
 
-	ITEM_NAME    : [s2,  3],
-	LEGACY_NAMES : [n1,  9],
-	ITEM_VALUE   : [n4, 10],
-	LEGACY_NAME  : [s2, 16],
+	ITEM_NAME    : [s2,  2],
+	LEGACY_NAMES : [n1,  8],
+	ITEM_VALUE   : [n4,  9],
+	LEGACY_NAME  : [s2, 15],
 
 	// Type
 
-	TYPE_NAME : [s2,  1],
-	TYPE_CAT  : [e0, 15, "cats"],
+	TYPE_NAME : [s2,  0],
+	TYPE_CAT  : [e0, 14, "cats"],
 };
 
 // Defines operations that can be passed to the COMPARE method.
@@ -458,7 +457,7 @@ class Row {
 		this.data = new DataView(this.buf);
 	};
 	field(method) {
-		return method[0](this.db, this.data, method[1]-1, method[2]);
+		return method[0](this.db, this.data, method[1], method[2]);
 	};
 	get primary() { return this.field(F.PRIMARY) };
 	get secondary() { return this.field(F.SECONDARY) };
