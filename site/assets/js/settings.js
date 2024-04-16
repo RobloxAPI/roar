@@ -349,3 +349,5 @@ if (document.readyState === "loading") {
 } else {
 	initSettings();
 };
+
+export { rbxapiSettings as settings }

@@ -643,6 +643,31 @@ main :target > header,
 	gap: var(--halfbase);
 }
 
+.search-database-table {
+	table-layout: fixed;
+	text-align: left;
+	font-family: var(--monospace);
+	font-size: 12px;
+	white-space: nowrap;
+	text-wrap: nowrap;
+ 	th {
+ 		position: sticky;
+ 		top: var(--header-height);
+ 		background-color: var(--theme-border);
+ 	}
+	td {
+		background-color: var(--theme-TableItem);
+		&.x {
+			background-color: var(--theme-CategoryItem);
+		}
+	}
+}
+
+// Used to allow last row of table to be placed next to sticky headers.
+.gap {
+	height: 100vh;
+}
+
 // Settings panel.
 @import "settings";
 

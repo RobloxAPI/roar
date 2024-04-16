@@ -1,4 +1,5 @@
 import "./settings.js"
+import "./search.js"
 import "./updates.js"
 import "./classes.js"
 import {actions} from "./actions.js"
