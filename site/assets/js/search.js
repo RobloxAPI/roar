@@ -645,6 +645,13 @@ function element(type, text) {
 	return e;
 };
 
+function link(text, href) {
+	const e = document.createElement("a");
+	e.href = "/ref/" + href.replaceAll("<", "").replaceAll(">", "");
+	e.textContent = text;
+	return e;
+};
+
 function renderList(text, items) {
 	const item = element("li", text);
 	const ul = document.createElement("ul");
@@ -653,6 +660,51 @@ function renderList(text, items) {
 	};
 	item.appendChild(ul);
 	return item;
+};
+
+function cellContext(td, value, type, row, field) {
+	let cat;
+	switch (true) {
+	case field === "CLASS_NAME":
+	case field === "SUPERCLASS":
+	case field === "SUBCLASS":
+		td.appendChild(link(value, `class/${value}.html`));
+		return;
+	case field === "MEMBER_NAME":
+		const className = row.field(F.CLASS_NAME);
+		td.appendChild(link(value, `class/${className}.html#member-${value}`));
+		return;
+	case field === "ENUM_NAME":
+		td.appendChild(link(value, `enum/${value}.html`));
+		return;
+	case field === "ITEM_NAME":
+		const enumName = row.field(F.ENUM_NAME);
+		td.appendChild(link(value, `enum/${enumName}.html#member-${value}`));
+		return;
+	case field === "TYPE_NAME":
+		td.appendChild(link(value, `type/${value}.html`));
+		return;
+	case field === "VALUE_TYPE_NAME":
+		cat = row.field(F.VALUE_TYPE_CAT);
+	case field === "RETURN_TYPE_NAME":
+		cat = row.field(F.RETURN_TYPE_CAT);
+	case field === "PARAM_TYPE_NAME":
+		if (field === "PARAM_TYPE_NAME") {
+			cat = row.field(F.PARAM_TYPE_CAT);
+		};
+		switch (cat) {
+		case "Class":
+		case "Enum":
+			cat = cat.toLowerCase();
+			break;
+		default:
+			cat = "type";
+			break;
+		};
+		td.appendChild(link(value, `${cat}/${value}.html`));
+		return;
+	};
+	td.textContent = value;
 };
 
 function renderSearchData() {
@@ -715,7 +767,7 @@ function renderSearchData() {
 						if (value === undefined) {
 							td.classList.add("x");
 						} else {
-							td.textContent = value;
+							cellContext(td, value, type, row, field);
 						};
 						tr.appendChild(td);
 					};
