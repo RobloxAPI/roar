@@ -699,8 +699,10 @@ function renderSearchData() {
 					trh.appendChild(element("th", field));
 				};
 				trh.appendChild(element("th", "removed"));
-				for (const [tag] of db.tags) {
-					trh.appendChild(element("th", tag));
+				if (type !== "Type") {
+					for (const [tag] of db.tags) {
+						trh.appendChild(element("th", tag));
+					};
 				};
 				for (let i = 0; i < length; i++) {
 					const row = db.row(type, i);
@@ -727,15 +729,17 @@ function renderSearchData() {
 						};
 						tr.appendChild(td);
 					};
-					for (const [tag] of db.tags) {
-						const value = row.tag(tag);
-						let td = document.createElement("td");
-						if (value === undefined) {
-							td.classList.add("x");
-						} else {
-							td.textContent = value ? "true" : "";
+					if (type !== "Type") {
+						for (const [tag] of db.tags) {
+							const value = row.tag(tag);
+							let td = document.createElement("td");
+							if (value === undefined) {
+								td.classList.add("x");
+							} else {
+								td.textContent = value ? "true" : "";
+							};
+							tr.appendChild(td);
 						};
-						tr.appendChild(td);
 					};
 
 					tbody.appendChild(tr);
