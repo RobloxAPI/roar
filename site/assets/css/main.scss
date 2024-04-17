@@ -337,6 +337,9 @@ body {
 					overflow: clip;
 					text-overflow: ellipsis;
 				}
+				::marker {
+					font-family:var(--monospace);
+				}
 				.add {
 					list-style: "+ " inside;
 					&::marker { color: var(--theme-history-add-text) }
