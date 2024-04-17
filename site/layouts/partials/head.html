@@ -20,7 +20,8 @@
 	{{- $desc = "Reference for the Roblox Lua API." }}
 {{- end }}
 <title>{{$title}}</title>
-<meta name="search-db" content="{{(resources.Get `search.db`).Permalink}}">
+<meta name="search-db" content="{{(resources.Get `search.db`).RelPermalink}}">
+<meta name="path-sub" content="{{relURL site.BaseURL}}">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{{$title}}">
 <meta name="twitter:description" content="{{$desc}}">

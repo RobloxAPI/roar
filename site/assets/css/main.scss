@@ -649,6 +649,11 @@ main :target > header,
 	gap: var(--halfbase);
 }
 
+#search-results {
+	margin: 0 auto;
+	flex: 1 0 auto;
+}
+
 .search-database-table {
 	table-layout: fixed;
 	text-align: left;

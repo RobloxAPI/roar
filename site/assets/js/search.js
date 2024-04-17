@@ -1,6 +1,7 @@
 "use strict";
 
 import {fuzzy_match} from "./fuzzy.js";
+import {sanitize, entityLink} from "./link.js";
 
 function u8(dv, offset) {
 	return dv.getUint8(offset);
@@ -434,7 +435,7 @@ function search(db, expr) {
 			const row = new Row(db, type, i);
 			const score = rowMatches(row, expr)
 			if (score > 0) {
-				results.push([row, score]);
+				results.push({row: row, score: score});
 			};
 		};
 	};
@@ -444,7 +445,7 @@ function search(db, expr) {
 	let ids = new Set();
 	let final = [];
 	for (let result of results) {
-		const row = result[0];
+		const row = result.row;
 		const id = row.type + "\0" + row.primary + (row.secondary ? ("\0"+row.secondary) : "");
 		if (ids.has(id)) {
 			continue;
@@ -453,8 +454,46 @@ function search(db, expr) {
 		final.push(result);
 	};
 	// Sort results descending by score.
-	final.sort((a, b) => b[1] - a[1]);
-	return final;
+	final.sort((a, b) => b.score - a.score);
+	return new SearchResults(db, final, 50);
+};
+
+class SearchResults {
+	constructor(database, rows, limit) {
+		this.database = database;
+		this.rows = rows;
+		this.limit = limit;
+	};
+	render(parent) {
+		let n = this.rows.length
+		if (this.limit && this.limit > 0 && this.limit < n) {
+			n = this.limit;
+		};
+		for (let i = 0; i < n; i++) {
+			const result = this.rows[i];
+			const row = result.row;
+			const score = result.score;
+			const item = document.createElement("li");
+			item.title = `score: ${score}`
+
+			item.classList.add("set");
+			if (row.tag("Deprecated")) {
+				item.classList.add("deprecated");
+			};
+			if (row.tag("NotBrowsable")) {
+				item.classList.add("unbrowsable");
+			};
+			if (row.tag("Hidden")) {
+				item.classList.add("hidden");
+			};
+			if (row.removed) {
+				item.classList.add("removed");
+			};
+
+			item.appendChild(entityLink(row));
+			parent.appendChild(item);
+		};
+	};
 };
 
 class Row {
@@ -493,44 +532,32 @@ class Row {
 	};
 };
 
-let database = null;
-window.DB = null;
-let fetchedDB = false;
-function getDatabase(success, failure) {
-	if (database === null) {
-		if (fetchedDB) {
-			// TODO: error message.
-			failure();
-			return
-		};
-
-		function fail(event) {
-			// TODO: error message.
-			failure();
-		};
-
+let databasePromise = null;
+function getDatabase() {
+	if (databasePromise) {
+		return databasePromise;
+	}
+	databasePromise = new Promise(function(resolve, reject) {
 		let dbPath = document.head.querySelector("meta[name=\"search-db\"]");
 		if (dbPath === null) {
+			reject("Database path not found.");
 			return;
 		};
 		dbPath = dbPath.content;
 
 		let req = new XMLHttpRequest();
 		req.addEventListener("load", function(event) {
-			database = new Database(event.target.response);
-			window.DB = database;
-			fetchedDB = true;
-			success(database);
+			const db = new Database(event.target.response);
+			console.log("DATABASE", db);
+			resolve(db);
 		});
-		req.addEventListener("error", fail);
-		req.addEventListener("abort", fail);
+		req.addEventListener("error", (e) => reject("Failed to retrieve database.", e));
+		req.addEventListener("abort", (e) => reject("Failed to retrieve database.", e));
 		req.open("GET", dbPath);
 		req.responseType = "arraybuffer";
 		req.send();
-		return;
-	};
-	success(database);
-	return;
+	});
+	return databasePromise;
 }
 
 const fields = {
@@ -615,49 +642,8 @@ const fields = {
 	],
 };
 
-window.F = F;
-window.M = M;
-window.search = function(expr) {
-	getDatabase(
-		function(db) {
-			const main = document.querySelector("body > main");
-			if (!main) {
-				return;
-			};
-			// console.log("DB", db);
-
-			main.replaceChildren();
-
-			const results = search(db, expr).slice(0, 50);
-			// console.log("RESULTS", results);
-			const list = document.createElement("ul");
-			for (let [row, score] of results) {
-				const item = document.createElement("li");
-				let text = `(${score}) ${row.type} ${row.primary}`;
-				if (row.secondary) {
-					text += `.${row.secondary}`;
-				};
-				item.textContent = text;
-				list.appendChild(item);
-			};
-			main.appendChild(list);
-		},
-		function() {
-			// TODO: error message.
-			console.log("DB FAIL");
-		}
-	);
-};
-
 function element(type, text) {
 	const e = document.createElement(type);
-	e.textContent = text;
-	return e;
-};
-
-function link(text, href) {
-	const e = document.createElement("a");
-	e.href = "/ref/" + href.replaceAll("<", "").replaceAll(">", "");
 	e.textContent = text;
 	return e;
 };
@@ -678,21 +664,21 @@ function cellContext(td, value, type, row, field) {
 	case field === "CLASS_NAME":
 	case field === "SUPERCLASS":
 	case field === "SUBCLASS":
-		td.appendChild(link(value, `class/${value}.html`));
+		td.appendChild(entityLink({type:"Class",primary:value}, "link", "simple"));
 		return;
 	case field === "MEMBER_NAME":
 		const className = row.field(F.CLASS_NAME);
-		td.appendChild(link(value, `class/${className}.html#member-${value}`));
+		td.appendChild(entityLink({type:"Class",primary:className,secondary:value}, "link", "simple"));
 		return;
 	case field === "ENUM_NAME":
-		td.appendChild(link(value, `enum/${value}.html`));
+		td.appendChild(entityLink({type:"Enum",primary:value}, "link", "simple"));
 		return;
 	case field === "ITEM_NAME":
 		const enumName = row.field(F.ENUM_NAME);
-		td.appendChild(link(value, `enum/${enumName}.html#member-${value}`));
+		td.appendChild(entityLink({type:"Enum",primary:enumName,secondary:value}, "link", "simple"));
 		return;
 	case field === "TYPE_NAME":
-		td.appendChild(link(value, `type/${value}.html`));
+		td.appendChild(entityLink({type:"Type",primary:value}, "link", "simple"));
 		return;
 	case field === "VALUE_TYPE_NAME":
 		cat = row.field(F.VALUE_TYPE_CAT);
@@ -705,28 +691,25 @@ function cellContext(td, value, type, row, field) {
 		switch (cat) {
 		case "Class":
 		case "Enum":
-			cat = cat.toLowerCase();
 			break;
 		default:
-			cat = "type";
+			cat = "Type";
 			break;
 		};
-		td.appendChild(link(value, `${cat}/${value}.html`));
+		td.appendChild(entityLink({type:cat,primary:value}, "link", "simple"));
 		return;
 	};
 	td.textContent = value;
 };
 
 function renderSearchData() {
-	const main = document.querySelector("body > main");
+	const main = document.body.querySelector("main");
 	if (!main) {
 		return;
 	};
 	main.replaceChildren();
-	getDatabase(
-		function(db) {
-			console.log("DB", db);
-
+	getDatabase()
+		.then(function(db) {
 			main.appendChild(element("h2", "Database enumerations"));
 			const enums = document.createElement("ul");
 			enums.style = `display:flex; flex-flow:wrap row; gap:var(--indent)`;
@@ -812,12 +795,11 @@ function renderSearchData() {
 			const gap = document.createElement("div");
 			gap.classList.add("gap");
 			main.appendChild(gap);
-		},
-		function() {
-			// TODO: error message.
-			console.log("DB FAIL");
-		}
-	);
+		})
+		.catch(function(msg, err) {
+			console.log(msg, err);
+			main.appendChild(element("p", msg));
+		})
 };
 
 function initSearchData() {
@@ -837,10 +819,192 @@ function initSearchData() {
 	};
 };
 
+function initSearchInput() {
+	const form = document.getElementById("search-form");
+	if (!form) { return };
+	const input = document.getElementById("search-input");
+	if (!input) { return };
+	const main = document.body.querySelector("main");
+	if (!main) { return };
+
+	// Show search form.
+	form.classList.remove("js");
+
+	// Create search results container.
+	const searchResults = document.createElement("section");
+	searchResults.id = "search-results";
+	searchResults.style.display = "none";
+	main.insertAdjacentElement("beforebegin", searchResults);
+
+	// Render search results. If falsy, results are hidden. If a string, it is
+	// displayed as a message. Otherwise, must be an array of search results.
+	function renderResults(results) {
+		searchResults.replaceChildren();
+
+		if (!results) {
+			// Hide results.
+			main.style.display = "";
+			searchResults.style.display = "none";
+			return;
+		}
+
+		// Show results.
+		latestResults = results;
+		main.style.display = "none";
+		searchResults.style.display = "";
+
+		if (typeof results === "string") {
+			searchResults.appendChild(element("p", results));
+			return;
+		};
+
+		const list = document.createElement("ul");
+		results.render(list);
+		searchResults.appendChild(list);
+	};
+
+	function doSearch(query, render) {
+		render ||= renderResults;
+		if (query.length === 0) {
+			render(null);
+			return;
+		};
+		render("Searching...");
+		getDatabase()
+			.then(function(db) {
+				// Basic query that performs a fuzzy match of query on the
+				// primary field of primary entities, and the secondary field of
+				// secondary entities.
+				const expr = {expr: "or", operands: [
+					{expr: "op",
+						types: db.T.PRIMARY,
+						field: F.PRIMARY,
+						method: M.FUZZY, args: [query],
+					},
+					{expr: "op",
+						types: db.T.SECONDARY,
+						field: F.SECONDARY,
+						method: M.FUZZY, args: [query],
+					},
+				]};
+				render(search(db, expr));
+			})
+			.catch(function(msg, err) {
+				console.log(msg, err);
+				render(msg);
+			})
+	};
+
+	// Add shortcuts to focus search bar.
+	document.addEventListener("keydown",function(e) {
+		if (e.altKey || e.ctrlKey || e.metaKey) {
+			return;
+		};
+		if (e.key === "Escape" && input === document.activeElement) {
+			input.blur();
+			return;
+		};
+		if ((e.key === "s" || e.key === "S") && input !== document.activeElement) {
+			e.preventDefault();
+			input.focus();
+			input.select();
+			return;
+		};
+	});
+
+	// Show results as the user types.
+	let timer;
+	input.addEventListener("input", function() {
+		timer && clearTimeout(timer);
+		timer = window.setTimeout(function() {
+			doSearch(input.value);
+		}, 500);
+	});
+
+	// Hide results when a result on the current page is selected.
+	searchResults.addEventListener("click", function(event) {
+		let anchor = event.target.closest("a");
+		if (anchor === null) {
+			return;
+		};
+		if (document.location.origin == anchor.origin &&
+			document.location.pathname == anchor.pathname) {
+			renderResults(null);
+		};
+	});
+
+	// Reshow results on focus.
+	input.addEventListener("focus", function() {
+		if (input.value.length > 0 || searchResults.style.display !== "none") {
+			doSearch(input.value);
+		};
+	});
+
+	// Go to the first result when the user presses enter.
+	form.addEventListener("submit", function(event) {
+		event.preventDefault();
+		if (firstResult !== null) {
+			var parseURL = document.createElement('a');
+			parseURL.href = firstResult;
+			if (document.location.origin == parseURL.origin &&
+				document.location.pathname == parseURL.pathname) {
+				renderResults(null);
+				if (parseURL.hash.length > 0) {
+					document.location.hash = parseURL.hash;
+				}
+			} else {
+				document.location = firstResult;
+			}
+		};
+	});
+
+	if (input.value.length > 0) {
+		doSearch(input.value);
+	} else {
+		// Try reading URL query.
+		let params = new URLSearchParams(document.location.search);
+		let q = params.get("q");
+		if (q !== null && q !== "") {
+			doSearch(q, function(results) {
+				if (!results) {
+					return;
+				};
+				if (typeof results === "string") {
+					return;
+				};
+
+				let go = params.get("go");
+				if (!go && params.get("devhub")) {
+					go = "hub";
+				};
+				if (!go) {
+					renderResults(results);
+					return;
+				};
+				// Automatically redirect to external site.
+				let first = results.rows[0];
+				if (!first) {
+					return;
+				};
+				let a = entityLink(first.row, go, "simple");
+				if (a.href === "") {
+					renderResults(results);
+					return;
+				};
+				document.location = a.href;
+			});
+		};
+	};
+
+}
+
+function initSearch() {
+	initSearchData();
+	initSearchInput();
+};
+
 if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initSearchData);
+	document.addEventListener("DOMContentLoaded", initSearch);
 } else {
 	initSearchData();
 };
-
-console.log("SEARCH");
