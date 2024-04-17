@@ -337,6 +337,9 @@ body {
 					overflow: clip;
 					text-overflow: ellipsis;
 				}
+				.update {
+					margin: var(--baseline) 0;
+				}
 				::marker {
 					font-family:var(--monospace);
 				}
