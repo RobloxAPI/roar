@@ -100,8 +100,8 @@ secondary: string // The secondary identifier.
 			{{- $resDark = $resDark.Filter (images.Overlay $overlayDark 0 24) }}
 		{{- end }}
 	{{- end }}
-	{{- if not $resDark}}{{$resDark = $resLight}}{{end}}
+	{{- if not $resDark}}{{$resDark = $resLight}}{{end -}}
 	<span class="picture"{{if $title}} title="{{$title}}"{{end}} data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon" style="--light:url('{{$resLight.RelPermalink}}');--dark:url('{{$resDark.RelPermalink}}')"></span></span>
-{{- else }}
+{{- else -}}
 	<span class="picture"{{if $title}} title="{{$title}}"{{end}} data-type="{{$type}}"{{if $kind}} data-kind="{{$kind}}"{{end}}><span class="icon"></span></span>
 {{- end }}
