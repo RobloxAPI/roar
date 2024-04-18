@@ -1,5 +1,6 @@
 "use strict";
 
+import {settings, matchSecurity} from "./settings.js";
 import {fuzzy_match} from "./fuzzy.js";
 import {sanitize, entityLink} from "./link.js";
 
@@ -458,6 +459,18 @@ function search(db, expr) {
 	return new SearchResults(db, final, 50);
 };
 
+function forEachSecurity(row, visit) {
+	switch (row.type) {
+	case "Property":
+		if (visit(row.field(F.READ_SECURITY)) === false) { return };
+		if (visit(row.field(F.WRITE_SECURITY)) === false) { return };
+	case "Function":
+	case "Event":
+	case "Callback":
+		if (visit(row.field(F.SECURITY)) === false) { return };
+	};
+};
+
 class SearchResults {
 	constructor(database, rows, limit) {
 		this.database = database;
@@ -489,6 +502,12 @@ class SearchResults {
 			if (row.removed) {
 				item.classList.add("removed");
 			};
+			forEachSecurity(row, function(sec) {
+				if (sec === "" || sec === "None") {
+					return;
+				};
+				item.classList.add(`sec-${sec}`);
+			});
 
 			item.appendChild(entityLink(row));
 			parent.appendChild(item);
@@ -819,6 +838,46 @@ function initSearchData() {
 	};
 };
 
+// Filter search results by current status settings. Note that, if a setting
+// change causes an entity to become visible, it will not be reflected in
+// visible search results until the search is ran again.
+const securityIdentity = settings.Value("SecurityIdentity");
+const showDeprecated = settings.Value("ShowDeprecated");
+const showUnbrowsable = settings.Value("ShowNotBrowsable");
+const showHidden = settings.Value("ShowHidden");
+const showRemoved = settings.Value("ShowRemoved");
+function statusFilter(results) {
+	results.rows = results.rows.filter(function(result) {
+		const row = result.row;
+		if (!showDeprecated.value && row.tag("Deprecated")) {
+			return false;
+		};
+		if (!showUnbrowsable.value && row.tag("NotBrowsable")) {
+			return false;
+		};
+		if (!showHidden.value && row.tag("Hidden")) {
+			return false;
+		};
+		if (!showRemoved.value && row.removed) {
+			return false;
+		};
+		if (securityIdentity.value !== "All") {
+			let ok = true;
+			forEachSecurity(row, function(sec) {
+				if (!matchSecurity(securityIdentity.value, sec)) {
+					ok = false;
+					return false;
+				};
+			});
+			if (!ok) {
+				return false;
+			};
+		};
+		return true;
+	})
+	return results;
+};
+
 function initSearchInput() {
 	const form = document.getElementById("search-form");
 	if (!form) { return };
@@ -886,7 +945,7 @@ function initSearchInput() {
 						method: M.FUZZY, args: [query],
 					},
 				]};
-				render(search(db, expr));
+				render(statusFilter(search(db, expr)));
 			})
 			.catch(function(msg, err) {
 				console.log(msg, err);

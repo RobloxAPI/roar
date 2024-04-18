@@ -11,8 +11,10 @@ const securityIdentities = [
 	"Plugin",
 	"Script",
 ];
+
 const securityPermissions = new Map([
 	//                          ALL SVR CSC BPL CMD PLG SCR
+	[""                      , [ 1 , 1 , 1 , 1 , 1 , 1 , 1 ]],
 	["None"                  , [ 1 , 1 , 1 , 1 , 1 , 1 , 1 ]],
 	["RobloxPlaceSecurity"   , [ 1 , 1 , 1 , 1 , 1 , 1 , 0 ]],
 	["PluginSecurity"        , [ 1 , 1 , 1 , 1 , 1 , 1 , 0 ]],
@@ -22,7 +24,15 @@ const securityPermissions = new Map([
 	["NotAccessibleSecurity" , [ 1 , 0 , 0 , 0 , 0 , 0 , 0 ]],
 ]);
 
-const settings = [
+export function matchSecurity(id, ctx) {
+	const i = securityIdentities.indexOf(id);
+	if (i < 0) {
+		return false;
+	};
+	return securityPermissions.get(ctx)[i] === 1;
+};
+
+const settingsDef = [
 	{
 		"name": "Theme",
 		"type": "radio",
@@ -88,10 +98,10 @@ const settings = [
 	}
 ];
 
-function generateMenu(parent, settings, changed) {
+function generateMenu(parent, settingsDef, changed) {
 	let form = document.createElement("form");
 	const idPrefix = "setting-";
-	for (let setting of settings) {
+	for (let setting of settingsDef) {
 		let value = window.localStorage.getItem(setting.name);
 		if (value === null) {
 			value = setting.default;
@@ -191,6 +201,13 @@ class Settings {
 		};
 		listener(name, value, true);
 	};
+	Value(name) {
+		const object = {value: null};
+		this.Listen(name, function(name, value) {
+			object.value = value;
+		});
+		return object;
+	};
 	Changed(name, value, initial) {
 		let setting = this.settings.get(name);
 		if (setting === undefined) {
@@ -201,67 +218,11 @@ class Settings {
 			listener(name, value, initial);
 		};
 	};
-}
-
-function initSettingsMenu() {
-	let container = document.getElementById("settings-container");
-	if (container === null) {
-		return;
-	};
-
-	let button = container.querySelector(".button");
-	if (button === null) {
-		return;
-	};
-	let menu = document.getElementById("settings-menu");
-	if (menu === null) {
-		return;
-	};
-
-	container.classList.remove("js");
-	menu.classList.remove("js");
-
-	generateMenu(menu, settings, function(name, value, initial) {
-		rbxapiSettings.Changed(name, value, initial)
-	});
-
-	button.addEventListener("click", function(event) {
-		menu.style.display = "block";
-		const onClick = function(event) {
-			if (!menu.contains(event.target) && menu.style.display !== "none") {
-				menu.style.display = "none";
-				document.removeEventListener("click", onClick, true);
-				event.preventDefault();
-				event.stopPropagation();
-			};
-		};
-		document.addEventListener("click", onClick, true);
-		event.stopPropagation();
-	});
 };
 
-function initSettings() {
-	initSettingsMenu();
-
-	rbxapiSettings.Listen("ExpandMembers", function(name, value, initial) {
-		if (initial && value) {
-			let id = document.location.hash.slice(1);
-			if (id !== "") {
-				if (document.getElementById(id)) {
-					// Don't auto-expand if there's a target.
-					return;
-				};
-			};
-		};
-		for (const input of document.querySelectorAll(".inherited-members input")) {
-			input.checked = value;
-		};
-	});
-};
-
-let rbxapiSettings = new Settings()
-for (let setting of settings) {
-	rbxapiSettings.settings.set(setting.name, {
+export const settings = new Settings();
+for (let setting of settingsDef) {
+	settings.settings.set(setting.name, {
 		"config": setting,
 		"listeners": [],
 	});
@@ -276,7 +237,7 @@ for (let setting of settings) {
 	};
 };
 
-rbxapiSettings.Listen("Theme", function(name, value, initial) {
+settings.Listen("Theme", function(name, value, initial) {
 	if (initial) {
 		// Handled by quick-theme.js.
 		return;
@@ -284,7 +245,7 @@ rbxapiSettings.Listen("Theme", function(name, value, initial) {
 	document.documentElement.className = value;
 });
 
-for (let setting of settings) {
+for (let setting of settingsDef) {
 	if (setting.method !== "show") {
 		continue;
 	};
@@ -293,7 +254,7 @@ for (let setting of settings) {
 		.set.${setting.class} { display:none }
 		.class-tree .set.${setting.class} + ul { padding-left:0; border-left:none }
 	`;
-	rbxapiSettings.Listen(setting.name, function(name, value, initial) {
+	settings.Listen(setting.name, function(name, value, initial) {
 		if (value) {
 			show.remove();
 		} else {
@@ -330,7 +291,7 @@ for (let i = 0; i < securityIdentities.length; i++) {
 	// console.log(content);
 	// console.log("---------------------------------------------------");
 };
-rbxapiSettings.Listen("SecurityIdentity", function(name, value, initial) {
+settings.Listen("SecurityIdentity", function(name, value, initial) {
 	for (let entry of security) {
 		if (value === entry[0]) {
 			document.head.appendChild(entry[1]);
@@ -341,13 +302,64 @@ rbxapiSettings.Listen("SecurityIdentity", function(name, value, initial) {
 	actions.UpdateAll();
 });
 
-window.rbxapiSettings = rbxapiSettings;
-window.dispatchEvent(new Event("rbxapiSettings"));
+function initSettingsMenu() {
+	let container = document.getElementById("settings-container");
+	if (container === null) {
+		return;
+	};
+
+	let button = container.querySelector(".button");
+	if (button === null) {
+		return;
+	};
+	let menu = document.getElementById("settings-menu");
+	if (menu === null) {
+		return;
+	};
+
+	container.classList.remove("js");
+	menu.classList.remove("js");
+
+	generateMenu(menu, settingsDef, function(name, value, initial) {
+		settings.Changed(name, value, initial)
+	});
+
+	button.addEventListener("click", function(event) {
+		menu.style.display = "block";
+		const onClick = function(event) {
+			if (!menu.contains(event.target) && menu.style.display !== "none") {
+				menu.style.display = "none";
+				document.removeEventListener("click", onClick, true);
+				event.preventDefault();
+				event.stopPropagation();
+			};
+		};
+		document.addEventListener("click", onClick, true);
+		event.stopPropagation();
+	});
+};
+
+function initSettings() {
+	initSettingsMenu();
+
+	settings.Listen("ExpandMembers", function(name, value, initial) {
+		if (initial && value) {
+			let id = document.location.hash.slice(1);
+			if (id !== "") {
+				if (document.getElementById(id)) {
+					// Don't auto-expand if there's a target.
+					return;
+				};
+			};
+		};
+		for (const input of document.querySelectorAll(".inherited-members input")) {
+			input.checked = value;
+		};
+	});
+};
 
 if (document.readyState === "loading") {
 	document.addEventListener("DOMContentLoaded", initSettings);
 } else {
 	initSettings();
 };
-
-export { rbxapiSettings as settings }
