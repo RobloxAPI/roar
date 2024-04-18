@@ -3,13 +3,16 @@
 	{{- partial "updates/nav.html" . }}
 </nav>
 <article id="content">
-	<header><h2>Recent API updates</h2></header>
-	<aside class="expand-all-changes js">
-		<label>
-			<input id="expand-all" type="checkbox"/>
-			Show all changes.
-		</label>
-	</aside>
+	<header>
+		<h2>Recent API updates
+			<aside class="expand-all-changes js">
+				<label>
+					<input id="expand-all" type="checkbox"/>
+					Show all changes.
+				</label>
+			</aside>
+		</h2>
+	</header>
 	<p class="expand-all-changes js">Click a date to expand or collapse changes.</p>
 	{{- partial "updates/list.html" . }}
 </article>

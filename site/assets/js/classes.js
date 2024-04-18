@@ -26,7 +26,11 @@ function sortByName(list, classes, parents) {
 
 function initSortClasses() {
 	for (let controls of document.getElementsByClassName("class-sort")) {
-		let tree = controls.parentElement.querySelector(".class-tree");
+		let container = controls.closest(".class-container");
+		if (!container) {
+			continue;
+		};
+		let tree = container.querySelector(".class-tree");
 		if (!tree) {
 			continue;
 		};

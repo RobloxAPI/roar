@@ -42,34 +42,40 @@
 			{{- $countPresentClasses = $countPresentClasses | add 1 }}
 		{{- end }}
 	{{- end }}
-	<section id="present-classes">
-		<header><h2>Classes {{partial "element-count.html" $countPresentClasses}}</h2></header>
-		<aside class="class-sort js">
-			<label for="class-sort-present-Tree">{{- /**/ -}}
-				<input id="class-sort-present-Tree" type="radio" name="class-sort-present" value="Tree" checked>{{- /**/ -}}
-				Tree{{- /**/ -}}
-			</label>{{- /**/ -}}
-			<label for="class-sort-present-Name">{{- /**/ -}}
-				<input id="class-sort-present-Name" type="radio" name="class-sort-present" value="Name">{{- /**/ -}}
-				Name{{- /**/ -}}
-			</label>
-		</aside>
+	<section id="present-classes" class="class-container">
+		<header>
+			<h2>Classes {{partial "element-count.html" $countPresentClasses}}
+				<aside class="class-sort js">
+					<label for="class-sort-present-Tree">{{- /**/ -}}
+						<input id="class-sort-present-Tree" type="radio" name="class-sort-present" value="Tree" checked>{{- /**/ -}}
+						Tree{{- /**/ -}}
+					</label>{{- /**/ -}}
+					<label for="class-sort-present-Name">{{- /**/ -}}
+						<input id="class-sort-present-Name" type="radio" name="class-sort-present" value="Name">{{- /**/ -}}
+						Name{{- /**/ -}}
+					</label>
+				</aside>
+			</h2>
+		</header>
 		<ul class="class-tree element-list">
 			{{- template "class-tree" site.Data.Index.RootClasses -}}
 		</ul>
 	</section>
-	<section id="removed-classes" class="set removed">
-		<header><h2>Removed classes {{partial "element-count.html" $countRemovedClasses}}</span></h2></header>
-		<aside class="class-sort js">
-			<label for="class-sort-removed-Tree">{{- /**/ -}}
-				<input id="class-sort-removed-Tree" type="radio" name="class-sort-removed" value="Tree" checked>{{- /**/ -}}
-				Tree
-			</label>{{- /**/ -}}
-			<label for="class-sort-removed-Name">{{- /**/ -}}
-				<input id="class-sort-removed-Name" type="radio" name="class-sort-removed" value="Name">{{- /**/ -}}
-				Name{{- /**/ -}}
-			</label>
-		</aside>
+	<section id="removed-classes" class="class-container set removed">
+		<header>
+			<h2>Removed classes {{partial "element-count.html" $countRemovedClasses}}
+				<aside class="class-sort js">
+					<label for="class-sort-removed-Tree">{{- /**/ -}}
+						<input id="class-sort-removed-Tree" type="radio" name="class-sort-removed" value="Tree" checked>{{- /**/ -}}
+						Tree
+					</label>{{- /**/ -}}
+					<label for="class-sort-removed-Name">{{- /**/ -}}
+						<input id="class-sort-removed-Name" type="radio" name="class-sort-removed" value="Name">{{- /**/ -}}
+						Name{{- /**/ -}}
+					</label>
+				</aside>
+			</h2>
+		</header>
 		<ul class="class-tree element-list">
 			{{- range site.Data.Index.RootClasses }}
 				{{- $class := index site.Data.Index.Class . }}
