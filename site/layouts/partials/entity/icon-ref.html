@@ -1,0 +1,111 @@
+{{- /* Renders an icon for the given entity.
+
+type: string // The type of entity (hub|class|member|enum|enumitem|type)
+primary: string // The primary identifier.
+secondary: string // The secondary identifier.
+
+*/}}
+{{- $type := .type | lower }}
+{{- $resLight := false }}
+{{- $resDark := false }}
+{{- $entityType := false }}
+{{- $private := false }}
+{{- $title := false }}
+{{- if eq $type "hub" }}
+	{{- $resLight = resources.Get "images/hub.svg"}}
+{{- else }}
+	{{- if eq $type "class" }}
+		{{- $entityType = "Class" }}
+		{{- $title = "Class" }}
+		{{- if not $resLight}}{{$resLight = partial "func/class-icon.html" (dict "path" "icons/light/%s.png" "class" .primary)}}{{end}}
+		{{- if not $resLight}}{{$resLight = resources.Get "icons/light/Placeholder.png"}}{{end}}
+		{{- if not $resDark}}{{$resDark = partial "func/class-icon.html" (dict "path" "icons/dark/%s.png" "class" .primary)}}{{end}}
+		{{- if not $resDark}}{{$resDark = resources.Get "icons/dark/Placeholder.png"}}{{end}}
+	{{- else if eq $type "member" }}
+		{{- $dump := index site.Data.Dump.Classes .primary "Members" .secondary }}
+		{{- $entityType = $dump.MemberType }}
+		{{- $private = strings.Contains (partial "status-class.html" .) "sec-" }}
+		{{- $title = $entityType }}
+		{{- if eq $entityType "Property" }}
+			{{- $resLight = resources.Get "icons/light/ACProperty.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACProperty.png"}}
+			{{- $sec := slice }}
+			{{- if and (eq $dump.ReadSecurity $dump.WriteSecurity) (ne $dump.ReadSecurity "None" "") }}
+				{{- $sec = $sec | append (print "Read/Write: " $dump.ReadSecurity) }}
+			{{- else }}
+				{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
+					{{- $sec = $sec | append (print "Read: " $dump.ReadSecurity) }}
+				{{- end }}
+				{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None") }}
+					{{- $sec = $sec | append (print "Write: " $dump.WriteSecurity) }}
+				{{- end }}
+			{{- end }}
+			{{- if $sec }}
+				{{- $title = (printf "Protected %s (%s)" $title (delimit $sec ", "))}}
+			{{- end }}
+		{{- else if eq $entityType "Function" }}
+			{{- $resLight = resources.Get "icons/light/ACFunction.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
+			{{- if and $dump.Security (ne $dump.Security "None") }}
+				{{- $title = (printf "Protected %s (%s)" $title $dump.Security)}}
+			{{- end }}
+		{{- else if eq $entityType "Event" }}
+			{{- /* Event icon is purple for some reason. Shift it to yellow. */}}
+			{{- $resLight = (resources.Get "icons/light/ACEvent.png").Filter (images.Hue 130)}}
+			{{- $resDark = (resources.Get "icons/dark/ACEvent.png").Filter (images.Hue 115)}}
+			{{- if and $dump.Security (ne $dump.Security "None") }}
+				{{- $title = (printf "Protected %s (%s)" $title $dump.Security)}}
+			{{- end }}
+		{{- else if eq $entityType "Callback" }}
+			{{- $resLight = resources.Get "icons/light/ACFunction.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACFunction.png"}}
+			{{- if and $dump.Security (ne $dump.Security "None") }}
+				{{- $title = (printf "Protected %s (%s)" $title $dump.Security)}}
+			{{- end }}
+		{{- end }}
+	{{- else if eq $type "enum" }}
+		{{- $entityType = "Enum" }}
+		{{- $title = $entityType }}
+		{{- $resLight = (resources.Get "icons/light/Enum.png").Filter (images.Colorize 35 100 100) (images.Brightness 10)}}
+		{{- $resDark = (resources.Get "icons/light/Enum.png").Filter (images.Colorize 35 100 100) (images.Brightness 20)}}
+	{{- else if eq $type "enumitem" }}
+		{{- $entityType = "EnumItem" }}
+		{{- $title = $entityType }}
+		{{- $resLight = (resources.Get "icons/light/EnumMember.png").Filter (images.Colorize 35 100 100) (images.Brightness 10)}}
+		{{- $resDark = (resources.Get "icons/light/EnumMember.png").Filter (images.Colorize 35 100 100) (images.Brightness 20)}}
+	{{- else if eq $type "type" }}
+		{{- $entityType = "Type" }}
+		{{- $cat := index site.Data.Index.Type .primary "Category" }}
+		{{- $title = print $cat " type" }}
+		{{- if eq $cat "DataType" }}
+			{{- $resLight = resources.Get "icons/light/ACCodeSnippet.png"}}
+			{{- $resDark = resources.Get "icons/dark/ACCodeSnippet.png"}}
+		{{- else if eq $cat "Group" }}
+			{{- $resLight = resources.Get "icons/light/Group.png"}}
+			{{- $resDark = resources.Get "icons/dark/Group.png"}}
+		{{- else if eq $cat "Primitive" }}
+			{{- $resLight = resources.Get "icons/light/Value.png"}}
+			{{- $resDark = resources.Get "icons/dark/Value.png"}}
+		{{- else }}
+			{{- $resLight = resources.Get "icons/light/Value.png"}}
+			{{- $resDark = resources.Get "icons/dark/Value.png"}}
+		{{- end }}
+	{{- end }}
+	{{- if not $resLight}}{{$resLight = resources.Get (print "icons/light/Placeholder.png")}}{{end}}
+	{{- if not $resDark}}{{$resDark = resources.Get (print "icons/dark/Placeholder.png")}}{{end}}
+{{- end }}
+
+{{- $refs := dict "type" $entityType "private" $private "title" $title }}
+{{- if $resLight }}
+	{{- if $private }}
+		{{- $overlayLight := (resources.Get "icons/light/Logpoint.png").Resize "24x" }}
+		{{- $resLight = $resLight.Filter (images.Overlay $overlayLight 0 24) }}
+		{{- if $resDark }}
+			{{- $overlayDark := (resources.Get "icons/dark/Logpoint.png").Resize "24x" }}
+			{{- $resDark = $resDark.Filter (images.Overlay $overlayDark 0 24) }}
+		{{- end }}
+	{{- end }}
+	{{- if not $resDark}}{{$resDark = $resLight}}{{end -}}
+	{{- $refs = merge $refs (dict "light" $resLight.RelPermalink "dark" $resDark.RelPermalink) }}
+{{- end }}
+{{- return $refs }}

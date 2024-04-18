@@ -44,7 +44,7 @@ main .icon {
 }
 
 // No unique icon for callbacks. Use flipped function icon.
-.picture[data-type="member"][data-kind="Callback"] > .icon {
+.picture[data-type="Callback"] > .icon {
 	transform: scaleX(-1);
 }
 
