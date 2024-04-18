@@ -195,6 +195,13 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 
 {{- $subclasses := partial "func/classes.html" $classIndex.Subclasses }}
 
+{{- $sibclasses := slice }}
+{{- if $classIndex.Superclasses }}
+	{{- $superclassIndex := index site.Data.Index.Class (index $classIndex.Superclasses 0) }}
+	{{- $sibclasses = partial "func/classes.html" $superclassIndex.Subclasses }}
+	{{- $sibclasses = where $sibclasses "Name" "!=" $className }}
+{{- end }}
+
 {{- $members := slice }}
 {{- range index site.Data.Index.Member $className }}
 	{{- if not .Removed }}
@@ -269,6 +276,16 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					</ul>
 				</section>
 			{{- end }}
+			{{- if $sibclasses }}
+				<section id="sibclasses">
+					<header><h2>Siblings {{partial "element-count.html" (len $sibclasses)}}</h2></header>
+					<ul class="element-list truncated-list">
+						{{- range $sibclasses }}
+							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "link/entity.html" (dict "type" "class" "primary" .Name)}}</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
 		</section>
 	{{- end }}
 	<section id="toc">
@@ -283,6 +300,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{- end }}
 						{{- if $subclasses }}
 							<li id="toc-subclasses"><a href="#subclasses">Inherited by</a></li>
+						{{- end }}
+						{{- if $sibclasses }}
+							<li id="toc-sibclasses"><a href="#sibclasses">Siblings</a></li>
 						{{- end }}
 					</ol>
 				</li>
