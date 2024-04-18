@@ -47,8 +47,8 @@ items: []EnumItemIndex
 					{{- $change = index site.Data.History.Change $latest }}
 				{{- end }}
 				<td class="col-history">{{if $change}}{{partial "history/tag.html" $change}}{{end}}</td>
-				<td class="col-icon">{{partial "icon.html" (dict "type" "enumitem" "primary" .Enum "secondary" .Name)}}</td>
-				<td class="col-name">{{partial "link/entity.html" (dict "type" "enumitem" "primary" .Enum "secondary" .Name "simple" true)}}</td>
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "enumitem" "primary" .Enum "secondary" .Name)}}</td>
+				<td class="col-name">{{partial "entity/link.html" (dict "type" "enumitem" "primary" .Enum "secondary" .Name "simple" true)}}</td>
 				<td class="col-value"><span>{{$itemDump.Value}}</span></td>
 				{{- if $hasLegacyNames }}
 					<td class="col-legacy-names">{{if $itemDump.LegacyNames}}<span>{{delimit $itemDump.LegacyNames ", "}}</span>{{end}}</td>
@@ -122,7 +122,7 @@ items: []EnumItemIndex
 </nav>
 
 <article id="content">
-	<header><h1>{{partial "icon.html" (dict "type" "enum")}}{{$enumName}}<aside>{{partial "link/entity.html" (dict "type" "enum" "primary" $enumName "hub" true)}}</aside></h1></header>
+	<header><h1>{{partial "entity/icon.html" (dict "type" "enum")}}{{$enumName}}<aside>{{partial "entity/link.html" (dict "type" "enum" "primary" $enumName "hub" true)}}</aside></h1></header>
 
 	{{- if $enumDump.Tags }}
 		<section id="summary">
@@ -171,7 +171,7 @@ items: []EnumItemIndex
 					{{- end }}
 					<li class="set {{partial `status-class.html` (dict `type` $type `primary` .Class `secondary` .Member)}}">
 						<span>
-							{{- partial "link/entity.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
+							{{- partial "entity/link.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
 							{{- if eq .Kind "Parameter" }} (
 								{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
 							{{- end -}}

@@ -38,7 +38,7 @@ year corresponding to the page title are rendered. */}}
 				<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><span>{{.GUID}}</span></a>
 				{{- if .ChangesCount }}
 					{{- $major := index (split .Version ".") 1 }}
-					{{- partial "link/entity.html" (dict "type" "releasenotes" "primary" $major)}}
+					{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" $major)}}
 				{{- end }}
 				<ul class="change-list">
 					{{- if .ChangesCount }}

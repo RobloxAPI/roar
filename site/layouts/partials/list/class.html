@@ -2,7 +2,7 @@
 	{{- range . }}
 		{{- $class := index site.Data.Index.Class . }}
 		{{- if not $class.Removed }}
-		<li>{{partial `link/entity.html` (dict "type" "class" "primary" . "statuskind" "set deco")}}
+		<li>{{partial `entity/link.html` (dict "type" "class" "primary" . "statuskind" "set deco")}}
 			{{- if $class.Subclasses }}
 				<ul>
 					{{- template "class-tree" $class.Subclasses }}
@@ -18,9 +18,9 @@
 		{{- $class := index site.Data.Index.Class . }}
 		{{- if or $class.Removed $class.HasRemoved }}
 		<li>{{- if $class.Removed }}
-				{{partial `link/entity.html` (dict "type" "class" "primary" . "statuskind" "set deco")}}
+				{{partial `entity/link.html` (dict "type" "class" "primary" . "statuskind" "set deco")}}
 			{{- else }}
-				{{partial `link/entity.html` (dict "type" "class" "primary" . "statuskind" "set deco" "nolink" true)}}
+				{{partial `entity/link.html` (dict "type" "class" "primary" . "statuskind" "set deco" "nolink" true)}}
 			{{- end }}
 			{{- if $class.Subclasses }}
 				<ul>

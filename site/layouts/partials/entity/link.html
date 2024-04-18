@@ -53,22 +53,22 @@ statuskind: string? = "deco" // Set status kind.
 	<a class="entity-link{{if $ishub}} hub-link{{else if not .nostatus}} {{$statuskind}} {{$status}}{{end}}" href="{{$href}}">
 {{- end -}}
 {{- if eq .type "releasenotes" -}}
-	{{- if not .simple -}}{{partial "icon.html" (dict "type" "hub")}}{{- end -}}
+	{{- if not .simple -}}{{partial "entity/icon.html" (dict "type" "hub")}}{{- end -}}
 	Release notes
 {{- else if .hub -}}
-	{{- if not .simple -}}{{partial "icon.html" (dict "type" "hub")}}{{- end -}}
+	{{- if not .simple -}}{{partial "entity/icon.html" (dict "type" "hub")}}{{- end -}}
 	CreatorHub
 {{- else -}}
 	{{- if eq .type "class" -}}
-		{{- if not .simple}}{{partial "icon.html" (dict "type" .type "primary" .primary)}}{{- end -}}{{.primary}}
+		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type "primary" .primary)}}{{- end -}}{{.primary}}
 	{{- else if eq .type "member" -}}
-		{{- if not .simple}}{{partial "icon.html" (dict "type" .type "primary" .primary "secondary" .secondary)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
+		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type "primary" .primary "secondary" .secondary)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
 	{{- else if eq .type "enum" -}}
-		{{- if not .simple}}{{partial "icon.html" (dict "type" .type)}}{{end}}{{.primary}}
+		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type)}}{{end}}{{.primary}}
 	{{- else if eq .type "enumitem" -}}
-		{{- if not .simple}}{{partial "icon.html" (dict "type" .type)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
+		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
 	{{- else if eq .type "type" -}}
-		{{- if not .simple}}{{partial "icon.html" (dict "type" .type "primary" .primary)}}{{end}}{{.primary}}
+		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type "primary" .primary)}}{{end}}{{.primary}}
 	{{- end -}}
 {{- end -}}
 {{- if .nolink -}}

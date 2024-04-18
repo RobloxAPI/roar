@@ -9,4 +9,4 @@ preferred: { // If specified
 }?
 
 */}}
-<div class="status-box{{if .level}} status-{{.level}}{{end}}">{{if .text}}<span class="status-header">{{.header}}</span> {{.text}}{{if .preferred}} {{partial "link/entity.html" .preferred}}{{.preferred.text}}{{end}}{{else}}{{.header}}{{end}}</div>
+<div class="status-box{{if .level}} status-{{.level}}{{end}}">{{if .text}}<span class="status-header">{{.header}}</span> {{.text}}{{if .preferred}} {{partial "entity/link.html" .preferred}}{{.preferred.text}}{{end}}{{else}}{{.header}}{{end}}</div>
