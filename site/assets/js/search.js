@@ -849,7 +849,6 @@ function initSearchInput() {
 		}
 
 		// Show results.
-		latestResults = results;
 		main.style.display = "none";
 		searchResults.style.display = "";
 
@@ -943,17 +942,16 @@ function initSearchInput() {
 	// Go to the first result when the user presses enter.
 	form.addEventListener("submit", function(event) {
 		event.preventDefault();
-		if (firstResult !== null) {
-			var parseURL = document.createElement('a');
-			parseURL.href = firstResult;
-			if (document.location.origin == parseURL.origin &&
-				document.location.pathname == parseURL.pathname) {
+		const a = searchResults.querySelector("a");
+		if (a) {
+			if (document.location.origin == a.origin &&
+				document.location.pathname == a.pathname) {
 				renderResults(null);
-				if (parseURL.hash.length > 0) {
-					document.location.hash = parseURL.hash;
+				if (a.hash.length > 0) {
+					document.location.hash = a.hash;
 				}
 			} else {
-				document.location = firstResult;
+				document.location = a.href;
 			}
 		};
 	});
