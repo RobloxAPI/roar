@@ -37,10 +37,11 @@ type Class struct {
 }
 
 type Member struct {
-	Class   string
-	Name    string
-	Removed bool
-	Related TypeRefs `json:",omitempty"`
+	Class      string
+	Name       string
+	MemberType string
+	Removed    bool
+	Related    TypeRefs `json:",omitempty"`
 }
 
 type Enum struct {
@@ -91,7 +92,12 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 
 	r.Member = map[id.Class]map[id.Member]*Member{}
 	for i, changes := range hist.Object.Member {
-		member := Member{Class: i.Class, Name: i.Member, Removed: true}
+		member := Member{
+			Class:      i.Class,
+			Name:       i.Member,
+			MemberType: dump.Classes[i.Class].Members[i.Member].MemberType(),
+			Removed:    true,
+		}
 		for _, change := range changes {
 			switch change.Action.Type {
 			case diff.Add:
