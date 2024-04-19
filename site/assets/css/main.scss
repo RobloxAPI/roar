@@ -502,7 +502,7 @@ p, ul, ol, dl, table {
 ul, ol {
 	padding-left: var(--indent);
 }
-ul ul, ul ol, ol ul, ol ol {
+ul ul, ul ol, ol ul, ol ol, td ul, td ol {
 	margin-top: 0;
 	margin-bottom: 0;
 }
@@ -653,6 +653,29 @@ main :target > header,
 #search-results {
 	margin: 0 auto;
 	flex: 1 0 auto;
+}
+
+table.stats {
+	width: max-content;
+	th {
+		background-color: var(--theme-border);
+	}
+	td {
+		background-color: var(--theme-TableItem);
+	}
+	:is(th,td) {
+		padding: 0 0.5ch;
+		vertical-align: top;
+	}
+	td.l {
+		text-align: left;
+	};
+	td.c {
+		text-align: center;
+	};
+	td.r {
+		text-align: right;
+	};
 }
 
 table.search-database {

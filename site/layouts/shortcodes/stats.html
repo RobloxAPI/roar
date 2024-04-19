@@ -1,0 +1,778 @@
+{{- $index := site.Data.Index }}
+{{- $dump := site.Data.Dump }}
+{{- $history := site.Data.History }}
+
+<h2>Entities</h2>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th>Total</th>
+			<th>Present</th>
+			<th>Removed</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>classes</td>
+			<td class="r">{{len $index.Class}}</td>
+			<td class="r">{{partial "func/count-present.html" $index.Class}}</td>
+			<td class="r">{{partial "func/count-removed.html" $index.Class}}</td>
+		</tr>
+		{{- $memberTotal := 0 }}
+		{{- $memberPresent := 0 }}
+		{{- $memberRemoved := 0 }}
+		{{- range $type := $index.MemberTypes }}
+			<tr>
+				{{- $total := 0 }}
+				{{- $present := 0 }}
+				{{- $removed := 0 }}
+				{{- range $index.Member }}
+					{{- range . }}
+						{{- if eq $type .MemberType }}
+							{{- $total = add $total 1 }}
+							{{- if .Removed }}
+								{{- $removed = add $removed 1 }}
+							{{- else }}
+								{{- $present = add $present 1 }}
+							{{- end }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td>{{$type | lower | pluralize}}</td>
+				<td class="r">{{$total}}</td>
+				<td class="r">{{$present}}</td>
+				<td class="r">{{$removed}}</td>
+				{{- $memberTotal = add $memberTotal $total }}
+				{{- $memberPresent = add $memberPresent $present }}
+				{{- $memberRemoved = add $memberRemoved $removed }}
+			</tr>
+		{{- end }}
+		<tr>
+			<td>members</td>
+			<td class="r">{{$memberTotal}}</td>
+			<td class="r">{{$memberPresent}}</td>
+			<td class="r">{{$memberRemoved}}</td>
+		</tr>
+		<tr>
+			<td>enums</td>
+			<td class="r">{{len $index.Enum}}</td>
+			<td class="r">{{partial "func/count-present.html" $index.Enum}}</td>
+			<td class="r">{{partial "func/count-removed.html" $index.Enum}}</td>
+		</tr>
+		<tr>
+			{{- $total := 0 }}
+			{{- $present := 0 }}
+			{{- $removed := 0 }}
+			{{- range $index.EnumItem}}{{$total = add $total (len .)}}{{end}}
+			{{- range $index.EnumItem }}
+				{{- $present = add $present (partial "func/count-present.html" .) }}
+			{{- end }}
+			{{- range $index.EnumItem }}
+				{{- $removed = add $removed (partial "func/count-removed.html" .) }}
+			{{- end }}
+			<td>enum items</td>
+			<td class="r">{{$total}}</td>
+			<td class="r">{{$present}}</td>
+			<td class="r">{{$removed}}</td>
+		</tr>
+		<tr>
+			<td>types</td>
+			<td class="r">{{len $index.Type}}</td>
+			<td class="r">{{partial "func/count-present.html" $index.Type}}</td>
+			<td class="r">{{partial "func/count-removed.html" $index.Type}}</td>
+		</tr>
+		<tr>
+			{{- $total := add (len $index.Class) (len $index.Enum) (len $index.Type) }}
+			{{- range $index.Member }}
+				{{- $total = add $total (len .) }}
+			{{- end }}
+			{{- range $index.EnumItem }}
+				{{- $total = add $total (len .) }}
+			{{- end }}
+			{{- $present := 0 }}
+			{{- $present = add $present (partial "func/count-present.html" $index.Class) }}
+			{{- $present = add $present (partial "func/count-present.html" $index.Enum) }}
+			{{- $present = add $present (partial "func/count-present.html" $index.Type) }}
+			{{- range $index.Member }}
+				{{- $present = add $present (partial "func/count-present.html" .) }}
+			{{- end }}
+			{{- range $index.EnumItem }}
+				{{- $present = add $present (partial "func/count-present.html" .) }}
+			{{- end }}
+			{{- $removed := 0 }}
+			{{- $removed = add $removed (partial "func/count-removed.html" $index.Class) }}
+			{{- $removed = add $removed (partial "func/count-removed.html" $index.Enum) }}
+			{{- $removed = add $removed (partial "func/count-removed.html" $index.Type) }}
+			{{- range $index.Member }}
+				{{- $removed = add $removed (partial "func/count-removed.html" .) }}
+			{{- end }}
+			{{- range $index.EnumItem }}
+				{{- $removed = add $removed (partial "func/count-removed.html" .) }}
+			{{- end }}
+			<td>all</td>
+			<td class="r">{{$total}}</td>
+			<td class="r">{{$present}}</td>
+			<td class="r">{{$removed}}</td>
+		</tr>
+	</tbody>
+</table>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Statistic</th>
+			<th>Value</th>
+			<th>Note</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>most superclasses</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Class }}
+				{{- if gt (len .Superclasses) $max }}
+					{{- $max = (len .Superclasses) }}
+					{{- $items = slice (dict "type" "class" "primary" .Name) }}
+				{{- else if eq (len .Superclasses) $max }}
+					{{- $items = $items | append (dict "type" "class" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most subclasses</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Class }}
+				{{- if gt (len .Subclasses) $max }}
+					{{- $max = (len .Subclasses) }}
+					{{- $items = slice (dict "type" "class" "primary" .Name) }}
+				{{- else if eq (len .Subclasses) $max }}
+					{{- $items = $items | append (dict "type" "class" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most members</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $class, $members := $index.Member }}
+				{{- if gt (len $members) $max }}
+					{{- $max = (len $members) }}
+					{{- $items = slice (dict "type" "class" "primary" $class) }}
+				{{- else if eq (len $members) $max }}
+					{{- $items = $items | append (dict "type" "class" "primary" $class) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most inherited members</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Class }}
+				{{- $total := len (or (index $index.Member .Name) slice)}}
+				{{- range .Superclasses }}
+					{{- range index $index.Member . }}
+						{{- $total = add $total 1 }}
+					{{- end }}
+				{{- end }}
+				{{- if gt $total $max }}
+					{{- $max = $total }}
+					{{- $items = slice (dict "type" "class" "primary" .Name) }}
+				{{- else if eq $total $max }}
+					{{- $items = $items | append (dict "type" "class" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most parameters</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $className, $class := $dump.Classes }}
+				{{- range $memberName, $member := $class.Members }}
+					{{- if ne $member.MemberType "Function" "Event" "Callback"}}
+						{{- continue }}
+					{{- end }}
+					{{- if gt (len $member.Parameters) $max }}
+						{{- $max = (len $member.Parameters) }}
+						{{- $items = slice (dict "type" "member" "primary" $className "secondary" $memberName) }}
+					{{- else if eq (len $member.Parameters) $max }}
+						{{- $items = $items | append (dict "type" "member" "primary" $className "secondary" $memberName) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most returns</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $className, $class := $dump.Classes }}
+				{{- range $memberName, $member := $class.Members }}
+					{{- if ne $member.MemberType "Function" "Callback"}}
+						{{- continue }}
+					{{- end }}
+					{{- if gt (len $member.ReturnType) $max }}
+						{{- $max = (len $member.ReturnType) }}
+						{{- $items = slice (dict "type" "member" "primary" $className "secondary" $memberName) }}
+					{{- else if eq (len $member.ReturnType) $max }}
+						{{- $items = $items | append (dict "type" "member" "primary" $className "secondary" $memberName) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most enum items</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $enum, $members := $index.EnumItem }}
+				{{- if gt (len $members) $max }}
+					{{- $max = (len $members) }}
+					{{- $items = slice (dict "type" "enum" "primary" $enum) }}
+				{{- else if eq (len $members) $max }}
+					{{- $items = $items | append (dict "type" "enum" "primary" $enum) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most-used type</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Type }}
+				{{- $length := len (or .Related slice) }}
+				{{- if gt $length $max }}
+					{{- $max = $length }}
+					{{- $items = slice (dict "type" "type" "primary" .Name) }}
+				{{- else if eq $length $max }}
+					{{- $items = $items | append (dict "type" "type" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>longest class name</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Class }}
+				{{- $length := len .Name }}
+				{{- if gt $length $max }}
+					{{- $max = $length }}
+					{{- $items = slice (dict "type" "class" "primary" .Name) }}
+				{{- else if eq $length $max }}
+					{{- $items = $items | append (dict "type" "class" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		{{- range $type := $index.MemberTypes }}
+			<tr>
+				<td>longest {{$type | lower}} name</td>
+				{{- $items := slice }}
+				{{- $max := 0 }}
+				{{- range $index.Member }}
+					{{- range . }}
+						{{- if ne $type .MemberType }}
+							{{- continue }}
+						{{- end }}
+						{{- $length := len .Name }}
+						{{- if gt $length $max }}
+							{{- $max = $length }}
+							{{- $items = slice (dict "type" "member" "primary" .Class "secondary" .Name) }}
+						{{- else if eq $length $max }}
+							{{- $items = $items | append (dict "type" "member" "primary" .Class "secondary" .Name) }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td class="r">{{$max}}</td>
+				<td>{{partial "entity/list.html" $items}}</td>
+			</tr>
+		{{- end }}
+		<tr>
+			<td>longest parameter name</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $className, $class := $dump.Classes }}
+				{{- range $memberName, $member := $class.Members }}
+					{{- if ne $member.MemberType "Function" "Event" "Callback"}}
+						{{- continue }}
+					{{- end }}
+					{{- range $member.Parameters }}
+						{{- if gt (len .Name) $max }}
+							{{- $max = (len .Name) }}
+							{{- $items = slice (dict "type" "member" "primary" $className "secondary" $memberName "parameter" .Name) }}
+						{{- else if eq (len .Name) $max }}
+							{{- $items = $items | append (dict "type" "member" "primary" $className "secondary" $memberName "parameter" .Name) }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>
+				<ul class="element-list truncated-list">
+					{{- range $items }}
+						<li class="set {{partial `status-class.html` . }}">{{partial "entity/link.html" .}} ({{.parameter}})</li>
+					{{- end }}
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>longest enum name</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Enum }}
+				{{- $length := len .Name }}
+				{{- if gt $length $max }}
+					{{- $max = $length }}
+					{{- $items = slice (dict "type" "enum" "primary" .Name) }}
+				{{- else if eq $length $max }}
+					{{- $items = $items | append (dict "type" "enum" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>longest type name</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Type }}
+				{{- $length := len .Name }}
+				{{- if gt $length $max }}
+					{{- $max = $length }}
+					{{- $items = slice (dict "type" "type" "primary" .Name) }}
+				{{- else if eq $length $max }}
+					{{- $items = $items | append (dict "type" "type" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+	</tbody>
+</table>
+
+<h2>History</h2>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Statistic</th>
+			<th>Value</th>
+			<th>Note</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>updates</td>
+			<td class="r">{{len $history.Event}}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>updates with changes</td>
+			{{- $total := 0 }}
+			{{- range $history.Event }}
+				{{- if .ChangesCount }}
+					{{- $total = add $total 1 }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$total}}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>changes</td>
+			<td class="r">{{len $history.Change}}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>latest update</td>
+			<td class="r"></td>
+			<td>{{partial "updates/update.html" (index (last 1 $history.Event) 0)}}</td>
+		</tr>
+		<tr>
+			<td>earliest update</td>
+			<td class="r"></td>
+			<td>{{partial "updates/update.html" (index (first 1 $history.Event) 0)}}</td>
+		</tr>
+		<tr>
+			<td>most changes per update</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $history.Event }}
+				{{- if gt .ChangesCount $max }}
+					{{- $max = .ChangesCount }}
+					{{- $items = slice . }}
+				{{- else if eq .ChangesCount $max }}
+					{{- $items = $items | append . }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{range $items}}{{partial "updates/update.html" .}}<br>{{end}}</td>
+		</tr>
+		<tr>
+			<td>most changes per class</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $name, $changes := $history.Object.Class }}
+				{{- if gt (len $changes) $max }}
+					{{- $max = (len $changes) }}
+					{{- $items = slice (dict "type" "class" "primary" $name) }}
+				{{- else if eq (len $changes) $max }}
+					{{- $items = $items | append (dict "type" "class" "primary" $name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		{{- range $type := $index.MemberTypes }}
+			<tr>
+				<td>most changes per {{$type | lower}}</td>
+				{{- $items := slice }}
+				{{- $max := 0 }}
+				{{- range $class, $members := $history.Object.Member }}
+					{{- range $member, $changes := $members }}
+						{{- if ne $type (index $index.Member $class $member "MemberType") }}
+							{{- continue }}
+						{{- end }}
+						{{- if gt (len $changes) $max }}
+							{{- $max = (len $changes) }}
+							{{- $items = slice (dict "type" "member" "primary" $class "secondary" $member) }}
+						{{- else if eq (len $changes) $max }}
+							{{- $items = $items | append (dict "type" "member" "primary" $class "secondary" $member) }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td class="r">{{$max}}</td>
+				<td>{{partial "entity/list.html" $items}}</td>
+			</tr>
+		{{- end }}
+		<tr>
+			<td>most changes per enum</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $name, $changes := $history.Object.Enum }}
+				{{- if gt (len $changes) $max }}
+					{{- $max = (len $changes) }}
+					{{- $items = slice (dict "type" "enum" "primary" $name) }}
+				{{- else if eq (len $changes) $max }}
+					{{- $items = $items | append (dict "type" "enum" "primary" $name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most changes per enum item</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $enum, $members := $history.Object.EnumItem }}
+				{{- range $member, $changes := $members }}
+					{{- if gt (len $changes) $max }}
+						{{- $max = (len $changes) }}
+						{{- $items = slice (dict "type" "enumitem" "primary" $enum "secondary" $member) }}
+					{{- else if eq (len $changes) $max }}
+						{{- $items = $items | append (dict "type" "enumitem" "primary" $enum "secondary" $member) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>most changes per type</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $name, $changes := $history.Object.Type }}
+				{{- if gt (len $changes) $max }}
+					{{- $max = (len $changes) }}
+					{{- $items = slice (dict "type" "type" "primary" $name) }}
+				{{- else if eq (len $changes) $max }}
+					{{- $items = $items | append (dict "type" "type" "primary" $name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+	</tbody>
+</table>
+
+<h2>Tags</h2>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Tag</th>
+			<th>Total</th>
+			<th>Present</th>
+			<th>Removed</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- $values := newScratch }}
+		{{- range $dump.Classes }}
+			{{- range .Tags }}{{- $values.Set . true }}{{- end }}
+			{{- range .Members }}
+				{{- range .Tags }}{{- $values.Set . true }}{{- end }}
+			{{- end }}
+		{{- end }}
+		{{- range $dump.Enums }}
+			{{- range .Tags }}{{- $values.Set . true }}{{- end }}
+			{{- range .Items }}
+				{{- range .Tags }}{{- $values.Set . true }}{{- end }}
+			{{- end }}
+		{{- end }}
+		{{- range $value, $_ := $values.Values }}
+			<tr>
+				{{- $total := 0 }}
+				{{- $present := 0 }}
+				{{- $removed := 0 }}
+				{{- range $dump.Classes }}
+					{{- if in .Tags $value }}
+						{{- $total = add $total 1 }}
+						{{- if (index $index.Class .Name).Removed }}
+							{{- $removed = add $removed 1 }}
+						{{- else }}
+							{{- $present = add $present 1 }}
+						{{- end }}
+					{{- end }}
+					{{- $class := .Name }}
+					{{- range .Members }}
+						{{- if in .Tags $value }}
+							{{- $total = add $total 1 }}
+							{{- if (index $index.Member $class .Name).Removed }}
+								{{- $removed = add $removed 1 }}
+							{{- else }}
+								{{- $present = add $present 1 }}
+							{{- end }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				{{- range $dump.Enums }}
+					{{- if in .Tags $value }}
+						{{- $total = add $total 1 }}
+						{{- if (index $index.Enum .Name).Removed }}
+							{{- $removed = add $removed 1 }}
+						{{- else }}
+							{{- $present = add $present 1 }}
+						{{- end }}
+					{{- end }}
+					{{- $enum := .Name }}
+					{{- range .Items }}
+						{{- if in .Tags $value }}
+							{{- $total = add $total 1 }}
+							{{- if (index $index.EnumItem $enum .Name).Removed }}
+								{{- $removed = add $removed 1 }}
+							{{- else }}
+								{{- $present = add $present 1 }}
+							{{- end }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td>{{$value}}</td>
+				<td class="r">{{$total}}</td>
+				<td class="r">{{$present}}</td>
+				<td class="r">{{$removed}}</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
+
+<h2>Fields</h2>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Class.MemoryCategory</th>
+			<th>Total</th>
+			<th>Present</th>
+			<th>Removed</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- $values := newScratch }}
+		{{- range $dump.Classes }}
+			{{- $values.Set .MemoryCategory true }}
+		{{- end }}
+		{{- range $value, $_ := $values.Values }}
+			<tr>
+				{{- $total := 0 }}
+				{{- $present := 0 }}
+				{{- $removed := 0 }}
+				{{- range $dump.Classes }}
+					{{- if eq $value .MemoryCategory }}
+						{{- $total = add $total 1 }}
+						{{- if (index $index.Class .Name).Removed }}
+							{{- $removed = add $removed 1 }}
+						{{- else }}
+							{{- $present = add $present 1 }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td>{{$value}}</td>
+				<td class="r">{{$total}}</td>
+				<td class="r">{{$present}}</td>
+				<td class="r">{{$removed}}</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Member.Security</th>
+			<th>Total</th>
+			<th>Present</th>
+			<th>Removed</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- $values := newScratch }}
+		{{- range $dump.Classes }}
+			{{- range .Members }}
+				{{- if isset . "Security" }}
+					{{- $values.Set .Security true }}
+				{{- end }}
+				{{- if isset . "ReadSecurity" }}
+					{{- $values.Set .ReadSecurity true }}
+				{{- end }}
+				{{- if isset . "WriteSecurity" }}
+					{{- $values.Set .WriteSecurity true }}
+				{{- end }}
+			{{- end }}
+		{{- end }}
+		{{- range $value, $_ := $values.Values }}
+			<tr>
+				{{- $total := 0 }}
+				{{- $present := 0 }}
+				{{- $removed := 0 }}
+				{{- range $dump.Classes }}
+					{{- $class := .Name }}
+					{{- range .Members }}
+						{{- if eq $value .Security .ReadSecurity .WriteSecurity }}
+							{{- $total = add $total 1 }}
+							{{- if (index $index.Member $class .Name).Removed }}
+								{{- $removed = add $removed 1 }}
+							{{- else }}
+								{{- $present = add $present 1 }}
+							{{- end }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td>{{$value}}</td>
+				<td class="r">{{$total}}</td>
+				<td class="r">{{$present}}</td>
+				<td class="r">{{$removed}}</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Member.ThreadSafety</th>
+			<th>Total</th>
+			<th>Present</th>
+			<th>Removed</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- $values := newScratch }}
+		{{- range $dump.Classes }}
+			{{- range .Members }}
+				{{- $values.Set .ThreadSafety true }}
+			{{- end }}
+		{{- end }}
+		{{- range $value, $_ := $values.Values }}
+			<tr>
+				{{- $total := 0 }}
+				{{- $present := 0 }}
+				{{- $removed := 0 }}
+				{{- range $dump.Classes }}
+					{{- $class := .Name }}
+					{{- range .Members }}
+						{{- if eq $value .ThreadSafety }}
+							{{- $total = add $total 1 }}
+							{{- if (index $index.Member $class .Name).Removed }}
+								{{- $removed = add $removed 1 }}
+							{{- else }}
+								{{- $present = add $present 1 }}
+							{{- end }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td>{{$value}}</td>
+				<td class="r">{{$total}}</td>
+				<td class="r">{{$present}}</td>
+				<td class="r">{{$removed}}</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Type.Category</th>
+			<th>Total</th>
+			<th>Present</th>
+			<th>Removed</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- $values := newScratch }}
+		{{- range $index.Type }}
+			{{- $values.Set .Category true }}
+		{{- end }}
+		{{- range $value, $_ := $values.Values }}
+			<tr>
+				{{- $total := 0 }}
+				{{- $present := 0 }}
+				{{- $removed := 0 }}
+				{{- range $index.Type }}
+					{{- if eq $value .Category }}
+						{{- $total = add $total 1 }}
+						{{- if .Removed }}
+							{{- $removed = add $removed 1 }}
+						{{- else }}
+							{{- $present = add $present 1 }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td>{{$value}}</td>
+				<td class="r">{{$total}}</td>
+				<td class="r">{{$present}}</td>
+				<td class="r">{{$removed}}</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
+
+<h2>Website</h2>
+<table class="stats">
+	<thead>
+		<tr>
+			<th>Field</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr><td>go version</td><td>{{hugo.GoVersion}}</td></tr>
+		<tr><td>hugo version</td><td>{{hugo.Version}}</td></tr>
+		<tr><td>extended</td><td>{{hugo.IsExtended}}</td></tr>
+		<tr><td>build date</td><td>{{(time hugo.BuildDate).UTC.Format "2006-01-02 15:04:05"}}</td></tr>
+		<tr><td>commit hash</td><td>{{hugo.CommitHash}}</td></tr>
+		<tr><td>environment</td><td>{{hugo.Environment}}</td></tr>
+		<tr><td>base path</td><td>{{relURL site.BaseURL}}</td></tr>
+		<tr><td>pages</td><td>{{len site.AllPages}}</td></tr>
+		<tr><td>stats date</td><td>{{time.Now.UTC.Format "2006-01-02 15:04:05"}}</td></tr>
+	</tbody>
+</table>

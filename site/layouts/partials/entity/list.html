@@ -1,0 +1,5 @@
+<ul class="element-list truncated-list">
+	{{- range . }}
+		<li class="set {{partial `status-class.html` . }}">{{partial "entity/link.html" .}}</li>
+	{{- end }}
+</ul>

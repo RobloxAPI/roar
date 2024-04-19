@@ -1,0 +1,7 @@
+{{$total := 0}}
+{{range .}}
+	{{if .Removed}}
+		{{$total = add $total 1}}
+	{{end}}
+{{end}}
+{{return $total}}
