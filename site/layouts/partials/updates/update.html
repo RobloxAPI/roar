@@ -1,0 +1,2 @@
+<span class="change-list-toggle"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time> (v{{.Version}})</span>
+<a class="permalink" title="Permanent link" href="{{((site.GetPage `updates`).GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><span>{{.GUID}}</span></a>
