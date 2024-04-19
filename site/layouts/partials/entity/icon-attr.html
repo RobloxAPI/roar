@@ -1,0 +1,78 @@
+{{/* Returns icon data for the given entity.
+
+type: string // The type of entity (hub|class|member|enum|enumitem|type)
+primary: string // The primary identifier.
+secondary: string // The secondary identifier.
+
+*/}}
+{{$type := .type | lower}}
+{{$res := false}}
+{{$entityType := false}}
+{{$title := false}}
+{{if eq $type "hub"}}
+	{{$res = partial "entity/icon-res.html" (dict "kind" "hub")}}
+{{else}}
+	{{if eq $type "class"}}
+		{{$entityType = "Class"}}
+		{{$title = $entityType}}
+		{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "name" .primary)}}
+	{{else if eq $type "member"}}
+		{{$dump := index site.Data.Dump.Classes .primary "Members" .secondary}}
+		{{$entityType = $dump.MemberType}}
+		{{$title = $entityType}}
+		{{if eq $entityType "Property"}}
+			{{$sec := slice}}
+			{{if and (eq $dump.ReadSecurity $dump.WriteSecurity) (ne $dump.ReadSecurity "None" "")}}
+				{{$sec = $sec | append (print "Read/Write: " $dump.ReadSecurity)}}
+			{{else}}
+				{{if and $dump.ReadSecurity (ne $dump.ReadSecurity "None")}}
+					{{$sec = $sec | append (print "Read: " $dump.ReadSecurity)}}
+				{{end}}
+				{{if and $dump.WriteSecurity (ne $dump.WriteSecurity "None")}}
+					{{$sec = $sec | append (print "Write: " $dump.WriteSecurity)}}
+				{{end}}
+			{{end}}
+			{{if $sec}}
+				{{$title = (printf "Protected %s (%s)" $title (delimit $sec ", "))}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
+			{{else}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+			{{end}}
+		{{else if eq $entityType "Function"}}
+			{{if and $dump.Security (ne $dump.Security "None")}}
+				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
+			{{else}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+			{{end}}
+		{{else if eq $entityType "Event"}}
+			{{if and $dump.Security (ne $dump.Security "None")}}
+				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
+			{{else}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+			{{end}}
+		{{else if eq $entityType "Callback"}}
+			{{if and $dump.Security (ne $dump.Security "None")}}
+				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
+			{{else}}
+				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+			{{end}}
+		{{end}}
+	{{else if eq $type "enum"}}
+		{{$entityType = "Enum"}}
+		{{$title = $entityType}}
+		{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+	{{else if eq $type "enumitem"}}
+		{{$entityType = "EnumItem"}}
+		{{$title = $entityType}}
+		{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+	{{else if eq $type "type"}}
+		{{$entityType = "Type"}}
+		{{$cat := index site.Data.Index.Type .primary "Category"}}
+		{{$title = print $cat " type"}}
+		{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "category" $cat)}}
+	{{end}}
+{{end}}
+{{return merge $res (dict "title" $title "type" $entityType)}}

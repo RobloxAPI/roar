@@ -1,0 +1,23 @@
+{{- $entities := newScratch -}}
+{{- range site.Data.Index.Class -}}
+	{{- $entities.SetInMap "Class" .Name (partial "entity/icon-res.html" (dict "kind" "entity" "type" "class" "name" .Name)) -}}
+{{- end -}}
+{{- $entities.Set "Property" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "property")) -}}
+{{- $entities.Set "Function" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "function")) -}}
+{{- $entities.Set "Event" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "event")) -}}
+{{- $entities.Set "Callback" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "callback")) -}}
+{{- $entities.Set "Enum" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "enum")) -}}
+{{- $entities.Set "EnumItem" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "enumitem")) -}}
+{{- range site.Data.Index.TypeCategories -}}
+	{{- $entities.SetInMap "Type" . (partial "entity/icon-res.html" (dict "kind" "entity" "type" "type" "category" .)) -}}
+{{- end -}}
+
+{{- $protected := newScratch -}}
+{{- $protected.Set "Property" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "property" "protected" true)) -}}
+{{- $protected.Set "Function" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "function" "protected" true)) -}}
+{{- $protected.Set "Event" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "event" "protected" true)) -}}
+{{- $protected.Set "Callback" (partial "entity/icon-res.html" (dict "kind" "entity" "type" "callback" "protected" true)) -}}
+
+{{- $hub := partial "entity/icon-res.html" (dict "kind" "hub") -}}
+
+{{- (dict "Entity" $entities.Values "Protected" $protected.Values "Hub" $hub) | jsonify -}}

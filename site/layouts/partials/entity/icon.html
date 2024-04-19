@@ -6,9 +6,14 @@ secondary: string // The secondary identifier.
 
 */}}
 {{- $type := .type | lower }}
-{{- $refs := partial "entity/icon-ref.html" . }}
-{{- if $refs }}
-	<span class="picture"{{if $refs.title}} title="{{$refs.title}}"{{end}}{{if $refs.type}} data-type="{{$refs.type}}"{{end}}><span class="icon" style="--light:url('{{$refs.light}}');--dark:url('{{$refs.dark}}')"></span></span>
-{{- else -}}
-	<span class="picture"{{if $refs.title}} title="{{$refs.title}}"{{end}}{{if $refs.type}} data-type="{{$refs.type}}"{{end}}><span class="icon"></span></span>
-{{- end }}
+{{- $attr := partial "entity/icon-attr.html" . }}
+<span class="picture"
+	{{- if $attr.title}} title="{{$attr.title -}}"{{- end -}}
+	{{- if $attr.type -}} data-type="{{$attr.type -}}"{{- end -}}>{{- /**/ -}}
+	<span class="icon"
+	{{- if or $attr.Light $attr.Dark}} style="
+		{{- if $attr.Light -}}--light:url('{{$attr.Light}}'){{- end -}}
+		{{- if $attr.Dark -}};--dark:url('{{$attr.Dark}}'){{- end -}}
+	"{{- end -}}>{{- /**/ -}}
+	</span>{{- /**/ -}}
+</span>

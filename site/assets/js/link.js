@@ -1,3 +1,7 @@
+"use strict";
+
+import { entityIcon } from "./icon.js";
+
 let pathSub = "";
 {
 	let sub = document.head.querySelector(`meta[name="path-sub"]`);
@@ -86,11 +90,15 @@ export function entityLink(row, kind, simple) {
 
 	switch (kind) {
 	case "hub":
-		//TODO: CreatorHub icon
+		if (!simple) {
+			entityIcon(row, kind).then((icon) => element.insertAdjacentElement("afterbegin", icon));
+		};
 		element.appendChild(new Text("CreatorHub"));
 		return element;
 	case "doc":
-		//TODO: GitHub icon
+		if (!simple) {
+			entityIcon(row, kind).then((icon) => element.insertAdjacentElement("afterbegin", icon));
+		};
 		element.appendChild(new Text("Doc source"));
 		return element;
 	};
@@ -112,7 +120,9 @@ export function entityLink(row, kind, simple) {
 		};
 	};
 
-	//TODO: Entity icon
+	if (!simple) {
+		entityIcon(row, kind).then((icon) => element.insertAdjacentElement("afterbegin", icon));
+	};
 
 	// Render text.
 	let text = "";

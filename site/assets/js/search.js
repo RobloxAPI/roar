@@ -203,7 +203,7 @@ function b1(table, data, i) {
 //
 // The first element is a function that receives a Database, a DataView, and the
 // remaining elements.
-const F = {
+export const F = {
 	// Entity
 
 	PRIMARY      : [s2, 0],
@@ -275,7 +275,7 @@ const F = {
 // field, and is also considered a non-match. Positive scores can have an
 // arbitrary magntiude, which is relative to the result of a fuzzy match.
 // Negative scores are normalized to -1.
-const M = {
+export const M = {
 	// Returns the score of a fuzzy match of a pattern against a field. Returns
 	// zero unless the full pattern is matched.
 	FUZZY: function(field, value) {
@@ -528,6 +528,13 @@ class Row {
 	field(method) {
 		return method[0](this.db, this.data, method[1], method[2]);
 	};
+	field_name(name) {
+		const method = F[name];
+		if (!method) {
+			return undefiend;
+		};
+		return method[0](this.db, this.data, method[1], method[2]);
+	};
 	get primary() { return this.field(F.PRIMARY) };
 	get secondary() { return this.field(F.SECONDARY) };
 	get flags() { return this.field(F.FLAGS) };
@@ -722,7 +729,7 @@ function cellContext(td, value, type, row, field) {
 };
 
 function renderSearchData() {
-	const main = document.body.querySelector("main");
+	const main = document.body.querySelector("main:not(#search-results)");
 	if (!main) {
 		return;
 	};
@@ -890,7 +897,7 @@ function initSearchInput() {
 	form.classList.remove("js");
 
 	// Create search results container.
-	const searchResults = document.createElement("section");
+	const searchResults = document.createElement("main");
 	searchResults.id = "search-results";
 	searchResults.style.display = "none";
 	main.insertAdjacentElement("beforebegin", searchResults);
@@ -927,6 +934,7 @@ function initSearchInput() {
 			render(null);
 			return;
 		};
+		console.log("SEARCHING", query);
 		render("Searching...");
 		getDatabase()
 			.then(function(db) {
