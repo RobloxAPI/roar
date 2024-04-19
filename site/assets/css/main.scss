@@ -662,11 +662,11 @@ table.search-database {
 	font-size: 12px;
 	white-space: nowrap;
 	text-wrap: nowrap;
- 	th {
- 		position: sticky;
- 		top: var(--header-height);
- 		background-color: var(--theme-border);
- 	}
+	th {
+		position: sticky;
+		top: var(--header-height);
+		background-color: var(--theme-border);
+	}
 	td {
 		background-color: var(--theme-TableItem);
 		&.x {
