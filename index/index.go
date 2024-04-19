@@ -16,6 +16,9 @@ type Root struct {
 	RootClasses    []id.Class
 	MemberTypes    []id.MemberType
 	TypeCategories []string
+	Tag            []string
+	Security       []string
+	ThreadSafety   []string
 
 	Class    map[id.Class]*Class
 	Member   map[id.Class]map[id.Member]*Member
@@ -74,6 +77,10 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	if latest := hist.LatestEvent(); latest != nil {
 		r.MaxYear = latest.Date.Year()
 	}
+
+	tags := map[string]struct{}{}
+	secs := map[string]struct{}{}
+	safes := map[string]struct{}{}
 
 	r.Class = map[id.Class]*Class{}
 	for i, changes := range hist.Object.Class {
@@ -284,7 +291,20 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 				fmt.Printf("CHECK: missing member %s.%q from dump\n", className, memberName)
 				continue
 			}
-			forEachType(memberDump.Fields(nil), func(ref TypeRef) {
+			fields := memberDump.Fields(nil)
+			if sec, ok := fields["Security"].(string); ok {
+				secs[sec] = struct{}{}
+			}
+			if sec, ok := fields["ReadSecurity"].(string); ok {
+				secs[sec] = struct{}{}
+			}
+			if sec, ok := fields["WriteSecurity"].(string); ok {
+				secs[sec] = struct{}{}
+			}
+			if safe, ok := fields["ThreadSafety"].(string); ok {
+				safes[safe] = struct{}{}
+			}
+			forEachType(fields, func(ref TypeRef) {
 				ref.Class = className
 				ref.Member = memberName
 				ref.MemberType = memberDump.MemberType()
@@ -321,6 +341,62 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		}
 	}
 
+	// Tags
+	for name := range r.Class {
+		classDump := dump.Classes[name]
+		if classDump == nil {
+			fmt.Printf("CHECK: missing class %q from dump\n", name)
+			continue
+		}
+		for _, tag := range classDump.Tags {
+			tags[tag] = struct{}{}
+		}
+	}
+	for className, members := range r.Member {
+		for memberName := range members {
+			classDump := dump.Classes[className]
+			if classDump == nil {
+				fmt.Printf("CHECK: missing class %q from dump\n", className)
+				continue
+			}
+			memberDump := classDump.Members[memberName]
+			if memberDump == nil {
+				fmt.Printf("CHECK: missing member %s.%q from dump\n", className, memberName)
+				continue
+			}
+			for _, tag := range memberDump.GetTags() {
+				tags[tag] = struct{}{}
+			}
+		}
+	}
+	for name := range r.Enum {
+		enumDump := dump.Enums[name]
+		if enumDump == nil {
+			fmt.Printf("CHECK: missing enum %q from dump\n", name)
+			continue
+		}
+		for _, tag := range enumDump.Tags {
+			tags[tag] = struct{}{}
+		}
+	}
+	for enumName, items := range r.EnumItem {
+		for itemName := range items {
+			enumDump := dump.Enums[enumName]
+			if enumDump == nil {
+				fmt.Printf("CHECK: missing enum %q from dump\n", enumName)
+				continue
+			}
+			itemDump := enumDump.Items[itemName]
+			if itemDump == nil {
+				fmt.Printf("CHECK: missing member %s.%q from dump\n", enumName, itemName)
+				continue
+			}
+			for _, tag := range itemDump.GetTags() {
+				tags[tag] = struct{}{}
+			}
+		}
+	}
+
 	for _, index := range r.Class {
 		sort.Sort(index.Related)
 		if index.Removed {
@@ -348,6 +424,22 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		}
 		index.Removed = count == 0
 	}
+
+	r.Tag = make([]string, 0, len(tags))
+	for tag := range tags {
+		r.Tag = append(r.Tag, tag)
+	}
+	sort.Strings(r.Tag)
+	r.Security = make([]string, 0, len(secs))
+	for sec := range secs {
+		r.Security = append(r.Security, sec)
+	}
+	sort.Strings(r.Security)
+	r.ThreadSafety = make([]string, 0, len(safes))
+	for safe := range safes {
+		r.ThreadSafety = append(r.ThreadSafety, safe)
+	}
+	sort.Strings(r.ThreadSafety)
 
 	return nil
 }
