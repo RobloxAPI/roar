@@ -496,7 +496,7 @@ h5 { --heading-scale: calc(5/6) }
 h6 { --heading-scale: calc(4/6) }
 
 // Margined elements.
-p, ul, ol, dl {
+p, ul, ol, dl, table {
 	margin: var(--baseline) 0;
 }
 ul, ol {
