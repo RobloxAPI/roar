@@ -13,8 +13,9 @@ import (
 )
 
 type Root struct {
-	RootClasses []id.Class
-	MemberTypes []id.MemberType
+	RootClasses    []id.Class
+	MemberTypes    []id.MemberType
+	TypeCategories []string
 
 	Class    map[id.Class]*Class
 	Member   map[id.Class]map[id.Member]*Member
@@ -143,6 +144,7 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 		items[i.EnumItem] = &item
 	}
 
+	cats := map[string]struct{}{}
 	r.Type = map[id.Type]*Type{}
 	for i, refs := range hist.Object.Type {
 		typ := Type{Name: i, Removed: true}
@@ -151,10 +153,17 @@ func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 				fmt.Printf("CHECK: type %s has category %s and %s\n", i, typ.Category, ref.Value.Category)
 			} else {
 				typ.Category = ref.Value.Category
+				cats[typ.Category] = struct{}{}
 			}
 		}
 		r.Type[i] = &typ
 	}
+
+	r.TypeCategories = make([]string, 0, len(cats))
+	for cat := range cats {
+		r.TypeCategories = append(r.TypeCategories, cat)
+	}
+	sort.Strings(r.TypeCategories)
 
 	// Select roots of the inheritance tree. This includes roots of the visible
 	// "non-removed" tree, roots of the hidden "removed" tree, and any classes
