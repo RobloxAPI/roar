@@ -760,7 +760,7 @@ function renderSearchData() {
 				table.appendChild(tbody);
 				details.appendChild(table);
 
-				table.classList.add("search-database-table");
+				table.classList.add("search-database");
 
 				const trh = document.createElement("tr");
 				thead.appendChild(trh);
