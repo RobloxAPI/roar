@@ -46,7 +46,7 @@ const settingsDef = [
 	{
 		"name": "SecurityIdentity",
 		"type": "select",
-		"default": "0",
+		"default": securityIdentities[0],
 		"text": "Permission",
 		"options": securityIdentities.map((v) => ({"value": v})),
 	},
