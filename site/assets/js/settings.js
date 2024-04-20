@@ -25,9 +25,10 @@ const securityPermissions = new Map([
 ]);
 
 export function matchSecurity(id, ctx) {
-	const i = securityIdentities.indexOf(id);
+	let i = securityIdentities.indexOf(id);
 	if (i < 0) {
-		return false;
+		// Received invalid ID, treat as "All".
+		i = 0;
 	};
 	return securityPermissions.get(ctx)[i] === 1;
 };
