@@ -1,1 +1,1 @@
-document.documentElement.className=window.localStorage.getItem("Theme")
+document.documentElement.className=(window.localStorage.getItem("Theme")||"Auto")
