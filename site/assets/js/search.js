@@ -729,7 +729,7 @@ function cellContext(td, value, type, row, field) {
 };
 
 function renderSearchData() {
-	const main = document.body.querySelector("main:not(#search-results)");
+	const main = document.body.querySelector("main");
 	if (!main) {
 		return;
 	};
@@ -897,7 +897,7 @@ function initSearchInput() {
 	form.classList.remove("js");
 
 	// Create search results container.
-	const searchResults = document.createElement("main");
+	const searchResults = document.createElement("section");
 	searchResults.id = "search-results";
 	searchResults.style.display = "none";
 	main.insertAdjacentElement("beforebegin", searchResults);
