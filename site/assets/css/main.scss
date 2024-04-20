@@ -278,7 +278,7 @@ body {
 				grid-area: nav;
 				overflow-x: clip;
 				li {
-					> a {
+					a {
 						display: block;
 						overflow: hidden;
 						text-overflow: ellipsis;
