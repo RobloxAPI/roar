@@ -3,11 +3,11 @@
 		<li><a href="{{site.Home.RelPermalink}}">Main</a></li>
 		<li><a href="{{(site.GetPage `updates`).RelPermalink}}">Updates</a></li>
 		<li><a href="{{(site.GetPage `about`).RelPermalink}}">About</a></li>
-		<li><a href="{{site.Params.Roblox}}">Roblox</a></li>
-		<li><a href="{{site.Params.CreatorHub}}">CreatorHub</a></li>
+		<li><a href="{{(site.GetPage `stats`).RelPermalink}}">Stats</a></li>
 		<li><a href="{{site.Params.Repo}}">Develop</a></li>
 		<li><a href="{{site.Params.Issues}}">Issues</a></li>
-		<li><a href="{{(site.GetPage `stats`).RelPermalink}}">Stats</a></li>
+		<li><a href="{{site.Params.CreatorHub}}">CreatorHub</a></li>
+		<li><a href="{{site.Params.Roblox}}">Roblox</a></li>
 	</ul>
 </nav>
 <span class="license">Website is licensed under <a href="{{relref page `about`}}#licenses">CC BY-SA-4.0</a>.</span>
