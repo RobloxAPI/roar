@@ -299,6 +299,7 @@ body {
 				top: var(--header-height);
 				max-height: calc(100vh - var(--header-height));
 				overflow-y: auto;
+				scrollbar-gutter: stable;
 			}
 
 			// Specific content styling.
@@ -519,6 +520,7 @@ blockquote > :last-child::after {
 .truncated-list {
 	max-height: 38.2vh;
 	overflow-y: auto;
+	scrollbar-gutter: stable;
 }
 
 // List where each element has an icon.
