@@ -157,7 +157,7 @@ body {
 			height: 100%;
 		}
 		// Exception for anything under icons.
-		.icon * {
+		.header-icon * {
 			display: revert;
 			align-items: revert;
 			height: revert;
@@ -212,7 +212,7 @@ body {
 		}
 
 		// Square icon with inset element.
-		.icon {
+		.header-icon {
 			width: var(--header-height);
 			height: var(--header-height);
 			display: flex;

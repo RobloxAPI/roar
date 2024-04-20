@@ -1,4 +1,4 @@
-main .icon {
+.icon {
 	--scale: calc(var(--icon-scale) * var(--heading-scale,1));
 	display: inline-block;
 	height: var(--scale);
@@ -6,16 +6,16 @@ main .icon {
 	background-size: auto var(--scale);
 }
 
-.Auto:root main .icon {
+.Auto:root .icon {
 	background-image: var(--light, var(--dark, none));
 	@media (prefers-color-scheme: dark) {
 		background-image: var(--dark, var(--light, none));
 	}
 }
-.Light:root main .icon {
+.Light:root .icon {
 	background-image: var(--light, var(--dark, none));
 }
-.Dark:root main .icon {
+.Dark:root .icon {
 	background-image: var(--dark, var(--light, none));
 }
 
