@@ -7,17 +7,17 @@
 	<thead>
 		<tr>
 			<th>Type</th>
-			<th>Total</th>
 			<th>Present</th>
 			<th>Removed</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
 			<td>classes</td>
-			<td class="r">{{len $index.Class}}</td>
 			<td class="r">{{partial "func/count-present.html" $index.Class}}</td>
 			<td class="r">{{partial "func/count-removed.html" $index.Class}}</td>
+			<td class="r">{{len $index.Class}}</td>
 		</tr>
 		{{- $memberTotal := 0 }}
 		{{- $memberPresent := 0 }}
@@ -40,9 +40,9 @@
 					{{- end }}
 				{{- end }}
 				<td>{{$type | lower | pluralize}}</td>
-				<td class="r">{{$total}}</td>
 				<td class="r">{{$present}}</td>
 				<td class="r">{{$removed}}</td>
+				<td class="r">{{$total}}</td>
 				{{- $memberTotal = add $memberTotal $total }}
 				{{- $memberPresent = add $memberPresent $present }}
 				{{- $memberRemoved = add $memberRemoved $removed }}
@@ -50,15 +50,15 @@
 		{{- end }}
 		<tr>
 			<td>members</td>
-			<td class="r">{{$memberTotal}}</td>
 			<td class="r">{{$memberPresent}}</td>
 			<td class="r">{{$memberRemoved}}</td>
+			<td class="r">{{$memberTotal}}</td>
 		</tr>
 		<tr>
 			<td>enums</td>
-			<td class="r">{{len $index.Enum}}</td>
 			<td class="r">{{partial "func/count-present.html" $index.Enum}}</td>
 			<td class="r">{{partial "func/count-removed.html" $index.Enum}}</td>
+			<td class="r">{{len $index.Enum}}</td>
 		</tr>
 		<tr>
 			{{- $total := 0 }}
@@ -72,15 +72,15 @@
 				{{- $removed = add $removed (partial "func/count-removed.html" .) }}
 			{{- end }}
 			<td>enum items</td>
-			<td class="r">{{$total}}</td>
 			<td class="r">{{$present}}</td>
 			<td class="r">{{$removed}}</td>
+			<td class="r">{{$total}}</td>
 		</tr>
 		<tr>
 			<td>types</td>
-			<td class="r">{{len $index.Type}}</td>
 			<td class="r">{{partial "func/count-present.html" $index.Type}}</td>
 			<td class="r">{{partial "func/count-removed.html" $index.Type}}</td>
+			<td class="r">{{len $index.Type}}</td>
 		</tr>
 		<tr>
 			{{- $total := add (len $index.Class) (len $index.Enum) (len $index.Type) }}
@@ -111,9 +111,9 @@
 				{{- $removed = add $removed (partial "func/count-removed.html" .) }}
 			{{- end }}
 			<td>all</td>
-			<td class="r">{{$total}}</td>
 			<td class="r">{{$present}}</td>
 			<td class="r">{{$removed}}</td>
+			<td class="r">{{$total}}</td>
 		</tr>
 	</tbody>
 </table>
@@ -513,9 +513,9 @@
 	<thead>
 		<tr>
 			<th>Tag</th>
-			<th>Total</th>
 			<th>Present</th>
 			<th>Removed</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -580,9 +580,9 @@
 					{{- end }}
 				{{- end }}
 				<td>{{$value}}</td>
-				<td class="r">{{$total}}</td>
 				<td class="r">{{$present}}</td>
 				<td class="r">{{$removed}}</td>
+				<td class="r">{{$total}}</td>
 			</tr>
 		{{- end }}
 	</tbody>
@@ -593,9 +593,9 @@
 	<thead>
 		<tr>
 			<th>Class.MemoryCategory</th>
-			<th>Total</th>
 			<th>Present</th>
 			<th>Removed</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -619,9 +619,9 @@
 					{{- end }}
 				{{- end }}
 				<td>{{$value}}</td>
-				<td class="r">{{$total}}</td>
 				<td class="r">{{$present}}</td>
 				<td class="r">{{$removed}}</td>
+				<td class="r">{{$total}}</td>
 			</tr>
 		{{- end }}
 	</tbody>
@@ -630,9 +630,9 @@
 	<thead>
 		<tr>
 			<th>Member.Security</th>
-			<th>Total</th>
 			<th>Present</th>
 			<th>Removed</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -669,9 +669,9 @@
 					{{- end }}
 				{{- end }}
 				<td>{{$value}}</td>
-				<td class="r">{{$total}}</td>
 				<td class="r">{{$present}}</td>
 				<td class="r">{{$removed}}</td>
+				<td class="r">{{$total}}</td>
 			</tr>
 		{{- end }}
 	</tbody>
@@ -680,9 +680,9 @@
 	<thead>
 		<tr>
 			<th>Member.ThreadSafety</th>
-			<th>Total</th>
 			<th>Present</th>
 			<th>Removed</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -711,9 +711,9 @@
 					{{- end }}
 				{{- end }}
 				<td>{{$value}}</td>
-				<td class="r">{{$total}}</td>
 				<td class="r">{{$present}}</td>
 				<td class="r">{{$removed}}</td>
+				<td class="r">{{$total}}</td>
 			</tr>
 		{{- end }}
 	</tbody>
@@ -722,9 +722,9 @@
 	<thead>
 		<tr>
 			<th>Type.Category</th>
-			<th>Total</th>
 			<th>Present</th>
 			<th>Removed</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -748,9 +748,9 @@
 					{{- end }}
 				{{- end }}
 				<td>{{$value}}</td>
-				<td class="r">{{$total}}</td>
 				<td class="r">{{$present}}</td>
 				<td class="r">{{$removed}}</td>
+				<td class="r">{{$total}}</td>
 			</tr>
 		{{- end }}
 	</tbody>
