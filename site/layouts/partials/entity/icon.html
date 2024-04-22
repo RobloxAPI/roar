@@ -4,12 +4,12 @@ type: string // The type of entity (hub|class|member|enum|enumitem|type)
 primary: string // The primary identifier.
 secondary: string // The secondary identifier.
 
-*/}}
-{{- $type := .type | lower }}
-{{- $attr := partial "entity/icon-attr.html" . }}
+*/ -}}
+{{- $type := .type | lower -}}
+{{- $attr := partial "entity/icon-attr.html" . -}}
 <span class="picture"
-	{{- if $attr.title}} title="{{$attr.title -}}"{{- end -}}
-	{{- if $attr.type -}} data-type="{{$attr.type -}}"{{- end -}}>{{- /**/ -}}
+	{{- if $attr.title }} title="{{$attr.title -}}"{{- end -}}
+	{{- if $attr.type }} data-type="{{$attr.type -}}"{{- end -}}>{{- /**/ -}}
 	<span class="icon"
 	{{- if or $attr.Light $attr.Dark}} style="
 		{{- if $attr.Light -}}--light:url('{{$attr.Light}}'){{- end -}}
