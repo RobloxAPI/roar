@@ -346,6 +346,7 @@ body {
 				}
 				::marker {
 					font-family:var(--monospace);
+					line-height: 1;
 				}
 				.add {
 					list-style: "+ " inside;
