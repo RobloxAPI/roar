@@ -902,10 +902,13 @@ function initSearchInput() {
 	searchResults.style.display = "none";
 	main.insertAdjacentElement("beforebegin", searchResults);
 
+	const heading = element("h2", "Search results")
+	searchResults.appendChild(heading);
+
 	// Render search results. If falsy, results are hidden. If a string, it is
 	// displayed as a message. Otherwise, must be an array of search results.
 	function renderResults(results) {
-		searchResults.replaceChildren();
+		searchResults.replaceChildren(heading);
 
 		if (!results) {
 			// Hide results.
