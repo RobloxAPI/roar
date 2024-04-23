@@ -8,6 +8,7 @@ $theme: {{site.Params.theme}};
 
 // Mixins
 @import "runner";
+@import "mixin/runner";
 @import "mixin/scrolling";
 
 // Base styling.

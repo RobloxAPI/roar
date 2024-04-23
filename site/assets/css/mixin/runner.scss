@@ -1,0 +1,10 @@
+// For link buttons in header and footer.
+@mixin runner-link {
+	transition: background-color 100ms linear, color 100ms linear;
+}
+
+// Padding on sides of elements in header and footer.
+@mixin runner-padding {
+	padding-left: var(--halfbase);
+	padding-right: var(--halfbase);
+}
