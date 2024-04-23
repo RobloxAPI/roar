@@ -354,13 +354,13 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	</section>
 
 	<section id="members-index">
-		<header><h2>Members {{partial "element-count.html" (len $members)}}</h2></header>
+		<header><h2>Member index {{partial "element-count.html" (len $members)}}</h2></header>
 		{{- template "member-index" (dict "class" $className "members" $members "inherited" true) }}
 	</section>
 
 	{{- if $removedMembers }}
 		<section id="removed-members-index" class="set removed">
-			<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
+			<header><h2>Removed member index {{partial "element-count.html" (len $removedMembers)}}</h2></header>
 			{{- template "member-index" (dict "class" $className "members" $removedMembers "inherited" false) }}
 		</section>
 	{{- end }}
@@ -383,14 +383,14 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 
 	{{- if $members }}
 		<section id="members">
-			<header><h2>Members</h2></header>
+			<header><h2>Members {{partial "element-count.html" (len $members)}}</h2></header>
 			{{template "members" $members}}
 		</section>
 	{{- end }}
 
 	{{- if $removedMembers }}
 		<section id="removed-members" class="set removed">
-			<header><h2>Removed members</h2></header>
+			<header><h2>Removed members {{partial "element-count.html" (len $removedMembers)}}</h2></header>
 			{{template "members" $removedMembers}}
 		</section>
 	{{- end }}

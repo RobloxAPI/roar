@@ -172,6 +172,16 @@ function domLoaded() {
 			["Count", ">:not(.empty)"]
 		);
 		actions.QuickLink(
+			"#members > header .element-count",
+			"#members-index > .index-card > tbody:first-of-type",
+			["Count", ">:not(.empty)"]
+		);
+		actions.QuickLink(
+			"#removed-members > header .element-count",
+			"#removed-members-index > .index-card > tbody:first-of-type",
+			["Count", ">:not(.empty)"]
+		);
+		actions.QuickLink(
 			"#history > header .element-count",
 			"#history > ul",
 			["Count", ">*"]
