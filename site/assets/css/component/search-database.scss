@@ -1,0 +1,25 @@
+// Table for displaying large search database rows.
+table.search-database {
+	table-layout: fixed;
+	text-align: left;
+	font-family: var(--monospace);
+	font-size: 12px;
+	white-space: nowrap;
+	text-wrap: nowrap;
+	th {
+		position: sticky;
+		top: var(--runner-height);
+		background-color: var(--theme-border);
+	}
+	td {
+		background-color: var(--theme-TableItem);
+		&.x {
+			background-color: var(--theme-CategoryItem);
+		}
+	}
+}
+
+// Used to allow last row of table to be scrolled next to sticky headers.
+.gap {
+	height: 100vh;
+}

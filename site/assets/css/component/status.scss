@@ -1,0 +1,20 @@
+// List of status boxes.
+.status-list {
+	margin: var(--baseline) 0;
+	max-width: max-content;
+}
+
+// Boxes with description of an entity status.
+.status-box {
+	background-color: var(--theme-TableItem);
+	border-left: 0.5ch solid;
+	padding: 0.5ch 1ch;
+
+	&.low { border-left-color: var(--theme-status-low) }
+	&.medium { border-left-color: var(--theme-status-medium) }
+	&.high { border-left-color: var(--theme-status-high) }
+
+	.header {
+		font-weight: bold;
+	}
+}

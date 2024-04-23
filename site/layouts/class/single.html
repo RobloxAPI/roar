@@ -54,7 +54,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 */}}
 {{- define "member-index" }}
 	{{- $className := .class }}
-	<table class="index-card members-index">
+	<table class="index-card members">
 		<thead>
 			<tr>
 				<th class="col-history">History</th>
@@ -101,76 +101,62 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
-						<tbody>
-							<tr><th>Member Type</th><td>Property</td></tr>
-							<tr><th>Value Type</th><td>{{partial "member/type.html" $dump.ValueType}}</td></tr>
-							{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
-								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
-									<tr><th>Security</th><td>{{$dump.ReadSecurity}}</td></tr>
-								{{- end }}
-							{{- else }}
-								{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
-									<tr><th>Read Security</th><td>{{$dump.ReadSecurity}}</td></tr>
-								{{- end }}
-								{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None") }}
-									<tr><th>Write Security</th><td>{{$dump.WriteSecurity}}</td></tr>
-								{{- end }}
+						<tr class="pair"><th class="name">Member Type</th><td class="value">Property</td></tr>
+						<tr class="pair"><th class="name">Value Type</th><td class="value">{{partial "member/type.html" $dump.ValueType}}</td></tr>
+						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
+							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
+								<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>
 							{{- end }}
-							<tr><th>Category</th><td>{{$dump.Category}}</td></tr>
-							<tr><th>Can Load</th><td>{{$dump.CanLoad}}</td></tr>
-							<tr><th>Can Save</th><td>{{$dump.CanSave}}</td></tr>
-							{{/* TODO: reflection metadata */}}
-						</tbody>
+						{{- else }}
+							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
+								<tr class="pair"><th class="name">Read Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>
+							{{- end }}
+							{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None") }}
+								<tr class="pair"><th class="name">Write Security</th><td class="value">{{$dump.WriteSecurity}}</td></tr>
+							{{- end }}
+						{{- end }}
+						<tr class="pair"><th class="name">Category</th><td class="value">{{$dump.Category}}</td></tr>
+						<tr class="pair"><th class="name">Can Load</th><td class="value">{{$dump.CanLoad}}</td></tr>
+						<tr class="pair"><th class="name">Can Save</th><td class="value">{{$dump.CanSave}}</td></tr>
+						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
 					<table class="metadata-pairs">
-						<tbody>
-							<tr><th>Member Type</th><td>Function</td></tr>
-							{{- if and $dump.Security (ne $dump.Security "None") }}
-								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
-							{{- end }}
-							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
-						</tbody>
+						<tr class="pair"><th class="name">Member Type</th><td class="value">Function</td></tr>
+						{{- if and $dump.Security (ne $dump.Security "None") }}
+							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
+						{{- end }}
+						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
-						<tbody>
-							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
-							{{/* TODO: reflection metadata */}}
-						</tbody>
+						<tr class="pair"><th class="name">Returns</th><td class="value">{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
+						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Event"}}
 					<table class="metadata-pairs">
-						<tbody>
-							<tr><th>Member Type</th><td>Event</td></tr>
-							{{- if and $dump.Security (ne $dump.Security "None") }}
-								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
-							{{- end }}
-							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
-						</tbody>
+						<tr class="pair"><th class="name">Member Type</th><td class="value">Event</td></tr>
+						{{- if and $dump.Security (ne $dump.Security "None") }}
+							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
+						{{- end }}
+						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
-						<tbody>
-							{{/* TODO: reflection metadata */}}
-						</tbody>
+						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Callback"}}
 					<table class="metadata-pairs">
-						<tbody>
-							<tr><th>Member Type</th><td>Callback</td></tr>
-							{{- if and $dump.Security (ne $dump.Security "None") }}
-								<tr><th>Security</th><td>{{$dump.Security}}</td></tr>
-							{{- end }}
-							<tr><th>Parameters</th><td>{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
-						</tbody>
+						<tr class="pair"><th class="name">Member Type</th><td class="value">Callback</td></tr>
+						{{- if and $dump.Security (ne $dump.Security "None") }}
+							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
+						{{- end }}
+						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "element-count.html" (len $dump.Parameters)}}</td></tr>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
-						<tbody>
-							<tr><th>Returns</th><td>{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
-							{{/* TODO: reflection metadata */}}
-						</tbody>
+						<tr class="pair"><th class="name">Returns</th><td class="value">{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
+						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- end }}
 				{{- $changes := slice | append (index site.Data.History.Object.Member .Class .Name) }}
@@ -254,13 +240,13 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 {{- end }}
 {{- $relatedTypes = $relatedTypes | sort | uniq }}
 
-<nav>
+<nav class="overlaying">
 	{{- if or $superclasses $subclasses }}
 		<section id="hierarchy">
 			{{- if $superclasses }}
 				<section id="superclasses">
 					<header><h2>Inherits {{partial "element-count.html" (len $superclasses)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $superclasses }}
 							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}</li>
 						{{- end }}
@@ -270,7 +256,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $subclasses }}
 				<section id="subclasses">
 					<header><h2>Inherited by {{partial "element-count.html" (len $subclasses)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $subclasses }}
 							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}</li>
 						{{- end }}
@@ -280,7 +266,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $sibclasses }}
 				<section id="sibclasses">
 					<header><h2>Siblings {{partial "element-count.html" (len $sibclasses)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $sibclasses }}
 							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .Name) }}">{{if eq .Name $className}}<strong>{{end}}{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}{{if eq .Name $className}}</strong>{{end}}</li>
 						{{- end }}
@@ -360,9 +346,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 		<header><h2>Summary</h2></header>
 		{{- partial "status/list.html" (dict "type" "class" "primary" $className) }}
 		<table class="metadata-pairs">
-			<tbody>
-				<tr><th>Memory Category</th><td>{{$classDump.MemoryCategory}}</td></tr>
-			</tbody>
+			<tr class="pair"><th class="name">Memory Category</th><td class="value">{{$classDump.MemoryCategory}}</td></tr>
 		</table>
 		{{- if $classDump.Tags }}
 			<div class="tags">Tags: [{{delimit $classDump.Tags ", "}}]</div>
@@ -416,7 +400,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $relatedClasses }}
 				<section id="related-classes">
 					<header><h2>Related classes {{partial "element-count.html" (len $relatedClasses)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $relatedClasses }}
 							<li class="set {{partial `status-class.html` (dict `type` `class` `primary` .)}}">{{partial "entity/link.html" (dict "type" "class" "primary" .)}}</li>
 						{{- end }}
@@ -426,7 +410,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $relatedMembers }}
 				<section id="related-members">
 					<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $relatedMembers }}
 							{{- $type := "class" }}
 							{{- if .Member }}
@@ -447,7 +431,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $relatedEnums }}
 				<section id="related-enums">
 					<header><h2>Related enums {{partial "element-count.html" (len $relatedEnums)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $relatedEnums }}
 							<li class="set {{partial `status-class.html` (dict `type` `enum` `primary` .)}}">{{partial "entity/link.html" (dict "type" "enum" "primary" .)}}</li>
 						{{- end }}
@@ -457,7 +441,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $relatedTypes }}
 				<section id="related-types">
 					<header><h2>Related types {{partial "element-count.html" (len $relatedTypes)}}</h2></header>
-					<ul class="element-list truncated-list">
+					<ul class="entity-list truncated-list">
 						{{- range $relatedTypes }}
 							<li class="set {{partial `status-class.html` (dict `type` `type` `primary` .)}}">{{partial "entity/link.html" (dict "type" "type" "primary" .)}}</li>
 						{{- end }}

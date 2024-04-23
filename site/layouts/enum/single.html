@@ -21,7 +21,7 @@ items: []EnumItemIndex
 		{{- break }}
 	{{- end }}
 {{- end }}
-<table class="index-card enumitem-index">
+<table class="index-card enumitems">
 	<thead>
 		<tr>
 			<th class="col-history">History</th>
@@ -29,7 +29,7 @@ items: []EnumItemIndex
 			<th class="col-name">Name</th>
 			<th class="col-value">Value</th>
 			{{- if $hasLegacyNames }}
-				<th class="col-lagacy-names">Legacy Names</th>
+				<th class="col-legacy-names">Legacy Names</th>
 			{{- end}}
 			{{- if $hasTags }}
 				<th class="col-tags">Tags</td>
@@ -163,7 +163,7 @@ items: []EnumItemIndex
 	{{- if $relatedMembers }}
 		<section id="related-members">
 			<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
-			<ul class="truncated-list element-list">
+			<ul class="truncated-list entity-list">
 				{{- range $relatedMembers }}
 					{{- $type := "class" }}
 					{{- if .Member }}

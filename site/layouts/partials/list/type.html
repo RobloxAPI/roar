@@ -1,4 +1,4 @@
-<article id="types">
+<article id="types" class="catalog">
 	{{- $countPresentTypes := 0 }}
 	{{- $countRemovedTypes := 0 }}
 	{{- $presentCats := newScratch }}
@@ -14,7 +14,7 @@
 	{{- end }}
 	<section id="present-types">
 		<header><h2>Types <span class="element-count">{{$countPresentTypes}}/{{len $presentCats.Values}}</span></h2></header>
-		<ul class="type-category-list element-list">
+		<ul class="type-category-list entity-list">
 			{{- range $category := $presentCats.Values }}
 			<li>{{$category}}
 				<ul class="type-list">
@@ -30,7 +30,7 @@
 	</section>
 	<section id="removed-types" class="set removed">
 		<header><h2>Removed types <span class="element-count">{{$countRemovedTypes}}/{{len $removedCats.Values}}</span></h2></header>
-		<ul class="type-category-list element-list">
+		<ul class="type-category-list entity-list">
 			{{- range $category := $removedCats.Values }}
 				<li>{{$category}}
 					<ul class="type-list">

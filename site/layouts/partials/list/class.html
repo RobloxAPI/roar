@@ -32,7 +32,7 @@
 	{{- end }}
 {{- end -}}
 
-<article id="classes">
+<article id="classes" class="catalog">
 	{{- $countPresentClasses := 0 }}
 	{{- $countRemovedClasses := 0 }}
 	{{- range site.Data.Index.Class }}
@@ -57,7 +57,7 @@
 				</aside>
 			</h2>
 		</header>
-		<ul class="class-tree element-list">
+		<ul class="class-tree entity-list">
 			{{- template "class-tree" site.Data.Index.RootClasses -}}
 		</ul>
 	</section>
@@ -76,7 +76,7 @@
 				</aside>
 			</h2>
 		</header>
-		<ul class="class-tree element-list">
+		<ul class="class-tree entity-list">
 			{{- range site.Data.Index.RootClasses }}
 				{{- $class := index site.Data.Index.Class . }}
 				{{- if $class.Removed }}

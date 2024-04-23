@@ -1,0 +1,15 @@
+// Top navigation
+.top-nav {
+	display: flex;
+	align-self: flex-end;
+	position: sticky;
+	bottom: 0;
+	right: 0;
+	a {
+		background-color: var(--theme-MainBackground);
+		padding: var(--halfbase);
+		&::before {
+			content: "Top ↑";
+		}
+	}
+}

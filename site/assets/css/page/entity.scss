@@ -1,0 +1,52 @@
+// Standard formatting for entity pages.
+body:is(.type-class, .type-enum, .type-type, .type-updates) {
+	main.root {
+		// A grid arranges navigation on left and content on right. Content is
+		// centered within its track, and is allowed to expand to its maximum
+		// content size. Using 1fr for content track would start squeezing nav
+		// track only once content track hits its min-content. Using "auto"
+		// starts squeezing earlier, which distributes the space more evenly.
+		// The exact calculation is not self-evident (minmax(auto, auto)), but
+		// seems to work well enough.
+		display: grid;
+		grid-gap: 0 var(--section-spacing);
+		grid-template-columns: minmax(0, max-content) auto;
+		grid-template-areas: "nav article";
+		> nav {
+			grid-area: nav;
+		}
+		> article {
+			grid-area: article;
+			justify-self: center;
+			overflow-x: clip;
+		}
+
+	}
+	// Table of contents.
+	#toc {
+		position: sticky;
+		top: var(--runner-height);
+		max-height: calc(100vh - var(--runner-height));
+		overflow-y: auto;
+		scrollbar-gutter: stable;
+	}
+
+	// Specific content styling.
+	#content {
+		p {
+			max-width: var(--para-width);
+		}
+	}
+	nav.overlaying {
+		overflow-x: clip;
+		li {
+			a {
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-wrap: nowrap;
+				max-width: max-content;
+			}
+		}
+	}
+}

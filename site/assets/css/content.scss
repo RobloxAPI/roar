@@ -1,0 +1,19 @@
+// Principal main styling.
+main.prime {
+	// Grow to ensure footer is attached to bottom.
+	flex: 1 0 auto;
+	margin: var(--halfbase);
+
+	// Headings may contain inline control inputs.
+	header > :is(h1,h2,h3,h4,h5,h6) {
+		display: flex;
+		flex-flow: wrap row;
+		align-items: baseline;
+		gap: 0.25em;
+		aside {
+			font-size: var(--font-size);
+			font-weight: normal;
+			margin-left: auto;
+		}
+	}
+}

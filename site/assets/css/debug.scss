@@ -1,0 +1,28 @@
+@if ($debug) {
+	* {
+		outline: 1px solid red !important;
+	}
+	body {
+		contain: layout;
+		> .debug {
+			pointer-events: none;
+
+			// Test header height against viewport height.
+			// position: fixed;
+			// width: 100vw;
+			// height: 8.333333333333332vh; // 1/12
+			// background-color: #00FF0040;
+
+			// Show baseline alignment.
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			mix-blend-mode: exclusion;
+			background: repeating-linear-gradient(
+				#00000008 0 var(--halfbase),
+				#FFFFFF08 var(--halfbase) calc(var(--halfbase) * 2));
+		}
+	}
+}

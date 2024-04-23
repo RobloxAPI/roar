@@ -323,7 +323,7 @@
 			{{- end }}
 			<td class="r">{{$max}}</td>
 			<td>
-				<ul class="element-list truncated-list">
+				<ul class="entity-list truncated-list">
 					{{- range $items }}
 						<li class="set {{partial `status-class.html` . }}">{{partial "entity/link.html" .}} ({{.parameter}})</li>
 					{{- end }}

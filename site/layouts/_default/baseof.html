@@ -3,16 +3,16 @@
 <head>
 	{{ partial "head.html" . }}
 </head>
-<body id="top">
-	<header>
+<body id="top" class="kind-{{.Kind}} type-{{.Type}}{{if .Params.Article}} article{{end}}">
+	<header class="prime root stick">
 		{{- partial "header.html" . }}
 	</header>
-	<main class="kind-{{.Kind}} type-{{.Type}}{{if .Params.Article}} article{{end}}">
+	<main class="prime root">
 		{{- block "main" . }}{{ end }}
 	</main>
 	<div class="top-nav"><a href="#top"></a></div>
 	{{- partial "settings.html" . }}
-	<footer>
+	<footer class="prime root">
 		{{- partial "footer.html" . }}
 	</footer>
 {{- if site.Params.debug }}

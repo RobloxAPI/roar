@@ -1,0 +1,10 @@
+// List where each item is expected to have an entity icon in place of a marker.
+.entity-list {
+	--entity-list-indent: calc(var(--icon-scale) + var(--icon-spacing));
+	--indent: 0;
+	list-style: none;
+	ul {
+		--indent: var(--entity-list-indent);
+		list-style: none;
+	}
+}

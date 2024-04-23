@@ -1,0 +1,20 @@
+// Arrangement of metadata names paired with values.
+.metadata-pairs {
+	display: table;
+	text-align: left;
+	border-collapse: collapse;
+	.pair {
+		display: table-row;
+		.name {
+			display: table-cell;
+			font-weight: bold;
+			&::after {
+				content: ": ";
+				white-space: pre-wrap;
+			}
+		}
+		.value {
+			display: table-cell;
+		}
+	}
+}

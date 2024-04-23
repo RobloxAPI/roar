@@ -1,4 +1,4 @@
-<article id="enums">
+<article id="enums" class="catalog">
 	{{- $countPresentEnums := 0 }}
 	{{- $countRemovedEnums := 0 }}
 	{{- range site.Data.Index.Enum }}
@@ -10,7 +10,7 @@
 	{{- end }}
 	<section id="present-enums">
 		<header><h2>Enums <span class="element-count">{{$countPresentEnums}}</span></h2></header>
-		<ul class="enum-list element-list">
+		<ul class="enum-list entity-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if not $enum.Removed }}
 					<li class="set {{partial `status-class.html` (dict `type` `enum` `primary` $name)}}">{{partial `entity/link.html` (dict "type" "enum" "primary" $name)}}</li>
@@ -20,7 +20,7 @@
 	</section>
 	<section id="removed-enums" class="set removed">
 		<header><h2>Removed enums <span class="element-count">{{$countRemovedEnums}}</span></h2></header>
-		<ul class="enum-list element-list">
+		<ul class="enum-list entity-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if $enum.Removed }}
 					<li class="set {{partial `status-class.html` (dict `type` `enum` `primary` $name)}}">{{partial `entity/link.html` (dict "type" "enum" "primary" $name)}}</li>

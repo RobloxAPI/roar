@@ -1,0 +1,11 @@
+// Margined elements.
+p, ul, ol, dl, table {
+	margin: var(--baseline) 0;
+}
+ul, ol {
+	padding-left: var(--indent);
+}
+ul ul, ul ol, ol ul, ol ol, td ul, td ol {
+	margin-top: 0;
+	margin-bottom: 0;
+}

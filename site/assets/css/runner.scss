@@ -1,0 +1,42 @@
+// Covering both header and footer.
+
+:root {
+	// Breakpoint at which runner height is approximately greater than 1/12 of
+	// viewport height, based on font-size.
+	$hbp-runner: 850px;
+
+	/* Header/Footer layout */
+	--runner-step: 3;
+	--runner-height: calc(var(--runner-step) * var(--baseline));
+	--runner-bottom: var(--baseline);
+	// header-height > vh/12
+	@media (max-height: $hbp-runner) {
+		--runner-step: 2;
+	}
+}
+
+// For link buttons in header and footer.
+@mixin runner-link {
+	transition: background-color 100ms linear, color 100ms linear;
+}
+
+// Padding on sides of elements in header and footer.
+@mixin runner-padding {
+	padding-left: var(--halfbase);
+	padding-right: var(--halfbase);
+}
+
+// Inline list of block-shaped navigation links.
+nav.block {
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		li {
+			a {
+				@include runner-link;
+				@include runner-padding;
+			}
+		}
+	}
+}

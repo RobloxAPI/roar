@@ -1,0 +1,23 @@
+// Table for displaying statistics.
+table.stats {
+	width: max-content;
+	th {
+		background-color: var(--theme-border);
+	}
+	td {
+		background-color: var(--theme-TableItem);
+	}
+	:is(th,td) {
+		padding: 0 0.5ch;
+		vertical-align: top;
+	}
+	td.l {
+		text-align: left;
+	};
+	td.c {
+		text-align: center;
+	};
+	td.r {
+		text-align: right;
+	};
+}

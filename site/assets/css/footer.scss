@@ -1,0 +1,61 @@
+// Principal footer styling.
+footer.prime {
+	flex-shrink: 0;
+
+	display: flex;
+	align-items: center;
+	flex-flow: wrap row;
+
+	background-color: var(--theme-footer);
+	color: var(--theme-footer-text);
+	// Browsers may have fixed UI that appears at bottom of viewport, such
+	// as link URLs.
+	padding-bottom: var(--baseline);
+
+	:not(span) :not(span) {
+		display: flex;
+		align-items: center;
+
+		min-height: calc(var(--runner-step) * var(--baseline));
+	}
+	nav {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: stretch;
+		ul {
+			display: flex;
+			flex-flow: wrap row;
+			li {
+				display: flex;
+				align-items: stretch;
+			}
+		}
+	}
+	a[href] {
+		color: var(--theme-footer-text);
+		&:hover {
+			color: var(--theme-footer-text-hover);
+			background-color: var(--theme-footer-hover);
+		}
+	}
+	> span {
+		@include runner-padding;
+	}
+	.license {
+		padding: var(--halfbase);
+		a[href] {
+			white-space: nowrap;
+		}
+	}
+	.publication {
+		margin-left: auto;
+		padding: var(--halfbase);
+		svg {
+			height: 14px;
+			width: 14px;
+		}
+		path {
+			fill: var(--theme-footer-text);
+		}
+	}
+}

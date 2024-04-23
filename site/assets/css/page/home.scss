@@ -1,0 +1,58 @@
+// Home page layout.
+.kind-home main.prime {
+	display: grid;
+	grid-template-columns: auto;
+	justify-items: center;
+
+	#updates {
+		white-space: nowrap;
+		max-width: 50ch;
+		* {
+			overflow: clip;
+			text-overflow: ellipsis;
+		}
+		.update {
+			margin: var(--baseline) 0;
+		}
+		::marker {
+			font-family:var(--monospace);
+			line-height: 1;
+		}
+		.add {
+			list-style: "+ " inside;
+			&::marker { color: var(--theme-history-add-text) }
+		}
+		.change {
+			list-style: "Δ " inside;
+			&::marker { color: var(--theme-history-change-text) }
+		}
+		.remove {
+			list-style: "− " inside;
+			&::marker { color: var(--theme-history-remove-text) }
+		}
+	}
+}
+
+// Display catalogs next to each other when space is available.
+.catalogs, :not(.catalogs) > .catalog {
+	display: flex;
+	flex-flow: wrap row;
+	column-gap: var(--section-spacing);
+}
+
+// Display indentation line to indicate inheritance.
+.class-tree ul {
+	border-left: 1px dotted var(--theme-border);
+}
+
+// Class tree sorting controls.
+.class-sort {
+	display: flex;
+	flex-flow: wrap row;
+	gap: var(--halfbase);
+}
+
+// De-emphasize non-removed classes in removed class tree.
+#removed-classes .set:not(.removed) {
+	opacity: 0.33;
+}

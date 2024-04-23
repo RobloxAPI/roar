@@ -1,0 +1,7 @@
+// Elements that should be highlighted when targeted.
+main.root :target > header,
+.index-card :target,
+.update:target > .change-list-toggle,
+.change-list > li:target {
+	background-color: var(--theme-highlight);
+}
