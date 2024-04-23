@@ -34,9 +34,9 @@ $theme: {{site.Params.theme}};
 @import "component/search-database";
 @import "component/api-status";
 @import "component/api-value";
+@import "component/filter";
 
 @import "settings";
-@import "controls";
 @import "history";
 @import "icons";
 
