@@ -1,45 +1,50 @@
 $debug: {{site.Params.debug}};
 $theme: {{site.Params.theme}};
 
+// Variables
 @import "debug";
 @import "theme";
 @import "variables";
 
+// Mixins
 @import "runner";
 @import "mixin/scrolling";
 
+// Base styling.
 @import "root";
 @import "header";
 @import "content";
 @import "footer";
 @import "settings";
 
-@import "component/article";
-@import "component/top-nav";
-@import "component/search-input";
-@import "component/select";
-@import "component/heading";
-@import "component/margined";
-@import "component/blockquote";
-@import "component/truncated-list";
-@import "component/entity-list";
-@import "component/entity-link";
-@import "component/element-count";
-@import "component/tags";
-@import "component/metadata-pairs";
-@import "component/index-card";
-@import "component/status";
-@import "component/target";
-@import "component/search";
-@import "component/stats";
-@import "component/search-database";
+// Components
 @import "component/api-status";
 @import "component/api-value";
-@import "component/filter";
+@import "component/article";
+@import "component/blockquote";
 @import "component/change-list";
+@import "component/element-count";
+@import "component/entity-link";
+@import "component/entity-list";
+@import "component/filter";
+@import "component/heading";
 @import "component/history-tag";
 @import "component/icon";
+@import "component/index-card";
+@import "component/margined";
+@import "component/metadata-pairs";
+@import "component/search";
+@import "component/search-database";
+@import "component/search-input";
+@import "component/select";
+@import "component/stats";
+@import "component/status";
+@import "component/tags";
+@import "component/target";
+@import "component/top-nav";
+@import "component/truncated-list";
 
+// Pages
 @import "page/entity";
 @import "page/home";
 @import "page/class";
