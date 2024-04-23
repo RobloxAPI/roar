@@ -1,0 +1,5 @@
+// Heading layout.
+:root {
+	--heading-step: 3;
+	--heading-height: calc(var(--heading-step) * var(--baseline));
+}

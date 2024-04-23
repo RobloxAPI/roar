@@ -4,9 +4,13 @@ $theme: {{site.Params.theme}};
 @import "debug";
 
 // Variables
-@import "variable/theme";
 @import "variable/root";
+@import "variable/font";
+@import "variable/heading";
+@import "variable/icon";
+@import "variable/layers";
 @import "variable/runner";
+@import "variable/theme";
 
 // Mixins
 @import "mixin/runner";

@@ -1,37 +1,17 @@
 :root {
-	/* Baseline */
+	// Baseline.
 	--font-size: clamp(0.875rem, 0.7rem + 0.5vmin, 1.125rem);
 	--line-height: 1.5;
 	--baseline: calc(var(--font-size) * var(--line-height));
 	--halfbase: calc(var(--baseline) / 2);
 
-	/* Heading layout */
-	--heading-step: 3;
-	--heading-height: calc(var(--heading-step) * var(--baseline));
-
-	/* Icon sizing */
-	--icon-size-constant: 16px;
-	--icon-size-dynamic: calc(var(--font-size) * 1/0.875);
-	--icon-scale: var(--icon-size-dynamic);
-	--icon-spacing: 0.5ch;
-
-	/* Fonts */
-	--sans-serif: "Open Sans", "Trebuchet MS", "DejaVu Sans", "Geneva", sans-serif;
-	--monospace: "Consolas", "DejaVu Sans Mono", monospace;
-
-	/* Horizontal spacing */
+	// Horizontal spacing.
 	--indent-full: 4ch;
 	--indent-half: calc(var(--indent-full)/2);
-	--indent: var(--indent-full); /* Dynamic */
+	--indent: var(--indent-full); // Dynamic.
 	--section-spacing: 2ch;
 
-	/* Z Layers */
-	--layer-content: auto;
-	--layer-below-foreground: 10;
-	--layer-foreground: 20;
-	--layer-menu: 30;
-
-	/* Misc. */
+	// Readable width of paragraphed content.
 	--para-width: 90ch;
 	@supports (width: 90rch) {
 		--para-width: 90rch;
