@@ -20,7 +20,6 @@ $theme: {{site.Params.theme}};
 @import "settings";
 
 // Components
-@import "component/api-status";
 @import "component/api-value";
 @import "component/article";
 @import "component/blockquote";
@@ -28,6 +27,7 @@ $theme: {{site.Params.theme}};
 @import "component/element-count";
 @import "component/entity-link";
 @import "component/entity-list";
+@import "component/entity-status";
 @import "component/filter";
 @import "component/heading";
 @import "component/history-tag";
