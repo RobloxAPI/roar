@@ -39,7 +39,7 @@ function toggleAll(show, scroll) {
 };
 
 function initUpdates() {
-	if (!document.querySelector("body > main.type-updates")) {
+	if (!document.body.matches(".type-updates")) {
 		return;
 	};
 
