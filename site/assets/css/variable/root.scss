@@ -11,9 +11,13 @@
 	--indent: var(--indent-full); // Dynamic.
 	--section-spacing: 2ch;
 
-	// Readable width of paragraphed content.
-	--para-width: 90ch;
+	// Widths of nav/content layout.
+	--max-nav-width: 40ch;
+	--min-content-width: 40ch;
+	--max-content-width: 90ch;
 	@supports (width: 90rch) {
-		--para-width: 90rch;
+		--max-nav-width: 40rch;
+		--min-content-width: 40rch;
+		--max-content-width: 90rch;
 	};
 }

@@ -1,7 +1,6 @@
 +++
 title = "About"
 summary = "About the Roblox API Reference."
-article = true
 +++
 
 <section id="about">

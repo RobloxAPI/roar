@@ -1,6 +1,8 @@
 {{- define "main" }}
-	{{- if ne (.Title | lower) "empty" }}
-		<h1>{{ .Title }}</h1>
-	{{- end }}
-	{{- .Content }}
+	<article id="content">
+		{{- if ne (.Title | lower) "empty" }}
+			<h1>{{ .Title }}</h1>
+		{{- end }}
+		{{- .Content }}
+	</article>
 {{- end }}

@@ -1,6 +1,0 @@
-// Squeeze and center pages considered articles.
-body.article > main.root {
-	max-width: var(--para-width);
-	margin: var(--halfbase) auto;
-	padding: 0 var(--halfbase);
-}

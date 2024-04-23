@@ -2,7 +2,26 @@
 main.prime {
 	// Grow to ensure footer is attached to bottom.
 	flex: 1 0 auto;
-	margin: var(--halfbase);
+
+	display: grid;
+	grid-template-columns:
+		1fr
+		minmax(var(--min-content-width), var(--max-content-width))
+		1fr;
+	grid-template-areas: ". article .";
+	> article { grid-area: article }
+
+	// Using margins instead of gap allows the first column to collapse
+	// completely, because the left and right margin belong to the same
+	// element. This also prevents extraneous gaps caused by fr columns.
+	margin: var(--halfbase) 0;
+	> :first-child {
+		margin-left: var(--halfbase);
+	}
+	> * {
+		margin-right: var(--halfbase);
+		// overflow-x: clip;
+	}
 
 	// Headings may contain inline control inputs.
 	header > :is(h1,h2,h3,h4,h5,h6) {

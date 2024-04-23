@@ -1,27 +1,36 @@
 // Standard formatting for entity pages.
-body:is(.type-class, .type-enum, .type-type, .type-updates) {
+body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
+body.kind-section.type-updates {
 	main.root {
-		// A grid arranges navigation on left and content on right. Content is
-		// centered within its track, and is allowed to expand to its maximum
-		// content size. Using 1fr for content track would start squeezing nav
-		// track only once content track hits its min-content. Using "auto"
-		// starts squeezing earlier, which distributes the space more evenly.
-		// The exact calculation is not self-evident (minmax(auto, auto)), but
-		// seems to work well enough.
+		// A grid arranges navigation on left and content on right. The content
+		// is centered within its track by the two fr tracks around it expanding
+		// to take up the remaining space. In order to have consistency between
+		// pages, the nav and content have constant maximum widths, but are
+		// allowed to shrink to fit the constraints of the viewport in the
+		// proportion of X:X+Y, where X is the max nav width, and Y is the min
+		// content width.
 		display: grid;
-		grid-gap: 0 var(--section-spacing);
-		grid-template-columns: minmax(0, max-content) auto;
-		grid-template-areas: "nav article";
-		> nav {
-			grid-area: nav;
-		}
-		> article {
-			grid-area: article;
-			justify-self: center;
-			overflow-x: clip;
-		}
+		grid-template-columns:
+			minmax(0, var(--max-nav-width))
+			1fr
+			minmax(var(--min-content-width), var(--max-content-width))
+			1fr;
+		grid-template-areas: "nav . article .";
+		> nav { grid-area: nav }
+		> article { grid-area: article }
 
+		// Using margins instead of gap allows the first column to collapse
+		// completely, because the left and right margin belong to the same
+		// element. This also prevents extraneous gaps caused by fr columns.
+		margin: var(--halfbase) 0;
+		> :first-child {
+			margin-left: var(--halfbase);
+		}
+		> * {
+			margin-right: var(--halfbase);
+		}
 	}
+
 	// Table of contents.
 	#toc {
 		position: sticky;
@@ -31,11 +40,6 @@ body:is(.type-class, .type-enum, .type-type, .type-updates) {
 	}
 
 	// Specific content styling.
-	#content {
-		p {
-			max-width: var(--para-width);
-		}
-	}
 	nav.overlaying {
 		overflow-x: clip;
 		li {
