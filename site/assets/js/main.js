@@ -5,9 +5,9 @@ import "./classes.js"
 import {actions} from "./actions.js"
 
 function domLoaded() {
-	const main = document.querySelector("body > main");
+	const body = document.body;
 
-	if (main.matches(".kind-home, .kind-section")) {
+	if (body.matches(".kind-home, .kind-section")) {
 		actions.QuickLink(
 			"#present-classes > header .element-count",
 			"#present-classes > .class-tree",
@@ -40,7 +40,7 @@ function domLoaded() {
 		);
 	};
 
-	if (main.matches(".kind-page.type-class")) {
+	if (body.matches(".kind-page.type-class")) {
 		// ToC
 		actions.QuickLink(
 			"#toc-superclasses",
@@ -202,7 +202,7 @@ function domLoaded() {
 		);
 	};
 
-	if (main.matches(".kind-page.type-enum")) {
+	if (body.matches(".kind-page.type-enum")) {
 		// ToC
 		actions.QuickLink(
 			"#toc-references",
@@ -254,7 +254,7 @@ function domLoaded() {
 		);
 	};
 
-	if (main.matches(".kind-page.type-type")) {
+	if (body.matches(".kind-page.type-type")) {
 		// Sections
 		actions.QuickLink(
 			"#related-members",
