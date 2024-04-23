@@ -1,0 +1,6 @@
+// Anything limited in height that should become a scrolling container.
+@mixin scrolling {
+	overflow-y: auto;
+	scrollbar-gutter: stable;
+	padding-right: var(--halfbase);
+}

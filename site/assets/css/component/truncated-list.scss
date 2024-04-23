@@ -1,6 +1,5 @@
 // Overflowing list that takes up a non-disruptive fraction of the viewport.
 .truncated-list {
 	max-height: 38.2vh;
-	overflow-y: auto;
-	scrollbar-gutter: stable;
+	@include scrolling;
 }

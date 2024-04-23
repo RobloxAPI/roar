@@ -27,8 +27,7 @@ body:is(.type-class, .type-enum, .type-type, .type-updates) {
 		position: sticky;
 		top: var(--runner-height);
 		max-height: calc(100vh - var(--runner-height));
-		overflow-y: auto;
-		scrollbar-gutter: stable;
+		@include scrolling;
 	}
 
 	// Specific content styling.

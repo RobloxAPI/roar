@@ -46,6 +46,7 @@ $theme: {{site.Params.theme}};
 }
 
 @import "runner";
+@import "mixin/scrolling";
 
 html {
 	// Ensure footer is attached to bottom of viewport.
