@@ -38,7 +38,7 @@
 .catalogs, :not(.catalogs) > .catalog {
 	display: flex;
 	flex-flow: wrap row;
-	column-gap: var(--section-spacing);
+	column-gap: var(--halfbase);
 }
 
 // Display indentation line to indicate inheritance.
