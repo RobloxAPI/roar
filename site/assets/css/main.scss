@@ -1,13 +1,14 @@
 $debug: {{site.Params.debug}};
 $theme: {{site.Params.theme}};
 
-// Variables
 @import "debug";
-@import "theme";
-@import "variables";
+
+// Variables
+@import "variable/theme";
+@import "variable/root";
+@import "variable/runner";
 
 // Mixins
-@import "runner";
 @import "mixin/runner";
 @import "mixin/scrolling";
 
