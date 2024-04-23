@@ -1,7 +1,7 @@
 // Z layers.
 :root {
-	--layer-content: auto;
-	--layer-below-foreground: 10;
-	--layer-foreground: 20;
-	--layer-menu: 30;
+	--layer-header: 1;
+	--layer-menu: 2;
+	--layer-overlay: 3;
+	--layer-panel: 4;
 }
