@@ -32,11 +32,12 @@ $theme: {{site.Params.theme}};
 @import "component/search";
 @import "component/stats";
 @import "component/search-database";
+@import "component/api-status";
+@import "component/api-value";
 
 @import "settings";
 @import "controls";
 @import "history";
-@import "api";
 @import "icons";
 
 @import "page/entity";

@@ -1,3 +1,5 @@
+// Decorate API value indicators.
+
 .api-string-empty,
 .api-value-empty,
 .api-default-not-creatable,
@@ -15,13 +17,3 @@
 .api-default-no-string-value::before { content: "(no value)" }
 .api-default-skipped-class::before { content: "(skipped)" }
 .api-default-write-only::before { content: "(write only)" }
-
-.deco.deprecated {
-	text-decoration: line-through;
-}
-.deco.hidden {
-	opacity: 0.6;
-}
-.deco.unbrowsable {
-	opacity: 0.8;
-}

@@ -1,0 +1,11 @@
+// Decorate API status.
+
+.deco.deprecated {
+	text-decoration: line-through;
+}
+.deco.hidden {
+	opacity: 0.6;
+}
+.deco.unbrowsable {
+	opacity: 0.8;
+}
