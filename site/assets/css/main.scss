@@ -38,8 +38,7 @@ $theme: {{site.Params.theme}};
 @import "component/filter";
 @import "component/change-list";
 @import "component/history-tag";
-
-@import "icons";
+@import "component/icon";
 
 @import "page/entity";
 @import "page/home";

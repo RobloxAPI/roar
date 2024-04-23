@@ -1,3 +1,4 @@
+// Entity icon displayed within an entity link.
 .icon {
 	--scale: calc(var(--icon-scale) * var(--heading-scale,1));
 	display: inline-block;
@@ -5,7 +6,6 @@
 	width: var(--scale);
 	background-size: auto var(--scale);
 }
-
 .Auto:root .icon {
 	background-image: var(--light, var(--dark, none));
 	@media (prefers-color-scheme: dark) {
