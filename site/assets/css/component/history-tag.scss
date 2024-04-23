@@ -1,23 +1,4 @@
-.change-list {
-	li[data-field="Parameters"],
-	li[data-field="Tags"] {
-		.diff-values {
-			display: table;
-			padding-left: var(--indent);
-			> * {
-				display: table-row;
-				> * {
-					display: table-cell;
-				}
-			}
-			.col-label {
-				text-align: right;
-				padding-right: 1ch;
-			}
-		}
-	}
-}
-
+// Small tag indicating a specific update.
 .history-tag {
 	padding: 0 0.5ch;
 	border-radius: 0.125em;
@@ -42,9 +23,4 @@
 			content: "−";
 		}
 	}
-}
-
-#history .change-list {
-	list-style: none;
-	padding-left: 0;
 }

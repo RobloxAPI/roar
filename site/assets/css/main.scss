@@ -36,8 +36,9 @@ $theme: {{site.Params.theme}};
 @import "component/api-status";
 @import "component/api-value";
 @import "component/filter";
+@import "component/change-list";
+@import "component/history-tag";
 
-@import "history";
 @import "icons";
 
 @import "page/entity";
