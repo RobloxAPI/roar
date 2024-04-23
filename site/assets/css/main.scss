@@ -12,6 +12,7 @@ $theme: {{site.Params.theme}};
 @import "header";
 @import "content";
 @import "footer";
+@import "settings";
 
 @import "component/article";
 @import "component/top-nav";
@@ -36,7 +37,6 @@ $theme: {{site.Params.theme}};
 @import "component/api-value";
 @import "component/filter";
 
-@import "settings";
 @import "history";
 @import "icons";
 
