@@ -123,7 +123,12 @@ class Actions {
 	QuickLink(targetSelector, referentSelector, caller) {
 		let target = document.querySelector(targetSelector);
 		let referent = document.querySelector(referentSelector);
-		if (!target || !referent) {
+		if (!target) {
+			console.log(`skipped missing target: ${targetSelector}`);
+			return;
+		};
+		if (!referent) {
+			console.log(`skipped missing referent: ${referentSelector}`);
 			return;
 		};
 		caller.splice(1, 0, referent);
