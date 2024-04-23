@@ -566,23 +566,26 @@ function getDatabase() {
 	databasePromise = new Promise(function(resolve, reject) {
 		let dbPath = document.head.querySelector("meta[name=\"search-db\"]");
 		if (dbPath === null) {
-			reject("Database path not found.");
+			reject("Error: database path not found");
 			return;
 		};
-		dbPath = dbPath.content;
-
-		let req = new XMLHttpRequest();
-		req.addEventListener("load", function(event) {
-			const db = new Database(event.target.response);
-			console.log("DATABASE", db);
-			resolve(db);
-		});
-		req.addEventListener("error", (e) => reject("Failed to retrieve database.", e));
-		req.addEventListener("abort", (e) => reject("Failed to retrieve database.", e));
-		req.open("GET", dbPath);
-		req.responseType = "arraybuffer";
-		req.send();
-	});
+		resolve(dbPath.content);
+	})
+	.then((location) => {
+		return fetch(location)
+			.then((resp) => {
+				if (!resp.ok) {
+					console.log("FETCH DATABASE", resp)
+					throw "failed to fetch database";
+				};
+				return resp.arrayBuffer();
+			})
+	})
+	.then((buffer) => {
+		const db = new Database(buffer);
+		console.log("DATABASE", db);
+		return db;
+	})
 	return databasePromise;
 }
 
@@ -921,8 +924,12 @@ function initSearchInput() {
 		main.style.display = "none";
 		searchResults.style.display = "";
 
-		if (typeof results === "string") {
+		switch (true) {
+		case typeof results === "string":
 			searchResults.appendChild(element("p", results));
+			return;
+		case results instanceof Error:
+			searchResults.appendChild(element("p", `Error: ${results.message}`));
 			return;
 		};
 
