@@ -243,114 +243,106 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 {{- end }}
 {{- $relatedTypes = $relatedTypes | sort | uniq }}
 
-<nav id="nav-panel" class="panel left except standard">
-	<header class="prime stick">
-		<label for="focus-root" class="runner-item block button root-button"><h2 class="link">← Reference</h2></label>
-		<label for="focus-none" class="runner-item runner-icon button close-button">
-			<span class="runner-icon button">{{partial "icon/close.svg" .}}</span>
-		</label>
-	</header>
-	<section>
-		{{- if or $superclasses $subclasses }}
-			<section id="hierarchy">
-				{{- if $superclasses }}
-					<section id="superclasses">
-						<header><h2>Inherits {{partial "component/element-count.html" (len $superclasses)}}</h2></header>
-						<ul class="entity-list truncated-list">
-							{{- range $superclasses }}
-								<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}</li>
-							{{- end }}
-						</ul>
-					</section>
-				{{- end }}
-				{{- if $subclasses }}
-					<section id="subclasses">
-						<header><h2>Inherited by {{partial "component/element-count.html" (len $subclasses)}}</h2></header>
-						<ul class="entity-list truncated-list">
-							{{- range $subclasses }}
-								<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}</li>
-							{{- end }}
-						</ul>
-					</section>
-				{{- end }}
-				{{- if $sibclasses }}
-					<section id="sibclasses">
-						<header><h2>Siblings {{partial "component/element-count.html" (len $sibclasses)}}</h2></header>
-						<ul class="entity-list truncated-list">
-							{{- range $sibclasses }}
-								<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{if eq .Name $className}}<strong>{{end}}{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}{{if eq .Name $className}}</strong>{{end}}</li>
-							{{- end }}
-						</ul>
-					</section>
-				{{- end }}
-			</section>
-		{{- end }}
-		<section id="toc">
-			<header><h2>Contents</h2></header>
-			<ol class="toc">
-				<li id="toc-summary"><a href="#summary">Summary</a></li>
-				{{- if or $superclasses $subclasses }}
-					<li id="toc-hierarchy">Class tree
-						<ol>
-							{{- if $superclasses }}
-								<li id="toc-superclasses"><a href="#superclasses">Inherits</a></li>
-							{{- end }}
-							{{- if $subclasses }}
-								<li id="toc-subclasses"><a href="#subclasses">Inherited by</a></li>
-							{{- end }}
-							{{- if $sibclasses }}
-								<li id="toc-sibclasses"><a href="#sibclasses">Siblings</a></li>
-							{{- end }}
-						</ol>
-					</li>
-				{{- end }}
-				<li id="toc-members-index"><a href="#members-index">Member index</a></li>
-				{{- if $removedMembers }}
-					<li id="toc-removed-members-index" class="set removed"><a href="#removed-members-index">Removed member index</a></li>
-				{{- end }}
-				{{- if $changes }}
-					<li id="toc-history"><a href="#history">History</a></li>
-				{{- end }}
-				{{- if $members }}
-					<li id="toc-members"><a href="#members">Members</a>
-						<ol>
-							{{- range $members}}
-								<li class="set {{partial `entity/status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "entity/link.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
-							{{- end }}
-						</ol>
-					</li>
-				{{- end }}
-				{{- if $removedMembers }}
-					<li id="toc-removed-members" class="set removed"><a href="#removed-members">Removed members</a>
-						<ol>
-							{{- range $removedMembers}}
-								<li class="set {{partial `entity/status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "entity/link.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
-							{{- end }}
-						</ol>
-					</li>
-				{{- end }}
-				{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
-					<li id="toc-references">References
-						<ol>
-							{{- if or $relatedClasses }}
-								<li id="toc-related-classes"><a href="#related-classes">Related classes</a></li>
-							{{- end }}
-							{{- if or $relatedMembers }}
-								<li id="toc-related-members"><a href="#related-members">Related members</a></li>
-							{{- end }}
-							{{- if or $relatedEnums }}
-								<li id="toc-related-enums"><a href="#related-enums">Related enums</a></li>
-							{{- end }}
-							{{- if or $relatedTypes }}
-								<li id="toc-related-types"><a href="#related-types">Related types</a></li>
-							{{- end }}
-						</ol>
-					</li>
-				{{- end }}
-			</ol>
+{{- partial "singleton/nav-panel.html" . }}
+	{{- if or $superclasses $subclasses }}
+		<section id="hierarchy">
+			{{- if $superclasses }}
+				<section id="superclasses">
+					<header><h2>Inherits {{partial "component/element-count.html" (len $superclasses)}}</h2></header>
+					<ul class="entity-list truncated-list">
+						{{- range $superclasses }}
+							<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+			{{- if $subclasses }}
+				<section id="subclasses">
+					<header><h2>Inherited by {{partial "component/element-count.html" (len $subclasses)}}</h2></header>
+					<ul class="entity-list truncated-list">
+						{{- range $subclasses }}
+							<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
+			{{- if $sibclasses }}
+				<section id="sibclasses">
+					<header><h2>Siblings {{partial "component/element-count.html" (len $sibclasses)}}</h2></header>
+					<ul class="entity-list truncated-list">
+						{{- range $sibclasses }}
+							<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{if eq .Name $className}}<strong>{{end}}{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}{{if eq .Name $className}}</strong>{{end}}</li>
+						{{- end }}
+					</ul>
+				</section>
+			{{- end }}
 		</section>
+	{{- end }}
+	<section id="toc">
+		<header><h2>Contents</h2></header>
+		<ol class="toc">
+			<li id="toc-summary"><a href="#summary">Summary</a></li>
+			{{- if or $superclasses $subclasses }}
+				<li id="toc-hierarchy">Class tree
+					<ol>
+						{{- if $superclasses }}
+							<li id="toc-superclasses"><a href="#superclasses">Inherits</a></li>
+						{{- end }}
+						{{- if $subclasses }}
+							<li id="toc-subclasses"><a href="#subclasses">Inherited by</a></li>
+						{{- end }}
+						{{- if $sibclasses }}
+							<li id="toc-sibclasses"><a href="#sibclasses">Siblings</a></li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			<li id="toc-members-index"><a href="#members-index">Member index</a></li>
+			{{- if $removedMembers }}
+				<li id="toc-removed-members-index" class="set removed"><a href="#removed-members-index">Removed member index</a></li>
+			{{- end }}
+			{{- if $changes }}
+				<li id="toc-history"><a href="#history">History</a></li>
+			{{- end }}
+			{{- if $members }}
+				<li id="toc-members"><a href="#members">Members</a>
+					<ol>
+						{{- range $members}}
+							<li class="set {{partial `entity/status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "entity/link.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $removedMembers }}
+				<li id="toc-removed-members" class="set removed"><a href="#removed-members">Removed members</a>
+					<ol>
+						{{- range $removedMembers}}
+							<li class="set {{partial `entity/status-class.html` (dict `type` `member` `primary` $className `secondary` .Name)}}">{{partial "entity/link.html" (dict "type" "member" "primary" $className "secondary" .Name "hascontext" true)}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if or $relatedClasses $relatedMembers $relatedEnums $relatedTypes }}
+				<li id="toc-references">References
+					<ol>
+						{{- if or $relatedClasses }}
+							<li id="toc-related-classes"><a href="#related-classes">Related classes</a></li>
+						{{- end }}
+						{{- if or $relatedMembers }}
+							<li id="toc-related-members"><a href="#related-members">Related members</a></li>
+						{{- end }}
+						{{- if or $relatedEnums }}
+							<li id="toc-related-enums"><a href="#related-enums">Related enums</a></li>
+						{{- end }}
+						{{- if or $relatedTypes }}
+							<li id="toc-related-types"><a href="#related-types">Related types</a></li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+		</ol>
 	</section>
-</nav>
+{{- partial "singleton/nav-panel-end.html" . }}
 <article id="content">
 	<header><h1>{{partial "entity/icon.html" (dict "type" "class" "primary" $className)}}{{$className}}<aside>{{partial "entity/link.html" (dict "type" "class" "primary" $className "hub" true)}}</aside></h1></header>
 	<section id="summary">
