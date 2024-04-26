@@ -66,9 +66,3 @@ $theme: {{site.Params.theme}};
 @import "singleton/root-panel";
 @import "singleton/search-results";
 @import "singleton/settings-menu";
-
-.root-button {
-	h2 {
-		margin: 0;
-	}
-}
