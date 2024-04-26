@@ -244,7 +244,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 {{- $relatedTypes = $relatedTypes | sort | uniq }}
 
 {{- partial "singleton/nav-panel.html" . }}
-	{{- if or $superclasses $subclasses }}
+	{{- if or $superclasses $subclasses $sibclasses }}
 		<section id="hierarchy">
 			{{- if $superclasses }}
 				<section id="superclasses">
@@ -282,7 +282,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 		<header><h2>Contents</h2></header>
 		<ol class="toc">
 			<li id="toc-summary"><a href="#summary">Summary</a></li>
-			{{- if or $superclasses $subclasses }}
+			{{- if or $superclasses $subclasses $sibclasses }}
 				<li id="toc-hierarchy">Class tree
 					<ol>
 						{{- if $superclasses }}
