@@ -1,7 +1,9 @@
 {{- define "main" }}
-<nav id="toc">
-	{{- partial "updates/nav.html" . }}
-</nav>
+{{- partial "singleton/nav-panel.html" . }}
+	<nav id="toc">
+		{{- partial "updates/nav.html" . }}
+	</nav>
+{{- partial "singleton/nav-panel-end.html" . }}
 <article id="content">
 	<header>
 		<h2>Recent API updates
