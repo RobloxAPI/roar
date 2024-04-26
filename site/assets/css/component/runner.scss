@@ -7,24 +7,25 @@
 	height: 100%;
 }
 
-// Extra padding around content. Implies runner-item.
-@mixin runner-block {
+// Interactive element with extra padding around content. Implies runner-item.
+@mixin runner-button {
 	@include runner-item;
 	padding-left: var(--halfbase);
 	padding-right: var(--halfbase);
+	cursor: pointer;
 }
 
 .runner-item {
 	@include runner-item;
 }
 
-.runner-block {
-	@include runner-block;
+.runner-button {
+	@include runner-button;
 }
 
-// Extra option for hovering. Implies runner-block.
+// Extra option for hovering. Implies runner-button.
 .runner-hover {
-	@include runner-block;
+	@include runner-button;
 	transition:
 		color 100ms linear, color 100ms linear,
 		background-color 100ms linear, color 100ms linear;
