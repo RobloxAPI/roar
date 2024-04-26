@@ -20,7 +20,7 @@ body.kind-section.type-updates {
 			}
 		}
 
-		.root-button {
+		.root-focuser {
 			h2 {
 				margin: 0;
 			}
@@ -31,8 +31,8 @@ body.kind-section.type-updates {
 				display: grid;
 				grid-template-columns: max-content 1fr max-content;
 				grid-template-areas: "root . close";
-				.root-button { grid-area: root }
-				.close-button { grid-area: close }
+				.root-focuser { grid-area: root }
+				.none-focuser { grid-area: close }
 			}
 		}
 	}

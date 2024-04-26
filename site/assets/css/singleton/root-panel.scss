@@ -6,10 +6,10 @@
 			header.prime {
 				grid-template-columns: max-content max-content 1fr max-content;
 				grid-template-areas: "nav logo title close";
-				.nav-button { grid-area: nav }
+				.nav-focuser { grid-area: nav }
 				.logo { grid-area: logo }
 				h1 { grid-area: title }
-				.close-button { grid-area: close }
+				.none-focuser { grid-area: close }
 			}
 			ul {
 				list-style: none;
