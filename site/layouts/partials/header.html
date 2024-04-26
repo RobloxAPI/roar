@@ -1,4 +1,4 @@
-{{- if and (eq .Kind "page") (eq .Type "class" "enum" "type" "updates") }}
+{{- if and (eq .Kind "page") (eq .Type "class" "enum" "updates") }}
 	{{- partial "component/focuser.html" (dict "focus" "nav" "icon" "nav") }}
 {{- else if and (eq .Kind "section") (eq .Type "updates") }}
 	{{- partial "component/focuser.html" (dict "focus" "nav" "icon" "nav") }}
