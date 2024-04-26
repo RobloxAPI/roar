@@ -75,9 +75,17 @@
 		text-align: right;
 	}
 	.col-name {
+		width: 0;
 		text-align: left;
 	}
 	.col-value {
+		width: 0;
 		text-align: right;
+	}
+	.col-legacy-names {
+		text-align: left;
+	}
+	.col-tags {
+		text-align: left;
 	}
 }
