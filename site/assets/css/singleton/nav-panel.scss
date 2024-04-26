@@ -1,39 +1,36 @@
-body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
-body.kind-section.type-updates {
-	#nav-panel {
-		overflow-x: clip;
+#nav-panel {
+	overflow-x: clip;
 
+	> header.prime {
+		display: none;
+	}
+
+	> section {
+		height: 100%;
+		li {
+			a {
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-wrap: nowrap;
+				max-width: max-content;
+			}
+		}
+	}
+
+	.root-focuser {
+		h2 {
+			margin: 0;
+		}
+	}
+
+	@media #{$reduced}, #{$small} {
 		> header.prime {
-			display: none;
-		}
-
-		> section {
-			height: 100%;
-			li {
-				a {
-					display: block;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					text-wrap: nowrap;
-					max-width: max-content;
-				}
-			}
-		}
-
-		.root-focuser {
-			h2 {
-				margin: 0;
-			}
-		}
-
-		@media #{$reduced}, #{$small} {
-			> header.prime {
-				display: grid;
-				grid-template-columns: max-content 1fr max-content;
-				grid-template-areas: "root . close";
-				.root-focuser { grid-area: root }
-				.none-focuser { grid-area: close }
-			}
+			display: grid;
+			grid-template-columns: max-content 1fr max-content;
+			grid-template-areas: "root . close";
+			.root-focuser { grid-area: root }
+			.none-focuser { grid-area: close }
 		}
 	}
 }
