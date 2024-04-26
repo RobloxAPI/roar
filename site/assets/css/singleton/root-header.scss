@@ -7,7 +7,7 @@
 		max-content // Settings
 	;
 
-	.panel-button {
+	.nav-button {
 		display: none;
 	}
 
@@ -19,7 +19,7 @@
 			minmax(0, 1fr) // Search
 			max-content // Settings
 		;
-		.panel-button {
+		.nav-button {
 			display: flex;
 		}
 		nav {
