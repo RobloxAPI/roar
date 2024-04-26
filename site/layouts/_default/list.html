@@ -1,6 +1,6 @@
 {{- define "main" }}
 	{{- if eq .Type "class" "enum" "type" }}
-		{{- partial (print "list/" .Type ".html") }}
+		{{- partial (print "catalog/" .Type ".html") }}
 	{{- else }}
 		<h1>{{ .Title }}</h1>
 		{{- .Content }}
