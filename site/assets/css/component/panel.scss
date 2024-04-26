@@ -57,6 +57,8 @@ $panel-transition-time: 200ms;
 }
 
 @mixin panel {
+	display: flex;
+	flex-direction: column;
 	background-color: var(--theme-MainBackground);
 	position: fixed;
 	top: 0;
@@ -94,11 +96,12 @@ $panel-transition-time: 200ms;
 	}
 
 	> section {
+		flex: 0 1 auto;
 		overscroll-behavior: none;
 		overflow-y: auto;
 		scrollbar-gutter: stable;
 		padding-left: var(--halfbase);
-		height: calc(100vh - var(--runner-height));
+		height: auto;
 	}
 }
 
