@@ -187,6 +187,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	{{- if gt (len $superclassIndex.Subclasses) 1 }}
 		{{- $sibclasses = partial "func/classes.html" $superclassIndex.Subclasses }}
 	{{- end }}
+	{{- if and (site.Params.MaxSiblingClasses) (gt (len $sibclasses) site.Params.MaxSiblingClasses) }}
+		{{- $sibclasses = slice }}
+	{{- end }}
 {{- end }}
 
 {{- $members := slice }}
