@@ -6,7 +6,7 @@ value: PreferredDescriptor
 */ -}}
 {{- define "preferred-descriptor" -}}
 	{{- if eq .value "" -}}
-		<span class="api-value-empty"></span>
+		<span class="api-none"></span>
 	{{- else -}}
 		{{- .value.Name -}}
 	{{- end -}}
@@ -20,7 +20,7 @@ value: string // The default value.
 */ -}}
 {{- define "default" -}}
 	{{- if eq .value "" -}}
-		<span class="api-value-empty"></span>
+		<span class="api-none"></span>
 	{{- else if eq .value "__api_dump_class_not_creatable__" -}}
 		<span class="api-default-not-creatable"></span>
 	{{- else if eq .value "__api_dump_no_string_value__" -}}
@@ -68,7 +68,7 @@ value: any // The value to render, the type depending on context.
 	{{- $type := index site.Data.Dump.Classes .change.Action.Primary "Members" .change.Action.Secondary "ValueType" -}}
 	{{- template "default" (dict "type" $type "value" .value) -}}
 {{- else if eq .value "" -}}
-	<span class="api-value-empty"></span>
+	<span class="api-none"></span>
 {{- else -}}
 	{{- .value -}}
 {{- end -}}

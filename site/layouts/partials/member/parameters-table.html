@@ -16,7 +16,7 @@
 			<tr class="row-{{.Name}}">
 				<td class="col-member">{{.Name}}</td>
 				<td class="col-type">{{partial "member/type.html" .Type}}</td>
-				<td class="col-default">{{if .Optional}}<span class="api-default">{{if eq .Default ""}}<span class="api-empty-string">(empty)</span>{{else}}{{.Default}}{{end}}</span>{{else}}<span class="api-no-default">none</span>{{end}}</td>
+				<td class="col-default">{{if .Optional}}<span class="api-default">{{if eq .Default ""}}<span class="api-string-empty"></span>{{else}}{{.Default}}{{end}}</span>{{else}}<span class="api-none"></span>{{end}}</td>
 			</tr>
 		{{- else }}
 			<tr>

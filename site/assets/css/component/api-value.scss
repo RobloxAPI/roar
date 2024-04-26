@@ -1,7 +1,7 @@
 // Decorate API value indicators.
 
+.api-none,
 .api-string-empty,
-.api-value-empty,
 .api-default-not-creatable,
 .api-default-no-string-value,
 .api-default-skipped-class,
@@ -11,8 +11,8 @@
 	}
 }
 
-.api-value-empty::before { content: "(empty)" }
-.api-string-empty::before { content: "(empty)" }
+.api-none::before { content: "none" }
+.api-string-empty::before { content: '""' }
 .api-default-not-creatable::before { content: "(not creatable)" }
 .api-default-no-string-value::before { content: "(no value)" }
 .api-default-skipped-class::before { content: "(skipped)" }
