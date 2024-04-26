@@ -67,17 +67,17 @@ $reduced: "(min-width: #{$wbp-small+0.01}) and (max-width: #{$wbp-reduced})";
 $small: "(max-width: #{$wbp-small})";
 
 @media #{$standard} {
-	.show-reduced:not(.show-standard) { display: none }
-	.show-small:not(.show-standard) { display: none }
-	.hide-standard { display: none }
+	.show-reduced:not(.show-standard) { display: none !important }
+	.show-small:not(.show-standard) { display: none !important }
+	.hide-standard { display: none !important }
 }
 @media #{$reduced} {
-	.show-standard:not(.show-reduced) { display: none }
-	.show-small:not(.show-reduced) { display: none }
-	.hide-reduced { display: none }
+	.show-standard:not(.show-reduced) { display: none !important }
+	.show-small:not(.show-reduced) { display: none !important }
+	.hide-reduced { display: none !important }
 }
 @media #{$small} {
-	.show-standard:not(.show-small) { display: none }
-	.show-reduced:not(.show-small) { display: none }
-	.hide-small { display: none }
+	.show-standard:not(.show-small) { display: none !important }
+	.show-reduced:not(.show-small) { display: none !important }
+	.hide-small { display: none !important }
 }
