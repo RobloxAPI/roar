@@ -1,9 +1,9 @@
 <section id="root-panel" class="panel left hide-standard">
 	<header class="prime stick">
-		{{- partial "component/focuser/nav.html" }}
+		{{- partial "component/focuser.html" (dict "focus" "nav" "icon" "nav") }}
 		{{- partial "component/logo.html" }}
 		<h1 class="runner-button">{{partial "component/title.html" .}}</h1>
-		{{- partial "component/focuser/close.html" }}
+		{{- partial "component/focuser.html" (dict "focus" "none" "icon" "close") }}
 	</header>
 	<section>
 		<h2>Engine API</h2>

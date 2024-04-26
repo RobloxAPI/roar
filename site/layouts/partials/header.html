@@ -1,9 +1,9 @@
 {{- if and (eq .Kind "page") (eq .Type "class" "enum" "type" "updates") }}
-	{{- partial "component/focuser/nav.html"}}
+	{{- partial "component/focuser.html" (dict "focus" "nav" "icon" "nav") }}
 {{- else if and (eq .Kind "section") (eq .Type "updates") }}
-	{{- partial "component/focuser/nav.html"}}
+	{{- partial "component/focuser.html" (dict "focus" "nav" "icon" "nav") }}
 {{- else }}
-	{{- partial "component/focuser/nav-root.html"}}
+	{{- partial "component/focuser.html" (dict "focus" "root" "icon" "nav") }}
 {{- end }}
 {{- partial "component/logo.html" }}
 <h1 class="runner-button">{{partial "component/title.html" .}}</h1>
