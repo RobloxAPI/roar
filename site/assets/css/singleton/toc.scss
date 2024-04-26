@@ -1,0 +1,26 @@
+body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
+body.kind-section.type-updates {
+	// Table of contents.
+	#toc {
+		position: sticky;
+		top: var(--runner-height);
+		max-height: calc(100vh - var(--runner-height));
+		@include scrolling;
+
+		@media #{$reduced}, #{$small} {
+			position: unset !important;
+			overflow: unset !important;
+			scrollbar-gutter: unset !important;
+			padding-bottom: var(--baseline);
+		}
+
+		@media #{$small} {
+			:is(ol,ul) {
+				list-style: none;
+			}
+			.toc {
+				padding-left: 0;
+			}
+		}
+	}
+}

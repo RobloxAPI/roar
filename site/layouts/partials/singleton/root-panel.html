@@ -1,0 +1,36 @@
+<section id="root-panel" class="panel left hide-standard">
+	<header class="prime stick">
+		<label for="focus-nav" class="runner-item runner-icon button nav-button">
+			<span class="runner-icon button">{{partial "icon/nav.svg" .}}</span>
+		</label>
+		<a class="runner-icon logo" href="{{site.Home.RelPermalink}}">
+			<object data="{{(resources.Get `favicons/favicon.svg`).RelPermalink}}" type="image/svg+xml">
+				<img src="{{(resources.Get `favicons/favicon-48x48.png`).RelPermalink}}" />
+			</object>
+		</a>
+		<h1 class="runner-item">{{partial "component/title.html" .}}</h1>
+		<label for="focus-none" class="runner-item runner-icon button close-button">
+			<span class="runner-icon button">{{partial "icon/close.svg" .}}</span>
+		</label>
+	</header>
+	<section>
+		<h2>Engine API</h2>
+		<ul>
+			{{- range site.Sections }}
+				<li><a href="{{.RelPermalink}}">{{.Title}}</a></li>
+			{{- end }}
+		</ul>
+		<h2>Website</h2>
+		<ul>
+			<li><a href="{{(site.GetPage `about`).RelPermalink}}">About</a></li>
+			<li><a href="{{(site.GetPage `stats`).RelPermalink}}">Statistics</a></li>
+			<li><a href="{{site.Params.Repo}}">Develop</a></li>
+			<li><a href="{{site.Params.Issues}}">Issues</a></li>
+		</ul>
+		<h2>Related</h2>
+		<ul>
+			<li><a href="{{site.Params.CreatorHub}}">Creator Hub</a></li>
+			<li><a href="{{site.Params.Roblox}}">Roblox</a></li>
+		</ul>
+	</section>
+</section>

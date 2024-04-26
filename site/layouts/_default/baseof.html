@@ -4,15 +4,17 @@
 	{{ partial "head.html" . }}
 </head>
 <body id="top" class="kind-{{.Kind}} type-{{.Type}}">
-	<header class="prime root stick">
+	{{- partial "singleton/panel-state.html" . }}
+	{{- partial "singleton/root-panel.html" . }}
+	<header id="root-header" class="prime stick">
 		{{- partial "header.html" . }}
 	</header>
-	<main class="prime root">
+	<main id="root-main" class="prime">
 		{{- block "main" . }}{{ end }}
 	</main>
 	<div class="top-nav"><a href="#top"></a></div>
-	{{- partial "settings.html" . }}
-	<footer class="prime root">
+	{{- partial "singleton/settings.html" . }}
+	<footer id="root-footer" class="prime">
 		{{- partial "footer.html" . }}
 	</footer>
 {{- if site.Params.debug }}

@@ -1,0 +1,10 @@
+.collapsing-title {
+	flex-flow: wrap row-reverse;
+	justify-content: flex-end;
+	> :first-child {
+		height: 100%;
+	}
+	> :not(:last-child) {
+		margin-left: 0.25em;
+	}
+}

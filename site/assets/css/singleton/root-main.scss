@@ -1,7 +1,6 @@
-// Standard formatting for entity pages.
 body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
 body.kind-section.type-updates {
-	main.root {
+	#root-main {
 		// A grid arranges navigation on left and content on right. The content
 		// is centered within its track by the two fr tracks around it expanding
 		// to take up the remaining space. In order to have consistency between
@@ -29,27 +28,14 @@ body.kind-section.type-updates {
 		> * {
 			margin-right: var(--halfbase);
 		}
-	}
 
-	// Table of contents.
-	#toc {
-		position: sticky;
-		top: var(--runner-height);
-		max-height: calc(100vh - var(--runner-height));
-		@include scrolling;
-	}
-
-	// Specific content styling.
-	nav.overlaying {
-		overflow-x: clip;
-		li {
-			a {
-				display: block;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				text-wrap: nowrap;
-				max-width: max-content;
-			}
+		@media #{$reduced}, #{$small} {
+			grid-template-columns:
+				1fr
+				minmax(var(--min-content-width), var(--max-content-width))
+				1fr;
+			grid-template-areas: ". article .";
+			margin: var(--halfbase);
 		}
 	}
 }

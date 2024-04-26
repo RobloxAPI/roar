@@ -1,0 +1,129 @@
+/* Panel component
+
+.panel
+
+	Display the element as a panel that overlays the content. The width of the
+	panel is allowed to expand to its max-content, up to the width of the small
+	layout. On the small layout, the panel covers the entire viewport.
+
+	A panel is expected to have the following structure:
+
+	.panel
+		> header.prime
+		> section
+
+	The header is hidden while the element is not styled as a panel.
+
+	The section is expected to contain the main content, scrolling when
+	stylized.
+
+.left
+.right
+
+	The panel emerges from the left or right side. Exactly one of these classes
+	is required.
+
+.except
+
+	Display element as panel only if it does not include the current layout
+	(.standard, .reduced, .small).
+
+	For example, `panel except standard` Will display the element as a panel
+	except in the standard layout.
+
+@mixin show-panel
+
+	By default, the panel is hidden offscreen, and is expected to be combined
+	with a selector to display it. The panel can emerge from either the left or
+	right side, depending on the applied class. For example,
+
+	#input:checked ~ #panel.left { @include show-panel("left") }
+	#input:checked ~ #panel.right { @include show-panel("right") }
+
+@mixin show-panel-for
+
+	Can be used to apply show-panel to the given selector with both the left and
+	right classes (see above example).
+
+	@include show-panel-for("#input:checked ~ #panel");
+
+*/
+
+$panel-transition-time: 200ms;
+
+// Hide panel header by default.
+.panel > header.prime {
+	display: none;
+}
+
+@mixin panel {
+	background-color: var(--theme-MainBackground);
+	position: fixed;
+	top: 0;
+	width: max-content;
+	// On small layout, panel should cover entire viewport.
+	@media #{$small} {
+		width: 100vw;
+	}
+	max-width: $wbp-small;
+	height: 100vh;
+	z-index: var(--layer-panel);
+	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
+	// Transition does not work on display property.
+	visibility: hidden;
+	// Ensure panel doesn't float off of viewport edge.
+	margin: 0 !important;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition:
+			left $panel-transition-time ease-out,
+			right $panel-transition-time ease-out,
+			visibility $panel-transition-time ease-out;
+	}
+
+	&.left {
+		left: calc(-100vw - var(--halfbase));
+	}
+	&.right {
+		right: calc(100vw + var(--halfbase));
+	}
+
+	// When header when element is displayed as a panel.
+	> header.prime {
+		display: grid;
+	}
+
+	> section {
+		overscroll-behavior: none;
+		overflow-y: auto;
+		scrollbar-gutter: stable;
+		padding-left: var(--halfbase);
+		height: calc(100vh - var(--runner-height));
+	}
+}
+
+@mixin show-panel($side) {
+	visibility: visible;
+	#{$side}: 0;
+}
+
+@mixin show-panel-for($query) {
+	@if $query {
+		#{$query}.left { @include show-panel("left") }
+		#{$query}.right { @include show-panel("right") }
+	}
+}
+
+// If panel is also "except", it is only styled as a panel if it does not
+// include the current layout.
+.panel:not(.except) { @include panel }
+@media #{$standard} { .panel.except:not(.standard) { @include panel } }
+@media #{$reduced} { .panel.except:not(.reduced) { @include panel } }
+@media #{$small} { .panel.except:not(.small) { @include panel } }
+
+@media #{$small} {
+	// Hide double scrollbar while panel is open.
+	html:has(#focus-none:not(:checked)) {
+		overflow: hidden;
+	}
+}

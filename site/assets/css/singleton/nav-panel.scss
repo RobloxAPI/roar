@@ -1,0 +1,31 @@
+body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
+body.kind-section.type-updates {
+	#nav-panel {
+		overflow-x: clip;
+		> section {
+			height: 100%;
+			li {
+				a {
+					display: block;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					text-wrap: nowrap;
+					max-width: max-content;
+				}
+			}
+		}
+
+		@media #{$reduced}, #{$small} {
+			> header.prime {
+				grid-template-columns: max-content 1fr max-content;
+				grid-template-areas: "root . close";
+				.root-button { grid-area: root }
+				.close-button { grid-area: close }
+			}
+		}
+	}
+}
+
+@media #{$reduced}, #{$small} {
+	@include show-panel-for("#focus-nav:checked ~ #root-main #nav-panel");
+}

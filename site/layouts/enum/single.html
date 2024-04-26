@@ -39,7 +39,7 @@ items: []EnumItemIndex
 	<tbody>
 		{{- range .items }}
 			{{- $itemDump := index site.Data.Dump "Enums" .Enum "Items" .Name }}
-			<tr id="member-{{.Name}}" class="set {{partial `status-class.html` (dict `type` `enumitem` `primary` .Enum `secondary` .Name)}}">
+			<tr id="member-{{.Name}}" class="set {{partial `entity/status-class.html` (dict `type` `enumitem` `primary` .Enum `secondary` .Name)}}">
 				{{- $changes := index site.Data.History.Object.EnumItem .Enum .Name}}
 				{{- $change := false }}
 				{{- if $changes }}
@@ -133,13 +133,13 @@ items: []EnumItemIndex
 	{{- end }}
 
 	<section id="members-index">
-		<header><h2>Items {{partial "element-count.html" (len $items)}}</h2></header>
+		<header><h2>Items {{partial "component/element-count.html" (len $items)}}</h2></header>
 		{{- template "item-index" (dict "enum" $enumName "items" $items) }}
 	</section>
 
 	{{- if $removedItems }}
 		<section id="removed-members-index" class="set removed">
-			<header><h2>Removed items {{partial "element-count.html" (len $removedItems)}}</h2></header>
+			<header><h2>Removed items {{partial "component/element-count.html" (len $removedItems)}}</h2></header>
 			{{- template "item-index" (dict "enum" $enumName "items" $removedItems) }}
 		</section>
 	{{- end }}
@@ -147,7 +147,7 @@ items: []EnumItemIndex
 	{{- if $changes }}
 		<section id="history" class="filter-container history-member-filter">
 			<header>
-				<h2>History {{partial "element-count.html" (len $changes)}}
+				<h2>History {{partial "component/element-count.html" (len $changes)}}
 					<aside class="filter-controls">
 						<label>
 							<input class="filter-input" type="checkbox">
@@ -162,14 +162,14 @@ items: []EnumItemIndex
 
 	{{- if $relatedMembers }}
 		<section id="related-members">
-			<header><h2>Related members {{partial "element-count.html" (len $relatedMembers)}}</h2></header>
+			<header><h2>Related members {{partial "component/element-count.html" (len $relatedMembers)}}</h2></header>
 			<ul class="truncated-list entity-list">
 				{{- range $relatedMembers }}
 					{{- $type := "class" }}
 					{{- if .Member }}
 						{{- $type = "member" }}
 					{{- end }}
-					<li class="set {{partial `status-class.html` (dict `type` $type `primary` .Class `secondary` .Member)}}">
+					<li class="set {{partial `entity/status-class.html` (dict `type` $type `primary` .Class `secondary` .Member)}}">
 						<span>
 							{{- partial "entity/link.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
 							{{- if eq .Kind "Parameter" }} (

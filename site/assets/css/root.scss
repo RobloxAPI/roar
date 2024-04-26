@@ -29,7 +29,7 @@ body {
 	padding: 0;
 }
 
-a[href] {
+a[href], .link {
 	color: var(--theme-link);
 	text-decoration: none;
 }

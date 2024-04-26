@@ -13,7 +13,7 @@ statuskind: string? = "deco" // Set status kind.
 */ -}}
 {{- $ishub := or .hub (eq .type "releasenotes") -}}
 
-{{- $status := partial `status-class.html` . -}}
+{{- $status := partial `entity/status-class.html` . -}}
 {{- $statuskind := or .statuskind "deco" -}}
 {{- if .nolink -}}
 	<span class="entity-link{{if $ishub}} hub-link{{else if not .nostatus}} {{$statuskind}} {{$status}}{{end}}">

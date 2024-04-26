@@ -4,13 +4,6 @@ header.prime {
 	background-color: var(--theme-Tab);
 
 	display: grid;
-	grid-template-columns:
-		max-content // Icon
-		minmax(0, max-content) // Title
-		minmax(0, 1fr) // Navigation
-		max-content // Search
-		max-content // Settings
-	;
 
 	// General layout for header elements.
 	.runner-item, a {
@@ -30,7 +23,6 @@ header.prime {
 	> h1 {
 		margin: 0;
 		white-space: nowrap;
-		justify-content: flex-end;
 		> a {
 			@include runner-padding;
 		}

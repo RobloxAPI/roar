@@ -1,0 +1,38 @@
+#root-header {
+	grid-template-columns:
+		max-content // Icon
+		minmax(0, max-content) // Title
+		minmax(0, 1fr) // Navigation
+		max-content // Search
+		max-content // Settings
+	;
+
+	.panel-button {
+		display: none;
+	}
+
+	@media #{$reduced}, #{$small} {
+		grid-template-columns:
+			max-content // Panel button
+			max-content // Icon
+			minmax(0, max-content) // Title
+			minmax(0, 1fr) // Search
+			max-content // Settings
+		;
+		.panel-button {
+			display: flex;
+		}
+		.root-nav {
+			display: none;
+		}
+		#search-form {
+			width: 100%;
+			label {
+				width: 100%;
+				input {
+					width: 100%;
+				}
+			}
+		}
+	}
+}

@@ -732,7 +732,7 @@ function cellContext(td, value, type, row, field) {
 };
 
 function renderSearchData() {
-	const main = document.body.querySelector("main.root");
+	const main = document.getElementById("root-main");
 	if (!main) {
 		return;
 	};
@@ -893,7 +893,7 @@ function initSearchInput() {
 	if (!form) { return };
 	const input = document.getElementById("search-input");
 	if (!input) { return };
-	const main = document.body.querySelector("main.root");
+	const main = document.getElementById("root-main");
 	if (!main) { return };
 
 	// Show search form.

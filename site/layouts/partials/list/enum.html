@@ -13,7 +13,7 @@
 		<ul class="enum-list entity-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if not $enum.Removed }}
-					<li class="set {{partial `status-class.html` (dict `type` `enum` `primary` $name)}}">{{partial `entity/link.html` (dict "type" "enum" "primary" $name)}}</li>
+					<li class="set {{partial `entity/status-class.html` (dict `type` `enum` `primary` $name)}}">{{partial `entity/link.html` (dict "type" "enum" "primary" $name)}}</li>
 				{{- end }}
 			{{- end }}
 		</ul>
@@ -23,7 +23,7 @@
 		<ul class="enum-list entity-list">
 			{{- range $name, $enum := site.Data.Index.Enum }}
 				{{- if $enum.Removed }}
-					<li class="set {{partial `status-class.html` (dict `type` `enum` `primary` $name)}}">{{partial `entity/link.html` (dict "type" "enum" "primary" $name)}}</li>
+					<li class="set {{partial `entity/status-class.html` (dict `type` `enum` `primary` $name)}}">{{partial `entity/link.html` (dict "type" "enum" "primary" $name)}}</li>
 				{{- end }}
 			{{- end }}
 		</ul>

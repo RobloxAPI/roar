@@ -1,0 +1,83 @@
+/* Layouts
+
+Defines breakpoints for different viewport sizes. The following layouts are
+defined:
+
+	standard: Default layout. For desktops.
+	reduced: For tablets.
+	small: For mobile.
+
+These names can be used by components to indicate styles that apply to the
+corresponding layout.
+
+Additionally, several classes are defined for applying elements to certain
+layouts:
+
+.show-standard
+
+	Only show element when in standard layout.
+
+.hide-standard
+
+	Hide element when in standard layout.
+
+.show-reduced
+
+	Only show element when in reduced layout.
+
+.hide-reduced
+
+	Hide element when in reduced layout.
+
+.show-small
+
+	Only show element when in small layout.
+
+.hide-small
+
+	Hide element when in small layout.
+
+The following variables can be used with interpolation to define media queries
+that are ranged to cover only the given layout:
+
+	@media \#{$standard} { ... }
+	@media \#{$reduced} { ... }
+	@media \#{$small} { ... }
+
+These can be combined to cover multiple layouts:
+
+	@media \#{$reduced}, \#{$small} { ... }
+
+*/
+
+// 1360px: Font is at maximum size.
+// 563px: Font is at minimum size.
+// 1111px: header: No space between nav buttons and search bar.
+// 673px: header: No space between title and search bar.
+
+// Width breakpoints.
+$wbp-reduced: 1111px;
+$wbp-small: 673px;
+
+// (width > $wbp-reduced)
+$standard: "(min-width: #{$wbp-reduced+0.01})";
+// ($wbp-small < width <= $wbp-reduced)
+$reduced: "(min-width: #{$wbp-small+0.01}) and (max-width: #{$wbp-reduced})";
+// (width <= $wbp-small)
+$small: "(max-width: #{$wbp-small})";
+
+@media #{$standard} {
+	.show-reduced:not(.show-standard) { display: none }
+	.show-small:not(.show-standard) { display: none }
+	.hide-standard { display: none }
+}
+@media #{$reduced} {
+	.show-standard:not(.show-reduced) { display: none }
+	.show-small:not(.show-reduced) { display: none }
+	.hide-reduced { display: none }
+}
+@media #{$small} {
+	.show-standard:not(.show-small) { display: none }
+	.show-reduced:not(.show-small) { display: none }
+	.hide-small { display: none }
+}

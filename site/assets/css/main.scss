@@ -2,6 +2,7 @@ $debug: {{site.Params.debug}};
 $theme: {{site.Params.theme}};
 
 @import "debug";
+@import "layout";
 
 // Variables
 @import "variable/root";
@@ -21,12 +22,12 @@ $theme: {{site.Params.theme}};
 @import "header";
 @import "content";
 @import "footer";
-@import "settings";
 
 // Components
 @import "component/api-value";
 @import "component/blockquote";
 @import "component/change-list";
+@import "component/collapsing-title";
 @import "component/element-count";
 @import "component/entity-link";
 @import "component/entity-list";
@@ -39,7 +40,8 @@ $theme: {{site.Params.theme}};
 @import "component/margined";
 @import "component/metadata-pairs";
 @import "component/nav-block";
-@import "component/search";
+@import "component/panel";
+@import "component/panel-state";
 @import "component/search-database";
 @import "component/search-input";
 @import "component/select";
@@ -51,9 +53,26 @@ $theme: {{site.Params.theme}};
 @import "component/truncated-list";
 
 // Pages
-@import "page/entity";
 @import "page/home";
 @import "page/class";
 @import "page/enum";
 @import "page/type";
 @import "page/updates";
+
+// Singletons
+@import "singleton/nav-panel";
+@import "singleton/root-header";
+@import "singleton/root-main";
+@import "singleton/root-panel";
+@import "singleton/search-results";
+@import "singleton/settings-menu";
+
+.block {
+	@include runner-padding;
+}
+
+.root-button {
+	h2 {
+		margin: 0;
+	}
+}

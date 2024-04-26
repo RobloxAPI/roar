@@ -1,5 +1,5 @@
 // Elements that should be highlighted when targeted.
-main.root :target > header,
+#root-main :target > header,
 .index-card :target,
 .update:target > .change-list-toggle,
 .change-list > li:target {

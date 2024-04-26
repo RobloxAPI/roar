@@ -9,6 +9,9 @@
 	--indent-full: 4ch;
 	--indent-half: calc(var(--indent-full)/2);
 	--indent: var(--indent-full); // Dynamic.
+	@media #{$reduced}, #{$small} {
+		--indent: var(--indent-half);
+	}
 
 	// Widths of nav/content layout.
 	--max-nav-width: 40ch;

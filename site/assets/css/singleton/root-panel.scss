@@ -1,0 +1,21 @@
+@media #{$reduced}, #{$small} {
+	body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
+	body.kind-section.type-updates {
+		#root-panel {
+			font-size: calc(8/6 * var(--font-size));
+			header.prime {
+				grid-template-columns: max-content max-content 1fr max-content;
+				grid-template-areas: "nav logo title close";
+				.nav-button { grid-area: nav }
+				.logo { grid-area: logo }
+				h1 { grid-area: title }
+				.close-button { grid-area: close }
+			}
+			ul {
+				list-style: none;
+			}
+		}
+	}
+
+	@include show-panel-for("#focus-root:checked ~ #root-panel");
+}
