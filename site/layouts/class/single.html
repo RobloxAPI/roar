@@ -271,7 +271,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<header><h2>Siblings {{partial "component/element-count.html" (len $sibclasses)}}</h2></header>
 					<ul class="entity-list truncated-list">
 						{{- range $sibclasses }}
-							<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{if eq .Name $className}}<strong>{{end}}{{partial "entity/link.html" (dict "type" "class" "primary" .Name)}}{{if eq .Name $className}}</strong>{{end}}</li>
+							<li class="set {{partial `entity/status-class.html` (dict `type` `class` `primary` .Name) }}">{{partial "entity/link.html" (dict "type" "class" "primary" .Name "nolink" (eq .Name $className))}}</li>
 						{{- end }}
 					</ul>
 				</section>
