@@ -2,6 +2,11 @@ body.kind-page:is(.type-class, .type-enum, .type-type, .type-updates),
 body.kind-section.type-updates {
 	#nav-panel {
 		overflow-x: clip;
+
+		> header.prime {
+			display: none;
+		}
+
 		> section {
 			height: 100%;
 			li {
@@ -23,6 +28,7 @@ body.kind-section.type-updates {
 
 		@media #{$reduced}, #{$small} {
 			> header.prime {
+				display: grid;
 				grid-template-columns: max-content 1fr max-content;
 				grid-template-areas: "root . close";
 				.root-button { grid-area: root }

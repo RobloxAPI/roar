@@ -51,11 +51,6 @@
 
 $panel-transition-time: 200ms;
 
-// Hide panel header by default.
-.panel > header.prime {
-	display: none;
-}
-
 @mixin panel {
 	display: flex;
 	flex-direction: column;
@@ -88,11 +83,6 @@ $panel-transition-time: 200ms;
 	}
 	&.right {
 		right: calc(100vw + var(--halfbase));
-	}
-
-	// When header when element is displayed as a panel.
-	> header.prime {
-		display: grid;
 	}
 
 	> section {
