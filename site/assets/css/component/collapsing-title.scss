@@ -1,10 +1,20 @@
 .collapsing-title {
+	display: flex;
+	// Words are assumed to be in reverse. This fixes the order, while setting
+	// the wrapping direction to remove words at the start first.
 	flex-flow: wrap row-reverse;
 	justify-content: flex-end;
+	align-items: center;
+	// Elements wrap out of view.
+	overflow: hidden;
+	// Row must cover entire height.
+	height: 100%;
+	// Must have matching height, or last word will not wrap out of view.
 	> :first-child {
 		height: 100%;
 	}
-	> :not(:last-child) {
+	// Simulated space between words.
+	> :not(:first-child):not(:last-child) {
 		margin-left: 0.25em;
 	}
 }
