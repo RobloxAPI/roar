@@ -1,16 +1,15 @@
 // Table with an index card appearance.
 .index-card {
-	--card-margin: 1ch;
 	--card-padding: 1ch;
-	--cell-spacing: 0.75ch;
+	--cell-spacing: 1ch;
 	font-family: var(--monospace);
 	border-collapse: separate;
 	border-spacing: 0;
 	background-color: var(--theme-TableItem);
 	border: 1px solid var(--theme-border);
-	margin: var(--baseline) var(--card-margin);
 	padding: var(--card-padding);
 	border-radius: var(--card-padding);
+	width: 100%;
 
 	tr:not(:first-of-type) > td {
 		border-top: 1px solid var(--theme-border);
@@ -32,9 +31,11 @@
 // Displaying members.
 .index-card.members {
 	.col-history {
+		width: 0;
 		text-align: left;
 	}
 	.col-icon {
+		width: 0;
 		text-align: right;
 	}
 	.col-member {
@@ -52,9 +53,34 @@
 
 // Displaying member parameters.
 .index-card.params {
-	width: calc(100% - var(--card-margin)*2);
+	.col-member {
+		width: 0;
+		text-align: left;
+	}
+	.col-type {
+		width: 0;
+		text-align: left;
+	}
+	.col-default {
+		text-align: left;
+	}
 }
 
 // Displaying enum items.
 .index-card.enumitems {
+	width: auto;
+	.col-history {
+		width: 0;
+		text-align: left;
+	}
+	.col-icon {
+		width: 0;
+		text-align: right;
+	}
+	.col-name {
+		text-align: left;
+	}
+	.col-value {
+		text-align: right;
+	}
 }
