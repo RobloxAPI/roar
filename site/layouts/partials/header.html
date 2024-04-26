@@ -1,4 +1,10 @@
-{{- partial "component/focuser/nav.html"}}
+{{- if and (eq .Kind "page") (eq .Type "class" "enum" "type" "updates") }}
+	{{- partial "component/focuser/nav.html"}}
+{{- else if and (eq .Kind "section") (eq .Type "updates") }}
+	{{- partial "component/focuser/nav.html"}}
+{{- else }}
+	{{- partial "component/focuser/nav-root.html"}}
+{{- end }}
 {{- partial "component/logo.html" }}
 <h1 class="runner-button">{{partial "component/title.html" .}}</h1>
 <nav class="runner-item">
