@@ -100,7 +100,7 @@ items: []EnumItemIndex
 	{{- end }}
 {{- end }}
 
-<nav>
+{{- partial "singleton/nav-panel.html" . }}
 	<section id="toc">
 		<header><h2>Contents</h2></header>
 		<ol class="toc">
@@ -119,7 +119,7 @@ items: []EnumItemIndex
 			{{- end }}
 		</ol>
 	</section>
-</nav>
+{{- partial "singleton/nav-panel-end.html" . }}
 
 <article id="content">
 	<header><h1>{{partial "entity/icon.html" (dict "type" "enum")}}{{$enumName}}<aside>{{partial "entity/link.html" (dict "type" "enum" "primary" $enumName "hub" true)}}</aside></h1></header>
