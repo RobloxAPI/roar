@@ -1,0 +1,71 @@
+// Base layout.
+@mixin runner-item {
+	// Elements should be vertically centered.
+	display: flex;
+	align-items: center;
+	// Interactivity should span entire height.
+	height: 100%;
+}
+
+// Extra padding around content. Implies runner-item.
+@mixin runner-block {
+	@include runner-item;
+	padding-left: var(--halfbase);
+	padding-right: var(--halfbase);
+}
+
+.runner-item {
+	@include runner-item;
+}
+
+.runner-block {
+	@include runner-block;
+}
+
+// Extra option for hovering. Implies runner-block.
+.runner-hover {
+	@include runner-block;
+	transition:
+		color 100ms linear, color 100ms linear,
+		background-color 100ms linear, color 100ms linear;
+	&:hover {
+		color: var(--runner-hover-color);
+		background-color: var(--runner-hover-background);
+	}
+}
+
+// Square icon with inset element. Assumed to be interactive. Paths of SVG-type
+// icons are colored.
+.runner-icon {
+	width: var(--runner-height);
+	height: var(--runner-height);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	> * {
+		--padding: var(--baseline);
+		width: calc(var(--runner-height) - var(--padding) * (var(--runner-step) / 2) );
+		height: calc(var(--runner-height) - var(--padding) * (var(--runner-step) / 2) );
+	}
+	// Referred SVG object with image fallback.
+	> object {
+		pointer-events: none;
+		> img {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	// If svg, color paths to match text.
+	path {
+		transition: fill 100ms linear;
+		fill: var(--theme-SubText);
+	}
+	&:hover path {
+		fill: var(--theme-SubText-Selected);
+	}
+	// Larger variant.
+	&.logo > * {
+		--padding: var(--halfbase);
+	}
+}

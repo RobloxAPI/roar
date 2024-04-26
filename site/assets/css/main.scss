@@ -14,7 +14,6 @@ $theme: {{site.Params.theme}};
 @import "variable/theme";
 
 // Mixins
-@import "mixin/runner";
 @import "mixin/scrolling";
 
 // Base styling.
@@ -25,6 +24,7 @@ $theme: {{site.Params.theme}};
 
 // Components
 @import "component/api-value";
+@import "component/runner";
 @import "component/blockquote";
 @import "component/change-list";
 @import "component/collapsing-title";
@@ -39,7 +39,6 @@ $theme: {{site.Params.theme}};
 @import "component/index-card";
 @import "component/margined";
 @import "component/metadata-pairs";
-@import "component/nav-block";
 @import "component/panel";
 @import "component/panel-state";
 @import "component/search-database";

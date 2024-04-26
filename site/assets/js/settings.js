@@ -304,12 +304,7 @@ settings.Listen("SecurityIdentity", function(name, value, initial) {
 });
 
 function initSettingsMenu() {
-	let container = document.getElementById("settings-container");
-	if (container === null) {
-		return;
-	};
-
-	let button = container.querySelector(".button");
+	let button = document.getElementById("settings-button");
 	if (button === null) {
 		return;
 	};
@@ -318,7 +313,7 @@ function initSettingsMenu() {
 		return;
 	};
 
-	container.classList.remove("js");
+	button.classList.remove("js");
 	menu.classList.remove("js");
 
 	generateMenu(menu, settingsDef, function(name, value, initial) {

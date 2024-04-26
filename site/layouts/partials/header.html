@@ -1,20 +1,18 @@
-<label for="focus-nav" class="runner-item runner-icon button panel-button">
-	<span class="runner-icon button">{{partial "icon/nav.svg" .}}</span>
+<label for="focus-nav" class="runner-item panel-button">
+	<span class="runner-icon">{{partial "icon/nav.svg" .}}</span>
 </label>
 <a class="runner-icon logo" href="{{site.Home.RelPermalink}}">
 	<object data="{{(resources.Get `favicons/favicon.svg`).RelPermalink}}" type="image/svg+xml">
 		<img src="{{(resources.Get `favicons/favicon-48x48.png`).RelPermalink}}" />
 	</object>
 </a>
-<h1 class="runner-item">{{partial "component/title.html" .}}</h1>
-<nav class="root-nav runner-item block">
-	<ul class="runner-item">
-		{{- range site.Sections }}
-			<li class="runner-item"><a href="{{.RelPermalink}}">{{.Title}}</a></li>
-		{{- end }}
-	</ul>
+<h1 class="runner-block">{{partial "component/title.html" .}}</h1>
+<nav class="root-nav runner-item">
+	{{- range site.Sections }}
+		<a class="runner-hover" href="{{.RelPermalink}}">{{.Title}}</a>
+	{{- end }}
 </nav>
-<aside id="search" class="runner-item">
+<aside id="search" class="runner-block">
 	<form id="search-form" class="runner-item js">
 		<label class="runner-item">
 			<input id="search-input" type="search" placeholder="Press S to search...">
@@ -24,6 +22,4 @@
 		<section id="no-search" class="runner-item">Searching requires Javascript.</section>
 	</noscript>
 </aside>
-<div id="settings-container" class="runner-item js">
-	<span class="runner-icon button">{{partial "icon/settings.svg" .}}</span>
-</div>
+<span id="settings-button" class="js runner-icon">{{partial "icon/settings.svg" .}}</span>

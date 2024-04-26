@@ -1,53 +1,39 @@
 // Principal footer styling.
 footer.prime {
-	flex-shrink: 0;
-
 	display: flex;
 	align-items: center;
 	flex-flow: wrap row;
-
-	background-color: var(--theme-footer);
 	color: var(--theme-footer-text);
+	background-color: var(--theme-footer);
 	// Browsers may have fixed UI that appears at bottom of viewport, such
 	// as link URLs.
 	padding-bottom: var(--baseline);
 
-	:not(span) :not(span) {
-		display: flex;
-		align-items: center;
-
-		min-height: calc(var(--runner-step) * var(--baseline));
-	}
 	nav {
+		// Expand to fill remaining space, and allow wrapping.
 		flex: 1 1 auto;
 		display: flex;
-		align-items: stretch;
-		ul {
-			display: flex;
-			flex-flow: wrap row;
-			li {
-				display: flex;
-				align-items: stretch;
-			}
+		flex-flow: wrap row;
+		> * {
+			height: var(--runner-height);
 		}
 	}
+
 	a[href] {
 		color: var(--theme-footer-text);
-		&:hover {
-			color: var(--theme-footer-text-hover);
-			background-color: var(--theme-footer-hover);
-		}
+		--runner-hover-color: var(--theme-footer-text-hover);
+		--runner-hover-background: var(--theme-footer-hover);
 	}
-	> span {
-		@include runner-padding;
-	}
+
 	.license {
 		padding: var(--halfbase);
 		a[href] {
 			white-space: nowrap;
 		}
 	}
+
 	.publication {
+		// Alawys keep on right side.
 		margin-left: auto;
 		padding: var(--halfbase);
 		svg {

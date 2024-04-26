@@ -2,17 +2,7 @@
 header.prime {
 	height: var(--runner-height);
 	background-color: var(--theme-Tab);
-
 	display: grid;
-
-	// General layout for header elements.
-	.runner-item, a {
-		// Elements should be vertically centered.
-		display: flex;
-		align-items: center;
-		// Interactivity should span entire height.
-		height: 100%;
-	}
 
 	// Gracefully hide any overflow.
 	> * {
@@ -22,59 +12,12 @@ header.prime {
 	// Website title.
 	> h1 {
 		margin: 0;
-		white-space: nowrap;
-		> a {
-			@include runner-padding;
-		}
 	}
 
 	// Navigation links.
-	> nav.block a:hover {
-		background-color: var(--theme-Tab-Hover);
-	}
-
-	// Search widget.
-	> #search {
-		label {
-			@include runner-padding;
-		}
-	}
-
-	// Square icon with inset element.
-	.runner-icon {
-		width: var(--runner-height);
-		height: var(--runner-height);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		> * {
-			--padding: var(--baseline);
-			width: calc(var(--runner-height) - var(--padding) * (var(--runner-step) / 2) );
-			height: calc(var(--runner-height) - var(--padding) * (var(--runner-step) / 2) );
-		}
-		&.logo > * {
-			--padding: var(--halfbase);
-		}
-		> object {
-			pointer-events: none;
-			> img {
-				width: 100%;
-				height: 100%;
-			}
-		}
-		// If svg, color paths to match text.
-		path {
-			transition: fill 100ms linear;
-			fill: var(--theme-SubText);
-		}
-		&:hover path {
-			fill: var(--theme-SubText-Selected);
-		}
-	}
-
-	// Anything meant to be a button.
-	.button {
-		cursor: pointer;
+	> nav a {
+		--runner-hover-color: var(--theme-link);
+		--runner-hover-background: var(--theme-Tab-Hover);
 	}
 }
 
