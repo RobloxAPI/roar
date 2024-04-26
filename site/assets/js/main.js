@@ -53,6 +53,11 @@ function domLoaded() {
 			["HideIfZero", ">*"]
 		);
 		actions.QuickLink(
+			"#toc-sibclasses",
+			"#sibclasses > ul",
+			["HideIfZero", ">*"]
+		);
+		actions.QuickLink(
 			"#toc-hierarchy",
 			"#toc-hierarchy > ol",
 			["HideIfZero", ">*"]
@@ -110,6 +115,11 @@ function domLoaded() {
 			["HideIfZero", ">*"]
 		);
 		actions.QuickLink(
+			"#sibclasses",
+			"#sibclasses > ul",
+			["HideIfZero", ">*"]
+		);
+		actions.QuickLink(
 			"#hierarchy",
 			"#hierarchy",
 			["HideIfZero", ">*"]
@@ -159,6 +169,11 @@ function domLoaded() {
 		actions.QuickLink(
 			"#subclasses > header .element-count",
 			"#subclasses > ul",
+			["Count", ">*"]
+		);
+		actions.QuickLink(
+			"#sibclasses > header .element-count",
+			"#sibclasses > ul",
 			["Count", ">*"]
 		);
 		actions.QuickLink(
