@@ -67,10 +67,6 @@ $theme: {{site.Params.theme}};
 @import "singleton/search-results";
 @import "singleton/settings-menu";
 
-.block {
-	@include runner-padding;
-}
-
 .root-button {
 	h2 {
 		margin: 0;
