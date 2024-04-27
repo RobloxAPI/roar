@@ -120,6 +120,15 @@ new Promise(resolve => {
 			"#members-index > .index-card > tbody:first-of-type",
 			["Count", ">:not(.empty)"]
 		);
+		for (let thead of document.querySelectorAll("#members-index thead.inherited-members")) {
+			const tbody = thead.nextElementSibling;
+			if (!tbody.matches("tbody")) {
+				continue;
+			}
+			actions.Link(thead, false, ["HideIfZero", tbody, ">:not(.empty)"]);
+			actions.Link(tbody, false, ["HideIfZero", tbody, ">:not(.empty)"]);
+			actions.Link(thead.querySelector(".element-count"), false, ["Count", tbody, ">:not(.empty)"]);
+		};
 
 		// Removed members index
 		actions.QuickLink(
