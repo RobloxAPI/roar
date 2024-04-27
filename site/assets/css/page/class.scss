@@ -29,4 +29,9 @@ body.kind-page.type-class {
 			border-bottom: 1px solid var(--theme-border);
 		}
 	}
+	@media #{$small} {
+		#toc-hierarchy {
+			display: none;
+		}
+	}
 }
