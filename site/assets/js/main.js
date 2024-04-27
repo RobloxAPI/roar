@@ -3,6 +3,7 @@ import "./search.js"
 import "./updates.js"
 import "./classes.js"
 import {actions} from "./actions.js"
+import {getLayouts} from "./layouts.js"
 
 function domLoaded() {
 	const body = document.body;
@@ -301,3 +302,45 @@ if (document.readyState === "loading") {
 } else {
 	domLoaded();
 };
+
+// When a link to the current page is clicked on a panel, the panel should
+// collapse.
+getLayouts.then((layouts) => {
+	// Only for small layout, where panel covers the entire viewport.
+	const layoutSmall = layouts.get("small");
+	if (!layoutSmall) {
+		return;
+	};
+
+	const focusNone = document.getElementById("focus-none");
+	if (!focusNone) {
+		return;
+	};
+
+	function refocus(e) {
+		if (!layoutSmall.matches) {
+			return;
+		};
+		if (!(e.target instanceof HTMLAnchorElement)) {
+			return;
+		};
+		const l = window.location;
+		const a = new URL(e.target.href);
+		if (a.origin !== l.origin || a.pathname !== l.pathname) {
+			return;
+		}
+		focusNone.checked = true;
+	};
+
+	function applyToPanel(name) {
+		const panel = document.getElementById(name);
+		if (panel) {
+			const section = panel.querySelector(":scope > section");
+			if (section) {
+				section.addEventListener("click", refocus);
+			};
+		};
+	}
+
+	applyToPanel("nav-panel");
+});
