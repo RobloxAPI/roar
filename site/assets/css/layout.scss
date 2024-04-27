@@ -66,6 +66,11 @@ $reduced: "(min-width: #{$wbp-small+0.01}) and (max-width: #{$wbp-reduced})";
 // (width <= $wbp-small)
 $small: "(max-width: #{$wbp-small})";
 
+// Allow layouts to be discovered by javascript.
+@media #{$standard} { #LAYOUT_standard { content:"" } }
+@media #{$reduced} { #LAYOUT_reduced { content:"" } }
+@media #{$small} { #LAYOUT_small { content:"" } }
+
 @media #{$standard} {
 	.show-reduced:not(.show-standard) { display: none !important }
 	.show-small:not(.show-standard) { display: none !important }
