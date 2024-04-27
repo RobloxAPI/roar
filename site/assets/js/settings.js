@@ -1,5 +1,3 @@
-"use strict";
-
 import {actions} from "./actions.js"
 
 const securityIdentities = [
@@ -335,7 +333,13 @@ function initSettingsMenu() {
 	});
 };
 
-function initSettings() {
+new Promise(resolve => {
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", resolve);
+	} else {
+		resolve();
+	};
+}).then(() => {
 	initSettingsMenu();
 
 	settings.Listen("ExpandMembers", function(name, value, initial) {
@@ -352,10 +356,4 @@ function initSettings() {
 			input.checked = value;
 		};
 	});
-};
-
-if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initSettings);
-} else {
-	initSettings();
-};
+});

@@ -1,5 +1,3 @@
-"use strict";
-{
 function clearList(list) {
 	while (list.lastChild) {
 		list.removeChild(list.lastChild);
@@ -24,7 +22,13 @@ function sortByName(list, classes, parents) {
 	};
 };
 
-function initSortClasses() {
+new Promise(resolve => {
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", resolve);
+	} else {
+		resolve();
+	};
+}).then(() => {
 	for (let controls of document.getElementsByClassName("class-sort")) {
 		let container = controls.closest(".class-container");
 		if (!container) {
@@ -75,11 +79,4 @@ function initSortClasses() {
 			};
 		};
 	};
-};
-
-if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initSortClasses);
-} else {
-	initSortClasses();
-};
-};
+});

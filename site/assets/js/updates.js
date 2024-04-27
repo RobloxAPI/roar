@@ -1,5 +1,3 @@
-"use strict";
-{
 function toggleList(event) {
 	let parent = event.target.closest(".update");
 	if (parent === null) {
@@ -38,22 +36,29 @@ function toggleAll(show, scroll) {
 	};
 };
 
-function initUpdates() {
+new Promise(resolve => {
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", resolve);
+	} else {
+		resolve();
+	};
+}).then(() => {
 	if (!document.body.matches(".type-updates")) {
 		return;
 	};
 
 	// Inject pointer style.
-	function initStyle() {
+	new Promise(resolve => {
+		if (document.readyState === "complete") {
+			resolve();
+		} else {
+			window.addEventListener("load", resolve);
+		};
+	}).then(() => {
 		let style = document.createElement("style");
 		style.innerHTML = ".change-list-toggle {cursor: pointer}";
 		document.head.appendChild(style);
-	};
-	if (document.readyState === "complete") {
-		initStyle();
-	} else {
-		window.addEventListener("load", initStyle);
-	};
+	});
 
 	// Show update controls and instructions.
 	for (let item of document.querySelectorAll(".expand-all-changes")) {
@@ -113,11 +118,4 @@ function initUpdates() {
 			break;
 		};
 	};
-};
-
-if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initUpdates);
-} else {
-	initUpdates();
-};
-};
+});

@@ -1,5 +1,3 @@
-"use strict";
-
 import {settings, matchSecurity} from "./settings.js";
 import {fuzzy_match} from "./fuzzy.js";
 import {sanitize, entityLink} from "./link.js";
@@ -1072,16 +1070,15 @@ function initSearchInput() {
 			});
 		};
 	};
-
 }
 
-function initSearch() {
+new Promise(resolve => {
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", resolve);
+	} else {
+		resolve();
+	};
+}).then(() => {
 	initSearchData();
 	initSearchInput();
-};
-
-if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initSearch);
-} else {
-	initSearchData();
-};
+});

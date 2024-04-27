@@ -1,4 +1,3 @@
-"use strict";
 class Actions {
 	constructor(funcs) {
 		this.funcs = new Map(funcs);

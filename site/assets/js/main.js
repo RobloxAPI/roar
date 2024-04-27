@@ -5,7 +5,13 @@ import "./classes.js"
 import {actions} from "./actions.js"
 import {getLayouts} from "./layouts.js"
 
-function domLoaded() {
+new Promise(resolve => {
+	if (document.readyState === "loading") {
+		window.addEventListener("DOMContentLoaded", resolve);
+	} else {
+		resolve();
+	};
+}).then(() => {
 	const body = document.body;
 
 	if (body.matches(".kind-home, .kind-section")) {
@@ -295,13 +301,7 @@ function domLoaded() {
 			["Count", ">*"]
 		);
 	};
-};
-
-if (document.readyState === "loading") {
-	window.addEventListener("DOMContentLoaded", domLoaded);
-} else {
-	domLoaded();
-};
+});
 
 // When a link to the current page is clicked on a panel, the panel should
 // collapse.
