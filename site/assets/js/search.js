@@ -736,6 +736,8 @@ function renderSearchData() {
 	if (!main) {
 		return;
 	};
+	main.style.display = "block";
+	main.style.margin = "var(--halfbase)";
 	main.replaceChildren();
 	getDatabase()
 		.then(function(db) {
