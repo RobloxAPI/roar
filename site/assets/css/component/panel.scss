@@ -82,7 +82,7 @@ $panel-transition-time: 200ms;
 		left: calc(-100vw - var(--halfbase));
 	}
 	&.right {
-		right: calc(100vw + var(--halfbase));
+		right: calc(-100vw - var(--halfbase));
 	}
 
 	> section {
