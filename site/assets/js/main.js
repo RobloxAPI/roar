@@ -344,3 +344,22 @@ getLayouts.then((layouts) => {
 
 	applyToPanel("nav-panel");
 });
+
+// Collapse panels when layout changes to standard.
+getLayouts.then((layouts) => {
+	const layoutStandard = layouts.get("standard");
+	if (!layoutStandard) {
+		return;
+	};
+
+	const focusNone = document.getElementById("focus-none");
+	if (!focusNone) {
+		return;
+	};
+
+	layoutStandard.addEventListener("change", (e) => {
+		if (e.matches) {
+			focusNone.checked = true;
+		};
+	})
+});
