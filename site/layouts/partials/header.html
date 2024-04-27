@@ -22,4 +22,4 @@
 		<section id="no-search" class="runner-item">Searching requires Javascript.</section>
 	</noscript>
 </aside>
-<span id="settings-button" class="js runner-icon">{{partial "icon/settings.svg" .}}</span>
+{{- partial "component/focuser.html" (dict "focus" "settings" "icon" "settings" "class" "js") }}

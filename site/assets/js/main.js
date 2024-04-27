@@ -388,14 +388,20 @@ getLayouts.then((layouts) => {
 		return;
 	};
 
+	const focusSettings = document.getElementById("focus-settings");
 	const focusNone = document.getElementById("focus-none");
 	if (!focusNone) {
 		return;
 	};
 
 	layoutStandard.addEventListener("change", (e) => {
-		if (e.matches) {
-			focusNone.checked = true;
+		if (!e.matches) {
+			return;
 		};
+		if (focusSettings && focusSettings.checked) {
+			// Allow settings panel to remain open.
+			return;
+		}
+		focusNone.checked = true;
 	})
 });

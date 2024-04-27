@@ -302,35 +302,24 @@ settings.Listen("SecurityIdentity", function(name, value, initial) {
 });
 
 function initSettingsMenu() {
-	let button = document.getElementById("settings-button");
-	if (button === null) {
-		return;
-	};
-	let menu = document.getElementById("settings-menu");
-	if (menu === null) {
+	const panel = document.getElementById("settings-panel");
+	if (!panel) {
 		return;
 	};
 
-	button.classList.remove("js");
-	menu.classList.remove("js");
+	const section = panel.querySelector(":scope > section");
+	if (!section) {
+		return;
+	};
 
-	generateMenu(menu, settingsDef, function(name, value, initial) {
+	generateMenu(section, settingsDef, function(name, value, initial) {
 		settings.Changed(name, value, initial)
 	});
 
-	button.addEventListener("click", function(event) {
-		menu.style.display = "block";
-		const onClick = function(event) {
-			if (!menu.contains(event.target) && menu.style.display !== "none") {
-				menu.style.display = "none";
-				document.removeEventListener("click", onClick, true);
-				event.preventDefault();
-				event.stopPropagation();
-			};
-		};
-		document.addEventListener("click", onClick, true);
-		event.stopPropagation();
-	});
+	for (let focuser of document.querySelectorAll(".settings-focuser")) {
+		focuser.classList.remove("js");
+	};
+	panel.classList.remove("js");
 };
 
 new Promise(resolve => {

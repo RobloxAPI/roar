@@ -1,0 +1,60 @@
+#settings-panel {
+	header.prime {
+		grid-template-columns: minmax(0, 1fr) max-content;
+		grid-template-areas: "title close";
+		h2 { grid-area: title }
+		.none-focuser { grid-area: close }
+	}
+	> section {
+		border: 0;
+		padding: 0 var(--baseline);
+		margin: 0;
+		> form > div {
+			display: flex;
+			margin: var(--halfbase) 0;
+		}
+		label {
+			--border-size: 2px;
+			flex-grow: 1;
+			display: inline-block;
+			cursor: pointer;
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			padding: var(--halfbase);
+		}
+		.radio {
+			input {
+				display: none;
+			}
+			input+label {
+				padding-top: var(--halfbase);
+				padding-bottom: calc(var(--halfbase) - var(--border-size));
+				border-bottom: var(--border-size) solid transparent;
+				transition: border-bottom 100ms linear;
+				text-align: center;
+			}
+			input:checked+label {
+				border-bottom-color: var(--theme-border);
+			}
+		}
+		.select {
+			> label { order: 1 }
+			> select { order: 2 }
+			select {
+				flex-grow: 1;
+			}
+		}
+		.checkbox {
+			input {
+				margin: var(--halfbase);
+				margin-left: 0;
+			}
+		}
+		input:disabled+label,
+		select:disabled+label {
+			opacity: 0.5;
+		}
+	}
+}
+
+@include show-panel-for("#focus-settings:checked ~ #settings-panel");
