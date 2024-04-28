@@ -11,13 +11,4 @@
 		scrollbar-gutter: unset !important;
 		padding-bottom: var(--baseline);
 	}
-
-	@media #{$small} {
-		:is(ol,ul) {
-			list-style: none;
-		}
-		.toc {
-			padding-left: 0;
-		}
-	}
 }
