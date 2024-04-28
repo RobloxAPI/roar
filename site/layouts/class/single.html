@@ -21,15 +21,16 @@ inherited: bool // Whether members are inherited from an ancestor class.
 							<td class="col-history">{{partial "history/tag.html" $change}}</td>
 							<td class="col-icon">{{partial "entity/icon.html" (dict "type" "member" "primary" .Class "secondary" .Name)}}</td>
 							<td class="col-member">
-								<span class="member-text deco {{$status}}">
-									{{- if eq $memberDump.MemberType "Property" }}
-										<span class="name">{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>: <span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
-									{{- else if eq $memberDump.MemberType "Function" }}
-										<span class="name">{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
-									{{- else if eq $memberDump.MemberType "Event" }}
-										<span class="name">{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}
-									{{- else if eq $memberDump.MemberType "Callback" }}
-										<span class="name">{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>{{partial "member/parameters.html" $memberDump.Parameters}}: {{partial "member/returns.html" $memberDump.ReturnType}}
+								<span class="member-text deco {{$status}}">{{- /**/ -}}
+									<span class="name">{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>
+									{{- if eq $memberDump.MemberType "Property" -}}
+										<span class="bind">: </span><span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
+									{{- else if eq $memberDump.MemberType "Function" -}}
+										{{partial "member/parameters.html" $memberDump.Parameters}}<span class="bind">: </span>{{partial "member/returns.html" $memberDump.ReturnType}}
+									{{- else if eq $memberDump.MemberType "Event" -}}
+										{{partial "member/parameters.html" $memberDump.Parameters}}
+									{{- else if eq $memberDump.MemberType "Callback" -}}
+										{{partial "member/parameters.html" $memberDump.Parameters}}<span class="bind">: </span>{{partial "member/returns.html" $memberDump.ReturnType}}
 									{{- end -}}
 								</span>
 							</td>
