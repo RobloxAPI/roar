@@ -116,7 +116,7 @@ $panel-transition-time: 200ms;
 
 @media #{$small} {
 	// Hide double scrollbar while panel is open.
-	html:has(#focus-none:not(:checked)) {
+	html:has(#focus-none:not(:checked)):has(#focus-search:not(:checked)) {
 		overflow: hidden;
 	}
 }

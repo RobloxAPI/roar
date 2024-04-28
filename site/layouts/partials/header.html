@@ -22,4 +22,6 @@
 		<section id="no-search" class="runner-item">Searching requires Javascript.</section>
 	</noscript>
 </aside>
+{{- partial "component/focuser.html" (dict "focus" "search" "icon" "search") }}
+{{- partial "component/focuser.html" (dict "focus" "none" "icon" "close") }}
 {{- partial "component/focuser.html" (dict "focus" "settings" "icon" "settings" "class" "js") }}

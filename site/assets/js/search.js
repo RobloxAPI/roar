@@ -896,6 +896,11 @@ function initSearchInput() {
 	const main = document.getElementById("root-main");
 	if (!main) { return };
 
+	const searchState = document.getElementById("focus-search");
+	if (!searchState) { return };
+	const noneState = document.getElementById("focus-none");
+	if (!noneState) { return };
+
 	// Show search form.
 	form.classList.remove("js");
 
@@ -971,22 +976,48 @@ function initSearchInput() {
 			})
 	};
 
+	function focusSearch() {
+		searchState.checked = true;
+		input.focus();
+		input.select();
+	};
+
+	function blurSearch() {
+		renderResults(null);
+		input.blur();
+		noneState.checked = true;
+	}
+
 	// Add shortcuts to focus search bar.
 	document.addEventListener("keydown",function(e) {
 		if (e.altKey || e.ctrlKey || e.metaKey) {
 			return;
 		};
 		if (e.key === "Escape" && input === document.activeElement) {
-			input.blur();
+			blurSearch();
 			return;
 		};
 		if ((e.key === "s" || e.key === "S") && input !== document.activeElement) {
 			e.preventDefault();
-			input.focus();
-			input.select();
+			focusSearch();
 			return;
 		};
 	});
+
+	input.addEventListener("focus", function() {
+		focusSearch();
+	});
+	searchState.addEventListener("change", function() {
+		focusSearch();
+	});
+	for (let state of document.querySelectorAll("input[name='focused-panel']")) {
+		if (state === searchState) {
+			continue
+		};
+		state.addEventListener("change", function() {
+			renderResults(null);
+		});
+	};
 
 	// Show results as the user types.
 	let timer;
@@ -1034,6 +1065,7 @@ function initSearchInput() {
 	});
 
 	if (input.value.length > 0) {
+		focusSearch();
 		doSearch(input.value);
 	} else {
 		// Try reading URL query.

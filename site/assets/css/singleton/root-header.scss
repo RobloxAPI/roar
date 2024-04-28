@@ -1,6 +1,6 @@
 #root-header {
 	grid-template-columns:
-		max-content // Icon
+		max-content // Logo
 		minmax(0, max-content) // Title
 		minmax(0, 1fr) // Navigation
 		max-content // Search
@@ -11,12 +11,16 @@
 		display: none;
 	}
 
+	.search-focuser, .none-focuser {
+		display: none;
+	}
+
 	@media #{$reduced}, #{$small} {
 		grid-template-columns:
 			max-content // Panel button
-			max-content // Icon
+			max-content // Logo
 			minmax(0, max-content) // Title
-			minmax(0, 1fr) // Search
+			minmax(min-content, 1fr) // Search
 			max-content // Settings
 		;
 		.nav-focuser, .root-focuser {
@@ -33,6 +37,54 @@
 					width: 100%;
 				}
 			}
+		}
+	}
+	@media #{$small} {
+		grid-template-columns:
+			max-content // Panel button
+			max-content // Logo
+			minmax(0, 1fr) // Title
+			max-content // Search
+			max-content // Settings
+		;
+		.search-focuser {
+			display: flex;
+		}
+		#search {
+			display: none;
+		}
+	}
+}
+
+@media #{$small} {
+	#focus-search:checked ~ #root-header {
+		grid-template-columns:
+			minmax(0, 1fr) // Search bar
+			max-content // Close button
+		;
+		.nav-focuser, .root-focuser {
+			display: none;
+		}
+		.logo {
+			display: none;
+		}
+		h1 {
+			display: none;
+		}
+		nav {
+			display: none;
+		}
+		#search {
+			display: flex;
+		}
+		.search-focuser {
+			display: none;
+		}
+		.none-focuser {
+			display: flex;
+		}
+		.settings-focuser {
+			display: none;
 		}
 	}
 }
