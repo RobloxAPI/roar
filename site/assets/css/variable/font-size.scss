@@ -1,0 +1,28 @@
+:root {
+	// Continuous size. Because even the slightest viewport resize causes a font
+	// resize, this is bad for performance on large pages.
+	// --font-size: clamp(0.875rem, 0.7rem + 0.5vmin, 1.125rem);
+
+	// Discrete size, taken by sampling continuous.
+	/*
+	--font-size: 1.125rem;
+    @media (max-width: 1360px), (max-height: 1360px) { --font-size: calc(18.0/16 * 1rem) }
+    @media (max-width: 1263px), (max-height: 1263px) { --font-size: calc(17.5/16 * 1rem) }
+    @media (max-width: 1163px), (max-height: 1163px) { --font-size: calc(17.0/16 * 1rem) }
+    @media (max-width: 1063px), (max-height: 1063px) { --font-size: calc(16.5/16 * 1rem) }
+    @media (max-width:  963px), (max-height:  963px) { --font-size: calc(16.0/16 * 1rem) }
+    @media (max-width:  863px), (max-height:  863px) { --font-size: calc(15.5/16 * 1rem) }
+    @media (max-width:  763px), (max-height:  763px) { --font-size: calc(15.0/16 * 1rem) }
+    @media (max-width:  663px), (max-height:  663px) { --font-size: calc(14.5/16 * 1rem) }
+    @media (max-width:  563px), (max-height:  563px) { --font-size: calc(14.0/16 * 1rem) }
+	*/
+
+	// Adjusted discrete width. Generally larger to account for aspect ratio. A
+	// gap is created at the mid range to account for smaller layouts
+	// introducing more space, which allows the font size to remain larger.
+	                                                   --font-size: calc(18/16 * 1rem);
+	@media (max-width: 1563px), (max-height: 1163px) { --font-size: calc(17/16 * 1rem) }
+	@media (max-width: 1363px), (max-height:  963px) { --font-size: calc(16/16 * 1rem) }
+	@media (max-width:  663px), (max-height:  763px) { --font-size: calc(15/16 * 1rem) }
+	@media (max-width:  463px), (max-height:  563px) { --font-size: calc(14/16 * 1rem) }
+}

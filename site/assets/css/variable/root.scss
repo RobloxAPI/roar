@@ -1,6 +1,5 @@
 :root {
 	// Baseline.
-	--font-size: clamp(0.875rem, 0.7rem + 0.5vmin, 1.125rem);
 	--line-height: 1.5;
 	--baseline: calc(var(--font-size) * var(--line-height));
 	--halfbase: calc(var(--baseline) / 2);

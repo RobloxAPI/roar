@@ -5,6 +5,7 @@ $theme: {{site.Params.theme}};
 @import "layout";
 
 // Variables
+@import "variable/font-size";
 @import "variable/root";
 @import "variable/font";
 @import "variable/heading";
