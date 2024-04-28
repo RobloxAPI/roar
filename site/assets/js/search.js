@@ -2,6 +2,12 @@ import {settings, matchSecurity} from "./settings.js";
 import {fuzzy_match} from "./fuzzy.js";
 import {sanitize, entityLink} from "./link.js";
 
+function element(type, text) {
+	const e = document.createElement(type);
+	e.textContent = text;
+	return e;
+};
+
 function u8(dv, offset) {
 	return dv.getUint8(offset);
 };
@@ -476,7 +482,11 @@ class SearchResults {
 		this.limit = limit;
 	};
 	render(parent) {
-		let n = this.rows.length
+		let n = this.rows.length;
+		if (n === 0) {
+			parent.appendChild(element("i", "No results found."));
+			return;
+		};
 		if (this.limit && this.limit > 0 && this.limit < n) {
 			n = this.limit;
 		};
@@ -667,12 +677,6 @@ const fields = {
 		"TYPE_NAME",
 		"TYPE_CAT",
 	],
-};
-
-function element(type, text) {
-	const e = document.createElement(type);
-	e.textContent = text;
-	return e;
 };
 
 function renderList(text, items) {
