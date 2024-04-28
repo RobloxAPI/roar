@@ -35,4 +35,8 @@ main.prime {
 			margin-left: auto;
 		}
 	}
+
+	@media #{$small} {
+		word-wrap: anywhere;
+	}
 }
