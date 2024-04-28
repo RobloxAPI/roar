@@ -1,5 +1,6 @@
 +++
 title = "Debug search"
+summary = "Renders the entire search database."
 +++
 
 <p id="search-data"><span class="replace">Enable Javascript</span> to display
