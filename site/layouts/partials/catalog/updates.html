@@ -25,7 +25,7 @@
 				<li>
 					<section class="update">
 						<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time> (v{{.Version}})</a>
-						{{- $major := index (split .Version ".") 1 }}
+						{{- $major := .Version.Version }}
 						{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" $major)}}
 						<ul class="change-list">
 							{{- $event := . }}

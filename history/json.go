@@ -5,7 +5,6 @@ import (
 
 	"github.com/robloxapi/rbxdump"
 	"github.com/robloxapi/rbxdump/diff"
-	"github.com/robloxapi/rbxver"
 	"github.com/robloxapi/roar/id"
 )
 
@@ -67,10 +66,18 @@ type jEvent struct {
 	// Version ID string (version-0123456789abcdef).
 	GUID string
 	// Version number.
-	Version rbxver.Version
+	Version jVersion
 	// Lower inclusive bound of changes that occurred during the event, as an
 	// index of jRoot.Change.
 	ChangesStart changeID
 	// Number of changes that occurred during the event.
 	ChangesCount changeID
+}
+
+// Version represents the version of a Roblox build.
+type jVersion struct {
+	Gen     int
+	Version int
+	Patch   int
+	Commit  int
 }

@@ -105,9 +105,14 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 	r.Event = make([]*Event, len(jr.Event))
 	for id, jevent := range jr.Event {
 		event := &Event{
-			Date:    jevent.Date,
-			GUID:    jevent.GUID,
-			Version: jevent.Version,
+			Date: jevent.Date,
+			GUID: jevent.GUID,
+			Version: rbxver.Version{
+				Generation: jevent.Version.Gen,
+				Version:    jevent.Version.Version,
+				Patch:      jevent.Version.Patch,
+				Commit:     jevent.Version.Commit,
+			},
 			Changes: make([]*Change, jevent.ChangesCount),
 		}
 		for i := range event.Changes {
@@ -188,9 +193,14 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 	jr.Event = make([]jEvent, len(r.Event))
 	for eid, event := range r.Event {
 		jevent := jEvent{
-			Date:         event.Date,
-			GUID:         event.GUID,
-			Version:      event.Version,
+			Date: event.Date,
+			GUID: event.GUID,
+			Version: jVersion{
+				Gen:     event.Version.Generation,
+				Version: event.Version.Version,
+				Patch:   event.Version.Patch,
+				Commit:  event.Version.Commit,
+			},
 			ChangesStart: len(jr.Change),
 			ChangesCount: len(event.Changes),
 		}
