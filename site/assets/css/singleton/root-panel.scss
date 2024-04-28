@@ -1,6 +1,5 @@
 @media #{$reduced}, #{$small} {
 	#root-panel {
-		font-size: calc(8/6 * var(--font-size));
 		header.prime {
 			grid-template-columns: max-content max-content 1fr max-content;
 			grid-template-areas: "nav logo title close";
