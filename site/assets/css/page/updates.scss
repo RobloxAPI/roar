@@ -1,2 +1,12 @@
 body.type-updates {
+	@media #{$small} {
+		.permalink {
+			&::before {
+				content: "¶";
+			}
+			.guid {
+				display: none;
+			}
+		}
+	}
 }
