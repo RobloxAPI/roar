@@ -12,4 +12,4 @@ Change
 {{- $event := index site.Data.History.Event (int .Event) }}
 <a class="history-tag {{$type}}" href="{{relref site.Home (path.Join `updates` (time $event.Date).Year)}}#{{$event.GUID}}-{{.Index}}" title="{{humanize $type}} on {{$event.Date}}
 {{partial `component/version-string.html` $event.Version}}
-{{$event.GUID}}">{{$event.Version.Version}}</a>
+{{$event.GUID}}">{{int $event.Version.Version}}</a>
