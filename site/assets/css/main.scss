@@ -50,6 +50,7 @@ $theme: {{site.Params.theme}};
 @import "component/target";
 @import "component/top-nav";
 @import "component/truncated-list";
+@import "component/version";
 
 // Pages
 @import "page/home";
