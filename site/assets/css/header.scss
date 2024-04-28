@@ -19,6 +19,12 @@ header.prime {
 		--runner-hover-color: var(--theme-link);
 		--runner-hover-background: var(--theme-Tab-Hover);
 	}
+
+	@media (max-height: $hbp-runner) {
+		h1 {
+			--heading-scale: calc(9/6);
+		}
+	}
 }
 
 // Sticky header.
