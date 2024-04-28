@@ -12,6 +12,13 @@
 			list-style: none;
 		}
 	}
+	:root:not(:has(#nav-panel)) #root-panel {
+		header.prime {
+			grid-template-columns: max-content 1fr max-content;
+			grid-template-areas: "logo title close";
+			.nav-focuser { display: none }
+		}
+	}
 
 	@include show-panel-for("#focus-root:checked ~ #root-panel");
 }
