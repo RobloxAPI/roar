@@ -36,8 +36,7 @@ year corresponding to the page title are rendered. */}}
 			<section id="{{.GUID}}" class="update">
 				{{- partial "updates/update.html" . }}
 				{{- if .ChangesCount }}
-					{{- $major := .Version.Version }}
-					{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" $major)}}
+					{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" .Version)}}
 				{{- end }}
 				<ul class="change-list">
 					{{- if .ChangesCount }}
