@@ -60,10 +60,10 @@
 	// If svg, color paths to match text.
 	path {
 		transition: fill 100ms linear;
-		fill: var(--theme-header-text);
+		fill: var(--theme-header-icon);
 	}
 	&:hover path {
-		fill: var(--theme-header-text-hover);
+		fill: var(--theme-header-icon-hover);
 	}
 	// Larger variant.
 	&.logo > * {

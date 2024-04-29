@@ -2,9 +2,11 @@
 	--theme-background:          #FFFFFF;
 	--theme-text:                #000000;
 	--theme-header:              #F2F2F2;
-	--theme-header-text:         #868686;
+	--theme-header-text:         #6E6E6E;
+	--theme-header-icon:         #868686;
 	--theme-header-hover:        var(--color-l-blu-ll);
 	--theme-header-text-hover:   #BABABA;
+	--theme-header-icon-hover:   var(--theme-header-text-hover);
 	--theme-footer:              var(--color-l-blu);
 	--theme-footer-text:         var(--theme-background);
 	--theme-footer-hover:        var(--color-l-blu-d);

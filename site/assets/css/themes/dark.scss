@@ -7,8 +7,10 @@
 	--theme-shadow:              #222222;
 	--theme-header:              #353535;
 	--theme-header-text:         #AAAAAA;
+	--theme-header-icon:         var(--theme-header-text);
 	--theme-header-hover:        #2A2A2A;
 	--theme-header-text-hover:   #DDDDDD;
+	--theme-header-icon-hover:   var(--theme-header-text-hover);
 	--theme-footer:              var(--theme-border);
 	--theme-footer-text:         var(--theme-text);
 	--theme-footer-hover:        var(--color-d-blu);
