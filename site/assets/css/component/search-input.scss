@@ -1,11 +1,11 @@
 input[type="search"] {
 	font: inherit;
 	appearance: none;
-	background-color: var(--theme-MainBackground);
-	color: var(--theme-MainText);
-	border: 1px solid var(--theme-Border);
+	background-color: var(--theme-background);
+	color: var(--theme-text);
+	border: 1px solid var(--theme-border);
 	&:hover {
-		border: 1px solid var(--theme-Border-Selected);
+		border: 1px solid var(--theme-border-selected);
 	}
 	width: 24ch;
 	min-width: 24ch;

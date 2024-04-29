@@ -5,6 +5,8 @@ $theme: {{site.Params.theme}};
 @import "layout";
 
 // Variables
+@import "variable/color";
+@import "variable/theme";
 @import "variable/font-size";
 @import "variable/root";
 @import "variable/font";
@@ -12,7 +14,6 @@ $theme: {{site.Params.theme}};
 @import "variable/icon";
 @import "variable/layers";
 @import "variable/runner";
-@import "variable/theme";
 
 // Mixins
 @import "mixin/scrolling";
@@ -25,7 +26,6 @@ $theme: {{site.Params.theme}};
 
 // Components
 @import "component/api-value";
-@import "component/runner";
 @import "component/blockquote";
 @import "component/change-list";
 @import "component/collapsing-title";
@@ -42,6 +42,7 @@ $theme: {{site.Params.theme}};
 @import "component/metadata-pairs";
 @import "component/panel";
 @import "component/panel-state";
+@import "component/runner";
 @import "component/search-database";
 @import "component/search-input";
 @import "component/select";

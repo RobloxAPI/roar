@@ -30,8 +30,8 @@
 		color 100ms linear, color 100ms linear,
 		background-color 100ms linear, color 100ms linear;
 	&:hover {
-		color: var(--runner-hover-color);
-		background-color: var(--runner-hover-background);
+		color: var(--runner-hover-color) !important;
+		background-color: var(--runner-hover-background) !important;
 	}
 }
 
@@ -60,10 +60,10 @@
 	// If svg, color paths to match text.
 	path {
 		transition: fill 100ms linear;
-		fill: var(--theme-SubText);
+		fill: var(--theme-header-text);
 	}
 	&:hover path {
-		fill: var(--theme-SubText-Selected);
+		fill: var(--theme-header-text-hover);
 	}
 	// Larger variant.
 	&.logo > * {

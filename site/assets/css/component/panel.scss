@@ -54,7 +54,7 @@ $panel-transition-time: 200ms;
 @mixin panel {
 	display: flex;
 	flex-direction: column;
-	background-color: var(--theme-MainBackground);
+	background-color: var(--theme-background);
 	position: fixed;
 	top: 0;
 	width: max-content;
@@ -65,7 +65,7 @@ $panel-transition-time: 200ms;
 	max-width: $wbp-small;
 	height: 100vh;
 	z-index: var(--layer-panel);
-	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
+	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-shadow);
 	// Transition does not work on display property.
 	visibility: hidden;
 	// Ensure panel doesn't float off of viewport edge.

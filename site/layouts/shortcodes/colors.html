@@ -1,0 +1,46 @@
+{{- define "table" }}
+	{{- $swatches := slice "-prim" "-oadj" "-otri" "-comp" "-rtri" "-radj" }}
+	{{- $colors := slice "-blu" "-pur" "-red" "-org" "-ylw" "-grn" }}
+	{{- $variants := slice "-ll" "-l" "" "-d" "-dd" }}
+	{{- $theme := . }}
+	<table style="margin:0;border-collapse:collapse;text-align:center">
+		<tr>
+			<th></th>
+			{{- range $variants }}
+				<th>{{.}}</th>
+			{{- end }}
+		</tr>
+		{{- range $i, $swatch := $swatches }}
+			<tr>
+				<td style="width:8em;height:2em">{{$swatch}} / {{index $colors $i}}</td>
+				{{- range $variant := $variants }}
+					<td style="width:4em;height:2em;background:var(--color-{{$theme}}{{$swatch}}{{$variant}})"></td>
+				{{- end }}
+			</tr>
+		{{- end }}
+	</table>
+{{- end }}
+
+<h2 style="font-family:var(--monospace)">--color-l</h2>
+<section style="
+	display: inline-block;
+	border: 1px solid #B6B6B6;
+	padding: 8em;
+	font-family: var(--monospace);
+	background-color: #FFFFFF;
+	color: #000000;
+">
+	{{- template "table" "l" }}
+</section>
+
+<h2 style="font-family:var(--monospace)">--color-d</h2>
+<section style="
+	display: inline-block;
+	border: 1px solid #1F1F1F;
+	padding: 8em;
+	font-family: var(--monospace);
+	background: #2E2E2E;
+	color: #CCCCCC;
+">
+	{{- template "table" "d" }}
+</section>

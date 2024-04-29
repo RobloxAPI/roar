@@ -10,9 +10,9 @@ html {
 	// Adjust for main header when targeting page sections.
 	scroll-padding-top: calc(var(--runner-height) + var(--halfbase));
 
-	background-color: var(--theme-MainBackground);
-	color: var(--theme-MainText);
-	scrollbar-color: var(--theme-SubText) var(--theme-Tab);
+	background-color: var(--theme-background);
+	color: var(--theme-text);
+	scrollbar-color: var(--theme-scroll-thumb) var(--theme-scroll-track);
 }
 
 body {

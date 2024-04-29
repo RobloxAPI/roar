@@ -5,8 +5,8 @@
 	font-family: var(--monospace);
 	border-collapse: separate;
 	border-spacing: 0;
-	background-color: var(--theme-TableItem);
-	border: 1px solid var(--theme-border);
+	background-color: var(--theme-object);
+	border: 1px solid var(--theme-object-border);
 	padding: var(--card-padding);
 	border-radius: var(--card-padding);
 	width: 100%;
@@ -15,7 +15,7 @@
 		border-top: 1px solid var(--theme-border);
 	}
 	th {
-		background-color: var(--theme-border);
+		background-color: var(--theme-object-header);
 	}
 	td, th {
 		text-align: left;

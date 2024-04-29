@@ -1,7 +1,8 @@
 // Principal header styling.
 header.prime {
 	height: var(--runner-height);
-	background-color: var(--theme-Tab);
+	background-color: var(--theme-header);
+	color: var(--theme-header-text);
 	display: grid;
 
 	// Gracefully hide any overflow.
@@ -17,7 +18,7 @@ header.prime {
 	// Navigation links.
 	> nav a {
 		--runner-hover-color: var(--theme-link);
-		--runner-hover-background: var(--theme-Tab-Hover);
+		--runner-hover-background: var(--theme-header-hover);
 	}
 
 	@media (max-height: $hbp-runner) {
@@ -32,5 +33,5 @@ header.stick {
 	position: sticky;
 	top: 0;
 	z-index: var(--layer-header);
-	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-Dark);
+	box-shadow: 0 0 calc(var(--halfbase) / 2) var(--theme-shadow);
 }

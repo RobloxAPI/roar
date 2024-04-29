@@ -1,0 +1,59 @@
+// Generates shades of $color hue shifted by $shift.
+@mixin color-shades($name, $color, $shift) {
+	$lighter: 75%;
+	$light:   33%;
+	$dark:    25%;
+	$darker:  50%;
+
+	#{$name}: #{"color-mix(in oklch longer hue, "+$color+" "+$shift+"%, "+$color")"};
+	#{$name}-ll: color-mix(in oklab, var(#{$name}), white $lighter);
+	#{$name}-l:  color-mix(in oklab, var(#{$name}), white $light);
+	#{$name}-d:  color-mix(in oklab, var(#{$name}), black $dark);
+	#{$name}-dd: color-mix(in oklab, var(#{$name}), black $darker);
+}
+
+// Generate colors using $base as the primary color.
+@mixin color-swatches($name, $base) {
+	$prim:   0/360*100; // blu; primary
+	$oadj: 300/360*100; // pur; obverse adjacent
+	$otri: 230/360*100; // red; obverse triad
+	$comp: 180/360*100; // org; complement
+	$rtri: 160/360*100; // ylw; reverse triad
+	$radj: 110/360*100; // grn; reverse adjacent
+
+	@include color-shades(#{"--color-"+$name+"-prim"}, $base, $prim)
+	@include color-shades(#{"--color-"+$name+"-oadj"}, $base, $oadj)
+	@include color-shades(#{"--color-"+$name+"-otri"}, $base, $otri)
+	@include color-shades(#{"--color-"+$name+"-comp"}, $base, $comp)
+	@include color-shades(#{"--color-"+$name+"-rtri"}, $base, $rtri)
+	@include color-shades(#{"--color-"+$name+"-radj"}, $base, $radj)
+}
+
+// Generates alternative names.
+@mixin color-var-map($name, $from) {
+	--color-l-#{$name}-ll: var(--color-l-#{$from}-ll);
+	--color-l-#{$name}-l:  var(--color-l-#{$from}-l);
+	--color-l-#{$name}:    var(--color-l-#{$from});
+	--color-l-#{$name}-d:  var(--color-l-#{$from}-d);
+	--color-l-#{$name}-dd: var(--color-l-#{$from}-dd);
+	--color-d-#{$name}-ll: var(--color-d-#{$from}-ll);
+	--color-d-#{$name}-l:  var(--color-d-#{$from}-l);
+	--color-d-#{$name}:    var(--color-d-#{$from});
+	--color-d-#{$name}-d:  var(--color-d-#{$from}-d);
+	--color-d-#{$name}-dd: var(--color-d-#{$from}-dd);
+}
+
+:root {
+	// Based off of link color for each theme.
+	--color-l-base: rgb(0, 102, 240);
+	--color-d-base: rgb(0, 164, 255);
+	@include color-swatches("l", var(--color-l-base));
+	@include color-swatches("d", var(--color-d-base));
+
+	@include color-var-map("blu", "prim");
+	@include color-var-map("pur", "oadj");
+	@include color-var-map("red", "otri");
+	@include color-var-map("org", "comp");
+	@include color-var-map("ylw", "rtri");
+	@include color-var-map("grn", "radj");
+}

@@ -3,8 +3,8 @@ footer.prime {
 	display: flex;
 	align-items: center;
 	flex-flow: wrap row;
-	color: var(--theme-footer-text);
 	background-color: var(--theme-footer);
+	color: var(--theme-footer-text);
 	// Browsers may have fixed UI that appears at bottom of viewport, such
 	// as link URLs.
 	padding-bottom: var(--baseline);

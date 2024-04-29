@@ -2,10 +2,10 @@
 table.stats {
 	width: max-content;
 	th {
-		background-color: var(--theme-border);
+		background-color: var(--theme-object-header);
 	}
 	td {
-		background-color: var(--theme-TableItem);
+		background-color: var(--theme-object);
 	}
 	:is(th,td) {
 		padding: 0 0.5ch;

@@ -9,12 +9,12 @@ table.search-database {
 	th {
 		position: sticky;
 		top: var(--runner-height);
-		background-color: var(--theme-border);
+		background-color: var(--theme-object-header);
 	}
 	td {
-		background-color: var(--theme-TableItem);
+		background-color: var(--theme-object);
 		&.x {
-			background-color: var(--theme-CategoryItem);
+			background-color: var(--theme-object-alt);
 		}
 	}
 }
