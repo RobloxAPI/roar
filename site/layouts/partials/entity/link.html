@@ -9,6 +9,7 @@ nolink: bool? // If true, do not make a link.
 hub: bool? // If true, link to external hub instead of internal site.
 nostatus: bool? // If true, status classes are excluded.
 statuskind: string? = "deco" // Set status kind.
+optional: bool? // If true, add ? suffix to type name.
 
 */ -}}
 {{- $ishub := or .hub (eq .type "releasenotes") -}}
@@ -68,7 +69,7 @@ statuskind: string? = "deco" // Set status kind.
 	{{- else if eq .type "enumitem" -}}
 		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type)}}{{if not .hascontext}}{{.primary}}.{{end}}{{end}}{{.secondary}}
 	{{- else if eq .type "type" -}}
-		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type "primary" .primary)}}{{end}}{{.primary}}
+		{{- if not .simple}}{{partial "entity/icon.html" (dict "type" .type "primary" .primary)}}{{end}}{{.primary}}{{if .optional}}?{{end}}
 	{{- end -}}
 {{- end -}}
 {{- if .nolink -}}

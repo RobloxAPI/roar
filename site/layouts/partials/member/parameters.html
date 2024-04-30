@@ -7,7 +7,7 @@
 <span class="parameters open">(</span>
 {{- range $i, $param := . -}}
 	<span class="parameters parameter">
-		{{- $param.Name -}}: {{partial "member/type.html" $param.Type -}}
+		{{- $param.Name -}}: {{partial "member/type.html" (dict "type" $param.Type "simple" true) -}}
 		{{- if .Optional }} = {{ .Default -}}{{- end -}}
 		{{- if lt $i $n -}}
 			<span class="parameters sep">, </span>

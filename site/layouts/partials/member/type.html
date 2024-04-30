@@ -1,12 +1,13 @@
 {{- /* Render a link to a data type element.
 
-Type
+type: Type // The type to render.
+simple: bool? // If true, include only the name of the referred element (no primary or icon).
 
 */ -}}
 {{- $cat := "type" }}
-{{- if eq .Category "Class" -}}
+{{- if eq .type.Category "Class" -}}
 	{{- $cat = "class" }}
-{{- else if eq .Category "Enum" -}}
+{{- else if eq .type.Category "Enum" -}}
 	{{- $cat = "enum" }}
 {{- end -}}
-<a class="type" href="{{relref site.Home (path.Join $cat .Name)}}">{{.Name}}{{if .Optional}}?{{end}}</a>
+{{- partial "entity/link.html" (dict "type" $cat "primary" .type.Name "optional" .type.Optional "simple" .simple) }}

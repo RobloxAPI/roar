@@ -24,7 +24,7 @@ inherited: bool // Whether members are inherited from an ancestor class.
 								<span class="member-text deco {{$status}}">{{- /**/ -}}
 									<span class="name">{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "simple" true "nostatus" true)}}</span>
 									{{- if eq $memberDump.MemberType "Property" -}}
-										<span class="bind">: </span><span class="type">{{partial "member/type.html" $memberDump.ValueType}}</span>
+										<span class="bind">: </span><span class="type">{{partial "member/type.html" (dict "type" $memberDump.ValueType "simple" true)}}</span>
 									{{- else if eq $memberDump.MemberType "Function" -}}
 										{{partial "member/parameters.html" $memberDump.Parameters}}<span class="bind">: </span>{{partial "member/returns.html" $memberDump.ReturnType}}
 									{{- else if eq $memberDump.MemberType "Event" -}}
@@ -103,7 +103,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
 						<tr class="pair"><th class="name">Member Type</th><td class="value">Property</td></tr>
-						<tr class="pair"><th class="name">Value Type</th><td class="value">{{partial "member/type.html" $dump.ValueType}}</td></tr>
+						<tr class="pair"><th class="name">Value Type</th><td class="value">{{partial "member/type.html" (dict "type" $dump.ValueType)}}</td></tr>
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
 								<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>

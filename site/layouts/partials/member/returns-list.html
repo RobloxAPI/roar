@@ -5,5 +5,5 @@
 */}}
 {{- range $i, $type := . -}}
 	{{- if gt $i 0}}, {{end -}}
-	{{- partial "member/type.html" $type -}}
+	{{- partial "member/type.html" (dict "type" $type) -}}
 {{- end -}}

@@ -12,36 +12,6 @@ value: PreferredDescriptor
 	{{- end -}}
 {{- end -}}
 
-{{- /* Renders the default value of a property.
-
-type: Type // The property's value type.
-value: string // The default value.
-
-*/ -}}
-{{- define "default" -}}
-	{{- if eq .value "" -}}
-		<span class="api-none"></span>
-	{{- else if eq .value "__api_dump_class_not_creatable__" -}}
-		<span class="api-default-not-creatable"></span>
-	{{- else if eq .value "__api_dump_no_string_value__" -}}
-		<span class="api-default-no-string-value"></span>
-	{{- else if eq .value "__api_dump_skipped_class__" -}}
-		<span class="api-default-skipped-class"></span>
-	{{- else if eq .value "__api_dump_write_only_property__" -}}
-		<span class="api-default-write-only"></span>
-	{{- else if eq .type.Category "Class" -}}
-		<a class="type" href="{{relref site.Home (path.Join `class` .type.Name)}}">{{.value}}</a>
-	{{- else if eq .type.Category "Enum" -}}
-		<a class="type" href="{{relref site.Home (path.Join `enum` .type.Name)}}">{{.value}}</a>
-	{{- else if eq .type.Name "bool" "int" "int64" "float" "double" -}}
-		<a class="type" href="{{relref site.Home (path.Join `type` .type.Name)}}">{{.value}}</a>
-	{{- else if eq .type.Name "string" "BinaryString" "ProtectedString" "Content" -}}
-		<a class="type" href="{{relref site.Home (path.Join `type` .type.Name)}}">{{printf "%q" .value}}</a>
-	{{- else -}}
-		{{- partial "member/type.html" .type}}({{.value}})
-	{{- end -}}
-{{- end -}}
-
 {{- /* Renders a field value of a change.
 
 change: Change // The change, providing context.
@@ -54,7 +24,7 @@ value: any // The value to render, the type depending on context.
 {{- else if eq .field "ReturnType" -}}
 	{{- partial "member/returns.html" .value -}}
 {{- else if eq .field "ValueType" -}}
-	{{- partial "member/type.html" .value -}}
+	{{- partial "member/type.html" (dict "type" .value "simple" true) -}}
 {{- else if eq .field "Tags" "LegacyNames" -}}
 	{{- if .value -}}
 		[{{- delimit .value ", " -}}]
@@ -66,7 +36,7 @@ value: any // The value to render, the type depending on context.
 {{- else if eq .field "Default" -}}
 	{{- /* TODO: Type must reflect state of element at time of change, not latest. */ -}}
 	{{- $type := index site.Data.Dump.Classes .change.Action.Primary "Members" .change.Action.Secondary "ValueType" -}}
-	{{- template "default" (dict "type" $type "value" .value) -}}
+	{{- partial "member/default.html" (dict "type" $type "value" .value "simple" true) -}}
 {{- else if eq .value "" -}}
 	<span class="api-none"></span>
 {{- else -}}
