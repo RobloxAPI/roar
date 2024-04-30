@@ -39,14 +39,14 @@ secondary: string // Secondary entity index.
 		{{- if in $dump.Tags "Yields" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s yields." $kind) "text" "It will block the calling thread until completion.") }}
 		{{- end }}
-		{{- if in $dump.Tags "NotCreatable" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is not creatable." $kind) "text" "Instances of this class cannot be created with Instance.new.") }}
-		{{- end }}
 		{{- if in $dump.Tags "NotScriptable" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not scriptable." $kind) "text" "It cannot be accessed by script code.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotReplicated" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not replicated." $kind) "text" "Its interface does not cross the network boundary.") }}
+		{{- end }}
+		{{- if in $dump.Tags "NotCreatable" }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is not creatable." $kind) "text" "Instances of this class cannot be created with Instance.new.") }}
 		{{- end }}
 		{{- if in $dump.Tags "Service" }}
 			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is a service." $kind) "text" "It is a singleton that may be acquired with GetService.") }}
