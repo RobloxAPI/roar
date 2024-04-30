@@ -104,6 +104,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					<table class="metadata-pairs">
 						<tr class="pair"><th class="name">Member Type</th><td class="value">Property</td></tr>
 						<tr class="pair"><th class="name">Value Type</th><td class="value">{{partial "member/type.html" (dict "type" $dump.ValueType)}}</td></tr>
+						<tr class="pair"><th class="name">Default Value</th><td class="value">{{partial "member/default.html" (dict "type" $dump.ValueType "value" $dump.Default "hascontext" true)}}</td></tr>
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
 								<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>
