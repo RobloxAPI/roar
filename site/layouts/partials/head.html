@@ -9,7 +9,7 @@
 {{- end }}
 {{- $desc := "" }}
 {{- if eq .Type "updates" }}
-	{{- $desc = printf "Updates to the Roblox Lua API." }}
+	{{- $desc = printf "Updates to the Roblox engine API." }}
 {{- else if eq .Kind "section" }}
 	{{- $desc = printf "List of API %s." (pluralize .Type) }}
 {{- else if eq .Type "class" "enum" "type" }}
@@ -17,7 +17,7 @@
 {{- else if .Summary }}
 	{{- $desc = .Summary }}
 {{- else }}
-	{{- $desc = "Reference for the Roblox Lua API." }}
+	{{- $desc = "Reference for the Roblox engine API." }}
 {{- end }}
 <title>{{$title}}</title>
 <meta name="search-db" content="{{(resources.Get `search.db`).RelPermalink}}">

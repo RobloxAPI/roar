@@ -43,7 +43,7 @@ secondary: string // Secondary entity index.
 			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is not creatable." $kind) "text" "Instances of this class cannot be created with Instance.new.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotScriptable" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not scriptable." $kind) "text" "It cannot be accessed by Lua code.") }}
+			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not scriptable." $kind) "text" "It cannot be accessed by script code.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotReplicated" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not replicated." $kind) "text" "Its interface does not cross the network boundary.") }}
@@ -67,7 +67,7 @@ secondary: string // Secondary entity index.
 			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s is player-replicated." $kind) "text" "Its data is replicated between the server and only a single client.") }}
 		{{- end }}
 		{{- if in $dump.Tags "CustomLuaState" }}
-			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s has a custom lua state." $kind) "text" "It may behave in a non-standard way.") }}
+			{{- partial "status/box.html" (dict "level" "low" "header" (printf "This %s has a custom internal state." $kind) "text" "It may behave in a non-standard way.") }}
 		{{- end }}
 	</div>
 {{- end }}
