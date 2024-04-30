@@ -2,7 +2,7 @@
 #root-main :target > header,
 .index-card :target,
 .update:target > .change-list-toggle,
-.change-list > li:target {
+.change-list li:target {
 	background-color: var(--theme-highlight);
 	color: var(--theme-highlight-text);
 }
