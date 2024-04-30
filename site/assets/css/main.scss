@@ -29,6 +29,7 @@ $theme: {{site.Params.theme}};
 @import "component/blockquote";
 @import "component/change-list";
 @import "component/collapsing-title";
+@import "component/diff-values";
 @import "component/element-count";
 @import "component/entity-link";
 @import "component/entity-list";
