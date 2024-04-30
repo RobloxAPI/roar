@@ -1,0 +1,10 @@
+{{- /*
+
+Creates an external link, where the inner content is the body of the element.
+
+- href: The href attribute of the link.
+- param: If specified, gets the href from the given site parameter.
+- rel: Additional rel attribute values.
+
+*/ -}}
+<a rel="external{{if .Get `rel`}} {{.Get `rel`}}{{end}}" target="_blank" href="{{if .Get `param`}}{{index site.Params (.Get `param`)}}{{else}}{{.Get `href`}}{{end}}">{{.Inner}}</a>
