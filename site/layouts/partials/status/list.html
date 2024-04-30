@@ -30,6 +30,9 @@ secondary: string // Secondary entity index.
 			{{- end }}
 			{{- partial "status/box.html" (dict "level" "high" "header" (printf "This %s is deprecated." $kind) "text" $text "preferred" $preferred) }}
 		{{- end }}
+		{{- if in $dump.Tags "NotScriptable" }}
+			{{- partial "status/box.html" (dict "level" "high" "header" (printf "This %s is not scriptable." $kind) "text" "It cannot be accessed by script code.") }}
+		{{- end }}
 		{{- if in $dump.Tags "noyield" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s cannot yield." $kind) "text" "Attempting to yield within it will result in an error.") }}
 		{{- end }}
@@ -38,9 +41,6 @@ secondary: string // Secondary entity index.
 		{{- end }}
 		{{- if in $dump.Tags "Yields" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s yields." $kind) "text" "It will block the calling thread until completion.") }}
-		{{- end }}
-		{{- if in $dump.Tags "NotScriptable" }}
-			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not scriptable." $kind) "text" "It cannot be accessed by script code.") }}
 		{{- end }}
 		{{- if in $dump.Tags "NotReplicated" }}
 			{{- partial "status/box.html" (dict "level" "medium" "header" (printf "This %s is not replicated." $kind) "text" "Its interface does not cross the network boundary.") }}
