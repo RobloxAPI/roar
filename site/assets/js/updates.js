@@ -86,19 +86,13 @@ new Promise(resolve => {
 	if (targetID !== "") {
 		let target = document.getElementById(targetID);
 		if (target) {
-			if (target.parentElement.matches(".change-list")) {
-				target.parentElement.style.display = "";
-				// TODO: The browser should automatically scroll to the target
-				// at some point, but this might race.
-
-				// Enabling scrollIntoView cancels the automatic scroll by the
-				// browser, but then misses the target. Probably because the
-				// scroll position is set before the list expansion is rendered.
-
-				// target.scrollIntoView(true);
+			let list = target.closest(".change-list")
+			if (list) {
+				list.style.display = "";
+				target.scrollIntoView(true);
 				return;
 			};
-			let list = target.querySelector(".change-list")
+			list = target.querySelector(".change-list")
 			if (list) {
 				list.style.display = "";
 				return;
