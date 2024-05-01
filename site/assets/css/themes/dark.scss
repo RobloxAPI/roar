@@ -1,10 +1,6 @@
 @mixin theme-dark {
 	--theme-background:          #2E2E2E;
 	--theme-text:                #CCCCCC;
-	--theme-border:              #1F1F1F;
-	--theme-border-selected:     #222222;
-	--theme-guideline:           #808080;
-	--theme-shadow:              #222222;
 	--theme-header:              #353535;
 	--theme-header-text:         #AAAAAA;
 	--theme-header-icon:         var(--theme-header-text);
@@ -16,6 +12,10 @@
 	--theme-footer-hover:        var(--color-d-blu);
 	--theme-footer-text-hover:   var(--theme-border);
 	--theme-link:                var(--color-d-blu);
+	--theme-border:              #1F1F1F;
+	--theme-border-selected:     #222222;
+	--theme-guideline:           #808080;
+	--theme-shadow:              #222222;
 	--theme-object:              #282828;
 	--theme-object-border:       var(--theme-border);
 	--theme-object-header:       var(--theme-object-border);
