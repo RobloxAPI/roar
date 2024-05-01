@@ -61,6 +61,7 @@ $theme: {{site.Params.theme}};
 @import "page/enum";
 @import "page/type";
 @import "page/updates";
+@import "page/colors";
 
 // Singletons
 @import "singleton/nav-panel";

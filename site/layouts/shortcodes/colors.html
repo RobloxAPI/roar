@@ -1,9 +1,75 @@
-{{- define "table" }}
-	{{- $swatches := slice "-prim" "-oadj" "-otri" "-comp" "-rtri" "-radj" }}
-	{{- $colors := slice "-blu" "-pur" "-red" "-org" "-ylw" "-grn" }}
-	{{- $variants := slice "-ll" "-l" "" "-d" "-dd" }}
+{{- define "lsw" }}
+{{- $bg := index . 1}}
+{{- $ln := index . 2}}
+{{- $fg := index . 3}}
+{{- $tx := index . 4}}
+<div class="label">{{index . 0}}</div>
+<div class="swatch" style="
+{{- if $bg}}--bg:var(--theme-{{$bg}});{{end -}}
+{{- if $ln}}--ln:var(--theme-{{$ln}});{{end -}}
+{{- if $fg}}--fg:var(--theme-{{$fg}});{{end -}}
+{{- if $tx}}--tx:var(--theme-{{$tx}});{{end -}}
+">
+{{- end }}
+
+<h2>Swatches</h2>
+<div class="swatches">
+{{- template "lsw" (slice "content h1" "background" "" "" "text")}}<h1>Text</h1></div>
+{{- template "lsw" (slice "content h2" "background" "" "" "text")}}<h2>Text</h2></div>
+{{- template "lsw" (slice "content h3" "background" "" "" "text")}}<h3>Text</h3></div>
+{{- template "lsw" (slice "content h4" "background" "" "" "text")}}<h4>Text</h4></div>
+{{- template "lsw" (slice "content h5" "background" "" "" "text")}}<h5>Text</h5></div>
+{{- template "lsw" (slice "content h6" "background" "" "" "text")}}<h6>Text</h6></div>
+{{- template "lsw" (slice "content" "background" "" "" "text")}}<div>Text</div></div>
+{{- template "lsw" (slice "content link" "background" "" "" "link")}}<div>Text</div></div>
+{{- template "lsw" (slice "content separator" "background" "border" "background" "")}}<div style="border: 1px solid var(--ln)"></div></div>
+{{- template "lsw" (slice "content guideline" "background" "guideline" "background" "")}}<div style="border: 1px dotted var(--ln)"></div></div>
+{{- template "lsw" (slice "content radio select" "background" "border" "" "text")}}<div style="border-bottom: 2px solid var(--ln)">Text</div></div>
+{{- template "lsw" (slice "header h1" "header" "" "" "header-text")}}<h1>Text</h1></div>
+{{- template "lsw" (slice "header h2" "header" "" "" "header-text")}}<h2>Text</h2></div>
+{{- template "lsw" (slice "header text" "header" "" "" "header-text")}}<div>Text</div></div>
+{{- template "lsw" (slice "header h1 link" "header" "" "" "link")}}<h1>Text</h1></div>
+{{- template "lsw" (slice "header h2 link" "header" "" "" "link")}}<h2>Text</h2></div>
+{{- template "lsw" (slice "header link" "header" "" "" "link")}}<div>Text</div></div>
+{{- template "lsw" (slice "header link hover" "header-hover" "" "" "link")}}<div>Text</div></div>
+{{- template "lsw" (slice "header icon" "header" "" "header-icon" "")}}<div></div></div>
+{{- template "lsw" (slice "header icon hover" "header" "" "header-icon-hover" "")}}<div></div></div>
+{{- template "lsw" (slice "header search bar" "header" "border" "background" "text")}}<div style="border: 1px solid var(--ln)">Text</div></div>
+{{- template "lsw" (slice "footer text" "footer" "" "" "footer-text")}}<div>Text</div></div>
+{{- template "lsw" (slice "footer text hover" "footer-hover" "" "" "footer-text-hover")}}<div>Text</div></div>
+{{- template "lsw" (slice "footer icon" "footer" "" "footer-text" "")}}<div></div></div>
+{{- template "lsw" (slice "index card" "background" "object-border" "object" "")}}<div style="border: 1px solid var(--ln)"></div></div>
+{{- template "lsw" (slice "index card text" "object" "" "" "text")}}<div style="font-family:var(--monospace)">Text</div></div>
+{{- template "lsw" (slice "index card link" "object" "" "" "link")}}<div style="font-family:var(--monospace)">Text</div></div>
+{{- template "lsw" (slice "index card separator" "object" "object-border" "object" "")}}<div style="border: 1px solid var(--ln)"></div></div>
+{{- template "lsw" (slice "index card header" "object" "" "object-header" "text")}}<div style="font-family:var(--monospace);font-weight:bold">Text</div></div>
+{{- template "lsw" (slice "index card header link" "object" "" "object-header" "link")}}<div style="font-family:var(--monospace);font-weight:bold">Text</div></div>
+{{- template "lsw" (slice "history tag add" "background" "" "history-add" "history-add-text")}}<div style="font-family:var(--monospace)">+123</div></div>
+{{- template "lsw" (slice "history tag change" "background" "" "history-change" "history-change-text")}}<div style="font-family:var(--monospace)">Δ123</div></div>
+{{- template "lsw" (slice "history tag remove" "background" "" "history-remove" "history-remove-text")}}<div style="font-family:var(--monospace)">−123</div></div>
+{{- template "lsw" (slice "index card history tag add" "object" "" "history-add" "history-add-text")}}<div style="font-family:var(--monospace)">+123</div></div>
+{{- template "lsw" (slice "index card history tag change" "object" "" "history-change" "history-change-text")}}<div style="font-family:var(--monospace)">Δ123</div></div>
+{{- template "lsw" (slice "index card history tag remove" "object" "" "history-remove" "history-remove-text")}}<div style="font-family:var(--monospace)">−123</div></div>
+{{- template "lsw" (slice "change marker add" "background" "" "" "history-add-text")}}<div style="font-family:var(--monospace)">+ Text</div></div>
+{{- template "lsw" (slice "change marker change" "background" "" "" "history-change-text")}}<div style="font-family:var(--monospace)">Δ Text</div></div>
+{{- template "lsw" (slice "change marker remove" "background" "" "" "history-remove-text")}}<div style="font-family:var(--monospace)">− Text</div></div>
+<div class="label">status box high</div><div><div class="status-box high"><span class="header">Lede.</span> Description.</div></div>
+<div class="label">status box medium</div><div><div class="status-box medium"><span class="header">Lede.</span> Description.</div></div>
+<div class="label">status box low</div>	<div><div class="status-box low"><span class="header">Lede.</span> Description.</div></div>
+<div class="label">adjacent status boxes</div>
+<div><div class="status-list">
+	<div class="status-box high"><span class="header">Lede.</span> Description.</div>
+	<div class="status-box medium"><span class="header">Lede.</span> Description.</div>
+	<div class="status-box low"><span class="header">Lede.</span> Description.</div>
+	<div class="status-box high"><span class="header">Lede.</span> Description.</div>
+</div></div>
+</div>
+
+{{- define "color-swatches" }}
+	{{- $swatches := slice "-blu" "-pur" "-red" "-org" "-ylw" "-grn" }}
+	{{- $variants := slice "-7" "-6" "-5" "-4" "-3" }}
 	{{- $theme := . }}
-	<table style="margin:0;border-collapse:collapse;text-align:center">
+	<table style="margin:0 auto;text-align:center;border-spacing:2em">
 		<tr>
 			<th></th>
 			{{- range $variants }}
@@ -12,35 +78,29 @@
 		</tr>
 		{{- range $i, $swatch := $swatches }}
 			<tr>
-				<td style="width:8em;height:2em">{{$swatch}} / {{index $colors $i}}</td>
+				<td style="width:3em;height:2em">{{$swatch}}</td>
 				{{- range $variant := $variants }}
-					<td style="width:4em;height:2em;background:var(--color-{{$theme}}{{$swatch}}{{$variant}})"></td>
+					<td style="width:2em;height:2em;background:var(--color-{{$theme}}{{$swatch}}{{$variant}})"></td>
 				{{- end }}
 			</tr>
 		{{- end }}
 	</table>
 {{- end }}
 
-<h2 style="font-family:var(--monospace)">--color-l</h2>
-<section style="
-	display: inline-block;
+<h2 class="color-panel">--color-l</h2>
+<section class="color-panel" style="
 	border: 1px solid #B6B6B6;
-	padding: 8em;
-	font-family: var(--monospace);
 	background-color: #FFFFFF;
 	color: #000000;
 ">
-	{{- template "table" "l" }}
+	{{- template "color-swatches" "l" }}
 </section>
 
-<h2 style="font-family:var(--monospace)">--color-d</h2>
-<section style="
-	display: inline-block;
+<h2 class="color-panel">--color-d</h2>
+<section class="color-panel" style="
 	border: 1px solid #1F1F1F;
-	padding: 8em;
-	font-family: var(--monospace);
 	background: #2E2E2E;
 	color: #CCCCCC;
 ">
-	{{- template "table" "d" }}
+	{{- template "color-swatches" "d" }}
 </section>

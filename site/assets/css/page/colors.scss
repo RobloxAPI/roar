@@ -1,0 +1,45 @@
+.swatches {
+	display: grid;
+	grid-template-columns: max-content auto;
+	justify-items: center;
+	align-items: center;
+	> * {
+		justify-self: stretch;
+		padding: 2em;
+	}
+	> .label {
+		justify-self: right;
+	}
+	> .swatch {
+		background-color: var(--bg, transparent);
+		padding: 4em;
+		width: auto;
+		height: 2em;
+		> * {
+			background-color: var(--fg, transparent);
+			color: var(--tx, transparent);
+			display: inline-flex;
+			justify-content: flex-start;
+			align-items: center;
+			overflow: hidden;
+			min-width: 2em;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+		}
+	}
+	.status-list {
+		max-width: none;
+		margin: 0;
+	}
+}
+
+h2.color-panel {
+	font-family: var(--monospace);
+}
+section.color-panel {
+	display: inline-block;
+	padding: 8em 0;
+	width: 100%;
+	font-family: var(--monospace);
+}
