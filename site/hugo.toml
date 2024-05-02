@@ -13,6 +13,7 @@ noJSConfigInAssets = true
 debug = false
 theme = "auto"
 maxSiblingClasses = 32
+includeSections = ["class", "enum", "type", "updates"]
 
 repo = "https://github.com/robloxapi/roar"
 issues = "https://github.com/robloxapi/roar/issues"

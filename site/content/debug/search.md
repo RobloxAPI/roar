@@ -1,5 +1,5 @@
 +++
-title = "Debug search"
+title = "Search"
 summary = "Renders the entire search database."
 +++
 

@@ -9,7 +9,9 @@
 <h1 class="runner-button">{{partial "component/title.html" .}}</h1>
 <nav class="runner-item">
 	{{- range site.Sections }}
-		<a class="runner-hover" href="{{.RelPermalink}}">{{.Title}}</a>
+		{{- if or (not site.Params.IncludeSections) (in site.Params.IncludeSections .Type) }}
+			<a class="runner-hover" href="{{.RelPermalink}}">{{.Title}}</a>
+		{{- end }}
 	{{- end }}
 </nav>
 <aside id="search" class="runner-item">
