@@ -1,59 +1,77 @@
-// Generates shades of $color hue shifted by $shift.
-@mixin color-shades($name, $color, $shift) {
-	$lighter: 75%;
-	$light:   33%;
-	$dark:    25%;
-	$darker:  50%;
-
-	#{$name}: #{"color-mix(in oklch longer hue, "+$color+" "+$shift+"%, "+$color")"};
-	#{$name}-ll: color-mix(in oklab, var(#{$name}), white $lighter);
-	#{$name}-l:  color-mix(in oklab, var(#{$name}), white $light);
-	#{$name}-d:  color-mix(in oklab, var(#{$name}), black $dark);
-	#{$name}-dd: color-mix(in oklab, var(#{$name}), black $darker);
-}
-
-// Generate colors using $base as the primary color.
-@mixin color-swatches($name, $base) {
-	$prim:   0/360*100; // blu; primary
-	$oadj: 300/360*100; // pur; obverse adjacent
-	$otri: 230/360*100; // red; obverse triad
-	$comp: 180/360*100; // org; complement
-	$rtri: 160/360*100; // ylw; reverse triad
-	$radj: 110/360*100; // grn; reverse adjacent
-
-	@include color-shades(#{"--color-"+$name+"-prim"}, $base, $prim)
-	@include color-shades(#{"--color-"+$name+"-oadj"}, $base, $oadj)
-	@include color-shades(#{"--color-"+$name+"-otri"}, $base, $otri)
-	@include color-shades(#{"--color-"+$name+"-comp"}, $base, $comp)
-	@include color-shades(#{"--color-"+$name+"-rtri"}, $base, $rtri)
-	@include color-shades(#{"--color-"+$name+"-radj"}, $base, $radj)
-}
-
-// Generates alternative names.
-@mixin color-var-map($name, $from) {
-	--color-l-#{$name}-ll: var(--color-l-#{$from}-ll);
-	--color-l-#{$name}-l:  var(--color-l-#{$from}-l);
-	--color-l-#{$name}:    var(--color-l-#{$from});
-	--color-l-#{$name}-d:  var(--color-l-#{$from}-d);
-	--color-l-#{$name}-dd: var(--color-l-#{$from}-dd);
-	--color-d-#{$name}-ll: var(--color-d-#{$from}-ll);
-	--color-d-#{$name}-l:  var(--color-d-#{$from}-l);
-	--color-d-#{$name}:    var(--color-d-#{$from});
-	--color-d-#{$name}-d:  var(--color-d-#{$from}-d);
-	--color-d-#{$name}-dd: var(--color-d-#{$from}-dd);
-}
-
 :root {
-	// Based off of link color for each theme.
-	--color-l-base: rgb(0, 102, 240);
-	--color-d-base: rgb(0, 164, 255);
-	@include color-swatches("l", var(--color-l-base));
-	@include color-swatches("d", var(--color-d-base));
+	// Light
+	$l-l: 0.75; $l-c: 0.22; $l-h: 260;
+	$l-h0: 0; $l-h1: 300; $l-h2: 230; $l-h3: 200; $l-h4: 170; $l-h5: 110;
 
-	@include color-var-map("blu", "prim");
-	@include color-var-map("pur", "oadj");
-	@include color-var-map("red", "otri");
-	@include color-var-map("org", "comp");
-	@include color-var-map("ylw", "rtri");
-	@include color-var-map("grn", "radj");
+	$l-l3: -0.4; $l-l4: -0.2; $l-l5: +0.0; $l-l6: +0.2; $l-l7: +0.2;
+	$l-c3: -0.0; $l-c4: -0.0; $l-c5: -0.0; $l-c6: -0.0; $l-c7: -0.15;
+
+	// Dark
+	$d-l: 0.8; $d-c: 0.17316; $d-h: 245;
+	$d-h0: 0; $d-h1: 300; $d-h2: 230; $d-h3: 190; $d-h4: 170; $d-h5: 110;
+
+	$d-l3: -0.5;  $d-l4: -0.3; $d-l5: -0.0; $d-l6: +0.2; $d-l7: +0.4;
+	$d-c3: -0.05; $d-c4: -0.0; $d-c5: +0.05; $d-c6: -0.0; $d-c7: -0.1;
+
+	--color-l-blu-7: oklch(#{$l-l + $l-l7} #{$l-c + $l-c7} #{($l-h - $l-h0) % 360});
+	--color-l-blu-6: oklch(#{$l-l + $l-l6} #{$l-c + $l-c6} #{($l-h - $l-h0) % 360});
+	--color-l-blu-5: oklch(#{$l-l + $l-l5} #{$l-c + $l-c5} #{($l-h - $l-h0) % 360});
+	--color-l-blu-4: oklch(#{$l-l + $l-l4} #{$l-c + $l-c4} #{($l-h - $l-h0) % 360});
+	--color-l-blu-3: oklch(#{$l-l + $l-l3} #{$l-c + $l-c3} #{($l-h - $l-h0) % 360});
+	--color-l-pur-7: oklch(#{$l-l + $l-l7} #{$l-c + $l-c7} #{($l-h - $l-h1) % 360});
+	--color-l-pur-6: oklch(#{$l-l + $l-l6} #{$l-c + $l-c6} #{($l-h - $l-h1) % 360});
+	--color-l-pur-5: oklch(#{$l-l + $l-l5} #{$l-c + $l-c5} #{($l-h - $l-h1) % 360});
+	--color-l-pur-4: oklch(#{$l-l + $l-l4} #{$l-c + $l-c4} #{($l-h - $l-h1) % 360});
+	--color-l-pur-3: oklch(#{$l-l + $l-l3} #{$l-c + $l-c3} #{($l-h - $l-h1) % 360});
+	--color-l-red-7: oklch(#{$l-l + $l-l7} #{$l-c + $l-c7} #{($l-h - $l-h2) % 360});
+	--color-l-red-6: oklch(#{$l-l + $l-l6} #{$l-c + $l-c6} #{($l-h - $l-h2) % 360});
+	--color-l-red-5: oklch(#{$l-l + $l-l5} #{$l-c + $l-c5} #{($l-h - $l-h2) % 360});
+	--color-l-red-4: oklch(#{$l-l + $l-l4} #{$l-c + $l-c4} #{($l-h - $l-h2) % 360});
+	--color-l-red-3: oklch(#{$l-l + $l-l3} #{$l-c + $l-c3} #{($l-h - $l-h2) % 360});
+	--color-l-org-7: oklch(#{$l-l + $l-l7} #{$l-c + $l-c7} #{($l-h - $l-h3) % 360});
+	--color-l-org-6: oklch(#{$l-l + $l-l6} #{$l-c + $l-c6} #{($l-h - $l-h3) % 360});
+	--color-l-org-5: oklch(#{$l-l + $l-l5} #{$l-c + $l-c5} #{($l-h - $l-h3) % 360});
+	--color-l-org-4: oklch(#{$l-l + $l-l4} #{$l-c + $l-c4} #{($l-h - $l-h3) % 360});
+	--color-l-org-3: oklch(#{$l-l + $l-l3} #{$l-c + $l-c3} #{($l-h - $l-h3) % 360});
+	--color-l-ylw-7: oklch(#{$l-l + $l-l7} #{$l-c + $l-c7} #{($l-h - $l-h4) % 360});
+	--color-l-ylw-6: oklch(#{$l-l + $l-l6} #{$l-c + $l-c6} #{($l-h - $l-h4) % 360});
+	--color-l-ylw-5: oklch(#{$l-l + $l-l5} #{$l-c + $l-c5} #{($l-h - $l-h4) % 360});
+	--color-l-ylw-4: oklch(#{$l-l + $l-l4} #{$l-c + $l-c4} #{($l-h - $l-h4) % 360});
+	--color-l-ylw-3: oklch(#{$l-l + $l-l3} #{$l-c + $l-c3} #{($l-h - $l-h4) % 360});
+	--color-l-grn-7: oklch(#{$l-l + $l-l7} #{$l-c + $l-c7} #{($l-h - $l-h5) % 360});
+	--color-l-grn-6: oklch(#{$l-l + $l-l6} #{$l-c + $l-c6} #{($l-h - $l-h5) % 360});
+	--color-l-grn-5: oklch(#{$l-l + $l-l5} #{$l-c + $l-c5} #{($l-h - $l-h5) % 360});
+	--color-l-grn-4: oklch(#{$l-l + $l-l4} #{$l-c + $l-c4} #{($l-h - $l-h5) % 360});
+	--color-l-grn-3: oklch(#{$l-l + $l-l3} #{$l-c + $l-c3} #{($l-h - $l-h5) % 360});
+
+	--color-d-blu-7: oklch(#{$d-l + $d-l7} #{$d-c + $d-c7} #{($d-h - $d-h0) % 360});
+	--color-d-blu-6: oklch(#{$d-l + $d-l6} #{$d-c + $d-c6} #{($d-h - $d-h0) % 360});
+	--color-d-blu-5: oklch(#{$d-l + $d-l5} #{$d-c + $d-c5} #{($d-h - $d-h0) % 360});
+	--color-d-blu-4: oklch(#{$d-l + $d-l4} #{$d-c + $d-c4} #{($d-h - $d-h0) % 360});
+	--color-d-blu-3: oklch(#{$d-l + $d-l3} #{$d-c + $d-c3} #{($d-h - $d-h0) % 360});
+	--color-d-pur-7: oklch(#{$d-l + $d-l7} #{$d-c + $d-c7} #{($d-h - $d-h1) % 360});
+	--color-d-pur-6: oklch(#{$d-l + $d-l6} #{$d-c + $d-c6} #{($d-h - $d-h1) % 360});
+	--color-d-pur-5: oklch(#{$d-l + $d-l5} #{$d-c + $d-c5} #{($d-h - $d-h1) % 360});
+	--color-d-pur-4: oklch(#{$d-l + $d-l4} #{$d-c + $d-c4} #{($d-h - $d-h1) % 360});
+	--color-d-pur-3: oklch(#{$d-l + $d-l3} #{$d-c + $d-c3} #{($d-h - $d-h1) % 360});
+	--color-d-red-7: oklch(#{$d-l + $d-l7} #{$d-c + $d-c7} #{($d-h - $d-h2) % 360});
+	--color-d-red-6: oklch(#{$d-l + $d-l6} #{$d-c + $d-c6} #{($d-h - $d-h2) % 360});
+	--color-d-red-5: oklch(#{$d-l + $d-l5} #{$d-c + $d-c5} #{($d-h - $d-h2) % 360});
+	--color-d-red-4: oklch(#{$d-l + $d-l4} #{$d-c + $d-c4} #{($d-h - $d-h2) % 360});
+	--color-d-red-3: oklch(#{$d-l + $d-l3} #{$d-c + $d-c3} #{($d-h - $d-h2) % 360});
+	--color-d-org-7: oklch(#{$d-l + $d-l7} #{$d-c + $d-c7} #{($d-h - $d-h3) % 360});
+	--color-d-org-6: oklch(#{$d-l + $d-l6} #{$d-c + $d-c6} #{($d-h - $d-h3) % 360});
+	--color-d-org-5: oklch(#{$d-l + $d-l5} #{$d-c + $d-c5} #{($d-h - $d-h3) % 360});
+	--color-d-org-4: oklch(#{$d-l + $d-l4} #{$d-c + $d-c4} #{($d-h - $d-h3) % 360});
+	--color-d-org-3: oklch(#{$d-l + $d-l3} #{$d-c + $d-c3} #{($d-h - $d-h3) % 360});
+	--color-d-ylw-7: oklch(#{$d-l + $d-l7} #{$d-c + $d-c7} #{($d-h - $d-h4) % 360});
+	--color-d-ylw-6: oklch(#{$d-l + $d-l6} #{$d-c + $d-c6} #{($d-h - $d-h4) % 360});
+	--color-d-ylw-5: oklch(#{$d-l + $d-l5} #{$d-c + $d-c5} #{($d-h - $d-h4) % 360});
+	--color-d-ylw-4: oklch(#{$d-l + $d-l4} #{$d-c + $d-c4} #{($d-h - $d-h4) % 360});
+	--color-d-ylw-3: oklch(#{$d-l + $d-l3} #{$d-c + $d-c3} #{($d-h - $d-h4) % 360});
+	--color-d-grn-7: oklch(#{$d-l + $d-l7} #{$d-c + $d-c7} #{($d-h - $d-h5) % 360});
+	--color-d-grn-6: oklch(#{$d-l + $d-l6} #{$d-c + $d-c6} #{($d-h - $d-h5) % 360});
+	--color-d-grn-5: oklch(#{$d-l + $d-l5} #{$d-c + $d-c5} #{($d-h - $d-h5) % 360});
+	--color-d-grn-4: oklch(#{$d-l + $d-l4} #{$d-c + $d-c4} #{($d-h - $d-h5) % 360});
+	--color-d-grn-3: oklch(#{$d-l + $d-l3} #{$d-c + $d-c3} #{($d-h - $d-h5) % 360});
 }
