@@ -2,7 +2,7 @@
 the root updates, then recent updates are rendered. Otherwise, updates for the
 year corresponding to the page title are rendered. */}}
 
-{{- $all := site.Data.History.Event | collections.Reverse }}
+{{- $all := site.Data.History.Update | collections.Reverse }}
 {{- $updates := slice }}
 {{- $recent := site.GetPage "updates" }}
 {{- if eq . $recent }}
@@ -40,7 +40,7 @@ year corresponding to the page title are rendered. */}}
 				{{- end }}
 				<ul class="change-list">
 					{{- if .ChangesCount }}
-						{{- $event := . }}
+						{{- $update := . }}
 						{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
 
 						{{/* For added primary entities, subsequent matching
@@ -48,9 +48,9 @@ year corresponding to the page title are rendered. */}}
 						such entities are ordered correctly. */}}
 						{{- $parent := false }}
 
-						{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
-							{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
-							{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
+						{{- range seq 0 (div (int $update.ChangesCount) $limit) }}
+							{{- $start := add (int $update.ChangesStart) (mul . $limit) }}
+							{{- $count := sub (int $update.ChangesCount) (mul . $limit) }}
 							{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
 							{{- range seq $start $max }}
 								{{- $change := index site.Data.History.Change . }}
@@ -61,7 +61,7 @@ year corresponding to the page title are rendered. */}}
 								{{- end }}
 								{{- $type := partial "history/type.html" $change }}
 								{{- $field := partial "history/field.html" $change }}
-								<li id="{{$event.GUID}}-{{$change.Index}}" data-entity="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{- partial "history/change.html" (dict "change" $change "hascontext" $parent) -}}
+								<li id="{{$update.GUID}}-{{$change.Index}}" data-entity="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{- partial "history/change.html" (dict "change" $change "hascontext" $parent) -}}
 								{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
 									{{- $parent = $change }}
 									<ul>

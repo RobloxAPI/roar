@@ -44,20 +44,20 @@ func FilterBuilds(repo *archive.Repo, builds []archive.Build) []archive.Build {
 
 // Retrieves all builds from repo.
 func MergeHistory(repo *archive.Repo, storedHist *history.Root) *history.Root {
-	// Map events to GUID.
-	storedEvents := make(map[string]*history.Event, len(storedHist.Event))
-	for _, event := range storedHist.Event {
-		storedEvents[event.GUID] = event
+	// Map updates to GUID.
+	storedUpdates := make(map[string]*history.Update, len(storedHist.Update))
+	for _, update := range storedHist.Update {
+		storedUpdates[update.GUID] = update
 	}
 
-	fmt.Printf("loaded %d events\n", len(storedEvents))
+	fmt.Printf("loaded %d updates\n", len(storedUpdates))
 
 	// Retrieve and filter all builds.
 	allBuilds := repo.Builds()
 	allBuilds = FilterBuilds(repo, allBuilds)
-	// Filter GUIDs that are already in events.
+	// Filter GUIDs that are already in updates.
 	allBuilds = slices.DeleteFunc(allBuilds, func(build archive.Build) bool {
-		if prev, ok := storedEvents[build.GUID]; ok && prev.Date.Before(build.Date) {
+		if prev, ok := storedUpdates[build.GUID]; ok && prev.Date.Before(build.Date) {
 			fmt.Println("skip", build.GUID)
 			return true
 		}
@@ -71,9 +71,9 @@ func MergeHistory(repo *archive.Repo, storedHist *history.Root) *history.Root {
 	updatedHist := history.NewRoot()
 	for _, build := range allBuilds {
 		var dump *rbxdump.Root
-		if event, ok := storedEvents[build.GUID]; ok {
+		if update, ok := storedUpdates[build.GUID]; ok {
 			// Get dump for stored history.
-			if !cursor.Roll(event) {
+			if !cursor.Roll(update) {
 				panic("failed to roll cursor!")
 			}
 			fmt.Println("rolled to", build)
@@ -135,11 +135,11 @@ func MergeHistory(repo *archive.Repo, storedHist *history.Root) *history.Root {
 			}
 			return fieldi < fieldj
 		})
-		updatedHist.AppendEvent(build, actions, differ.Prev)
+		updatedHist.AppendUpdate(build, actions, differ.Prev)
 		fmt.Printf("\tappended %d actions\n", len(actions))
 
-		if event, ok := storedEvents[build.GUID]; ok {
-			if len(actions) != len(event.Changes) {
+		if update, ok := storedUpdates[build.GUID]; ok {
+			if len(actions) != len(update.Changes) {
 				var b bytes.Buffer
 				for _, v := range actions {
 					fmt.Fprintln(&b, v)

@@ -150,8 +150,8 @@ func (c *Command) Run(opt snek.Options) error {
 	// Generate dump by rolling through entire history, excluding actions that
 	// remove entities.
 	patcher := diff.Patch{Root: &rbxdump.Root{}}
-	for _, event := range updatedHist.Event {
-		for _, change := range event.Changes {
+	for _, update := range updatedHist.Update {
+		for _, change := range update.Changes {
 			if change.Action.Type == diff.Remove {
 				continue
 			}

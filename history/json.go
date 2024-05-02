@@ -8,8 +8,8 @@ import (
 	"github.com/robloxapi/roar/id"
 )
 
-// Index of Event list.
-type eventID = int
+// Index of Update list.
+type updateID = int
 
 // Index of Change list.
 type changeID = int
@@ -20,8 +20,8 @@ type jRoot struct {
 	Object jObject
 	// List of all changes.
 	Change []jChange
-	// List of all events.
-	Event []jEvent
+	// List of all updates.
+	Update []jUpdate
 }
 
 // Maps an object to a list of changes that apply to the object.
@@ -49,9 +49,9 @@ type jTypeRef struct {
 
 // Represents one unit of change.
 type jChange struct {
-	// The index of the event in jRoot.Event that caused this change.
-	Event eventID
-	// The index of this change in Event.Changes.
+	// The index of the update in jRoot.Update that caused this change.
+	Update updateID
+	// The index of this change in Update.Changes.
 	Index int
 	// The change that occurred.
 	Action diff.Action
@@ -59,18 +59,18 @@ type jChange struct {
 	Prev rbxdump.Fields `json:",omitempty"`
 }
 
-// Represents an event that caused a number of changes.
-type jEvent struct {
-	// Time when the event occurred.
+// Represents an update that caused a number of changes.
+type jUpdate struct {
+	// Time when the update occurred.
 	Date time.Time
 	// Version ID string (version-0123456789abcdef).
 	GUID string
 	// Version number.
 	Version jVersion
-	// Lower inclusive bound of changes that occurred during the event, as an
+	// Lower inclusive bound of changes that occurred during the update, as an
 	// index of jRoot.Change.
 	ChangesStart changeID
-	// Number of changes that occurred during the event.
+	// Number of changes that occurred during the update.
 	ChangesCount changeID
 }
 

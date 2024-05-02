@@ -30,28 +30,28 @@ type Object struct {
 
 // Represents one unit of change.
 type Change struct {
-	// The index of the event in Root.Event that caused this change.
-	Event *Event
+	// The index of the update in Root.Update that caused this change.
+	Update *Update
 	// The change that occurred.
 	Action diff.Action
 	// The previous values before the change was made.
 	Prev rbxdump.Fields
 }
 
-// Represents an event that caused a number of changes.
-type Event struct {
-	// The previous event, from which this event's changes were based on. May be
-	// nil.
-	Prev *Event
-	// The next event. May be nil.
-	Next *Event
-	// Time when the event occurred.
+// Represents an update that caused a number of changes.
+type Update struct {
+	// The previous update, from which this update's changes were based on. May
+	// be nil.
+	Prev *Update
+	// The next update. May be nil.
+	Next *Update
+	// Time when the update occurred.
 	Date time.Time
 	// Version ID string (version-0123456789abcdef).
 	GUID string
 	// Version number.
 	Version rbxver.Version
-	// List of changes that occurred during the event.
+	// List of changes that occurred during the update.
 	Changes []*Change
 }
 
@@ -71,8 +71,8 @@ type Root struct {
 	Object Object
 	// List of all changes.
 	Change []*Change
-	// List of all events.
-	Event []*Event
+	// List of all updates.
+	Update []*Update
 }
 
 // Returns a new Root with initialized fields.
@@ -102,32 +102,32 @@ func (r *Root) UnmarshalJSON(b []byte) error {
 		}
 	}
 
-	r.Event = make([]*Event, len(jr.Event))
-	for id, jevent := range jr.Event {
-		event := &Event{
-			Date: jevent.Date,
-			GUID: jevent.GUID,
+	r.Update = make([]*Update, len(jr.Update))
+	for id, jupdate := range jr.Update {
+		update := &Update{
+			Date: jupdate.Date,
+			GUID: jupdate.GUID,
 			Version: rbxver.Version{
-				Generation: jevent.Version.Gen,
-				Version:    jevent.Version.Version,
-				Patch:      jevent.Version.Patch,
-				Commit:     jevent.Version.Commit,
+				Generation: jupdate.Version.Gen,
+				Version:    jupdate.Version.Version,
+				Patch:      jupdate.Version.Patch,
+				Commit:     jupdate.Version.Commit,
 			},
-			Changes: make([]*Change, jevent.ChangesCount),
+			Changes: make([]*Change, jupdate.ChangesCount),
 		}
-		for i := range event.Changes {
-			cid := jevent.ChangesStart + i
+		for i := range update.Changes {
+			cid := jupdate.ChangesStart + i
 			change := r.Change[cid]
-			change.Event = event
-			event.Changes[i] = change
+			change.Update = update
+			update.Changes[i] = change
 		}
-		r.Event[id] = event
+		r.Update[id] = update
 	}
-	for id := 1; id < len(r.Event); id++ {
-		r.Event[id].Prev = r.Event[id-1]
+	for id := 1; id < len(r.Update); id++ {
+		r.Update[id].Prev = r.Update[id-1]
 	}
-	for id := 0; id < len(r.Event)-1; id++ {
-		r.Event[id].Next = r.Event[id+1]
+	for id := 0; id < len(r.Update)-1; id++ {
+		r.Update[id].Next = r.Update[id+1]
 	}
 
 	r.Object.Class = make(map[id.Class][]*Change, len(jr.Object.Class))
@@ -190,29 +190,29 @@ func (r *Root) MarshalJSON() (b []byte, err error) {
 	}
 
 	jr.Change = make([]jChange, 0, len(r.Change))
-	jr.Event = make([]jEvent, len(r.Event))
-	for eid, event := range r.Event {
-		jevent := jEvent{
-			Date: event.Date,
-			GUID: event.GUID,
+	jr.Update = make([]jUpdate, len(r.Update))
+	for uid, update := range r.Update {
+		jupdate := jUpdate{
+			Date: update.Date,
+			GUID: update.GUID,
 			Version: jVersion{
-				Gen:     event.Version.Generation,
-				Version: event.Version.Version,
-				Patch:   event.Version.Patch,
-				Commit:  event.Version.Commit,
+				Gen:     update.Version.Generation,
+				Version: update.Version.Version,
+				Patch:   update.Version.Patch,
+				Commit:  update.Version.Commit,
 			},
 			ChangesStart: len(jr.Change),
-			ChangesCount: len(event.Changes),
+			ChangesCount: len(update.Changes),
 		}
-		for index, change := range event.Changes {
+		for index, change := range update.Changes {
 			jr.Change = append(jr.Change, jChange{
-				Event:  eid,
+				Update: uid,
 				Index:  index,
 				Action: change.Action,
 				Prev:   change.Prev,
 			})
 		}
-		jr.Event[eid] = jevent
+		jr.Update[uid] = jupdate
 	}
 
 	jr.Object.Class = make(map[id.Class][]changeID, len(r.Object.Class))
@@ -273,80 +273,80 @@ func (r *Root) encodeTypeRefs(changes map[*Change]changeID, refs []*TypeRef) []j
 	return jrefs
 }
 
-// Returns an ordered list of events occurring after or at start and ending
+// Returns an ordered list of updates occurring after or at start and ending
 // before end. If an endpoint is zero, then it is not compared. If both are
-// zero, then all events are returned.
-func (r Root) EventRange(start, end time.Time) (events []*Event) {
+// zero, then all updates are returned.
+func (r Root) UpdateRange(start, end time.Time) (updates []*Update) {
 	if start.IsZero() {
 		if end.IsZero() {
-			events = slices.Clone(r.Event)
+			updates = slices.Clone(r.Update)
 		} else {
-			for _, event := range r.Event {
-				if event.Date.Compare(end) < 0 {
-					events = append(events, event)
+			for _, update := range r.Update {
+				if update.Date.Compare(end) < 0 {
+					updates = append(updates, update)
 				}
 			}
 		}
 	} else {
 		if end.IsZero() {
-			for _, event := range r.Event {
-				if start.Compare(event.Date) <= 0 {
-					events = append(events, event)
+			for _, update := range r.Update {
+				if start.Compare(update.Date) <= 0 {
+					updates = append(updates, update)
 				}
 			}
 		} else {
-			for _, event := range r.Event {
-				if start.Compare(event.Date) <= 0 && event.Date.Compare(end) < 0 {
-					events = append(events, event)
+			for _, update := range r.Update {
+				if start.Compare(update.Date) <= 0 && update.Date.Compare(end) < 0 {
+					updates = append(updates, update)
 				}
 			}
 		}
 	}
-	sort.SliceStable(events, func(i, j int) bool {
-		return events[i].Date.Before(events[j].Date)
+	sort.SliceStable(updates, func(i, j int) bool {
+		return updates[i].Date.Before(updates[j].Date)
 	})
-	return events
+	return updates
 }
 
-// Returns the earliest event, or zero if there are no events.
-func (r Root) EarliestEvent() (event *Event) {
-	if len(r.Event) == 0 {
-		return event
+// Returns the earliest update, or zero if there are no updates.
+func (r Root) EarliestUpdate() (update *Update) {
+	if len(r.Update) == 0 {
+		return update
 	}
-	event = r.Event[0]
-	for i := 1; i < len(r.Event); i++ {
-		if r.Event[i].Date.Before(event.Date) {
-			event = r.Event[i]
+	update = r.Update[0]
+	for i := 1; i < len(r.Update); i++ {
+		if r.Update[i].Date.Before(update.Date) {
+			update = r.Update[i]
 		}
 	}
-	return event
+	return update
 }
 
-// Returns the latest event, or zero if there are no events.
-func (r Root) LatestEvent() (event *Event) {
-	if len(r.Event) == 0 {
-		return event
+// Returns the latest update, or zero if there are no updates.
+func (r Root) LatestUpdate() (update *Update) {
+	if len(r.Update) == 0 {
+		return update
 	}
-	event = r.Event[0]
-	for i := 1; i < len(r.Event); i++ {
-		if r.Event[i].Date.After(event.Date) {
-			event = r.Event[i]
+	update = r.Update[0]
+	for i := 1; i < len(r.Update); i++ {
+		if r.Update[i].Date.After(update.Date) {
+			update = r.Update[i]
 		}
 	}
-	return event
+	return update
 }
 
 // Sorts a list of change IDs by the corresponding date.
 func SortChanges(changes []*Change) {
 	sort.SliceStable(changes, func(i, j int) bool {
-		return changes[i].Event.Date.Before(changes[j].Event.Date)
+		return changes[i].Update.Date.Before(changes[j].Update.Date)
 	})
 }
 
-// Returns the changes of an event as a list of actions.
-func Actions(event *Event) []diff.Action {
-	actions := make([]diff.Action, len(event.Changes))
-	for i, change := range event.Changes {
+// Returns the changes of an update as a list of actions.
+func Actions(update *Update) []diff.Action {
+	actions := make([]diff.Action, len(update.Changes))
+	for i, change := range update.Changes {
 		actions[i] = change.Action
 	}
 	return actions
@@ -361,17 +361,17 @@ func filterFields(keys, values rbxdump.Fields) rbxdump.Fields {
 	return result
 }
 
-// Appends an event derived from the given build and actions. The latest event
+// Appends an update derived from the given build and actions. The latest update
 // is assumed to be the previous.
 //
 // All maps in the Root are expected to be non-nil.
-func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot *rbxdump.Root) {
+func (r *Root) AppendUpdate(build archive.Build, actions []diff.Action, prevRoot *rbxdump.Root) {
 	build.Version.Format = rbxver.Dot
-	var prev *Event
-	if len(r.Event) > 0 {
-		prev = r.Event[len(r.Event)-1]
+	var prev *Update
+	if len(r.Update) > 0 {
+		prev = r.Update[len(r.Update)-1]
 	}
-	event := Event{
+	update := Update{
 		Prev:    prev,
 		Date:    build.Date,
 		GUID:    build.GUID,
@@ -384,14 +384,14 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 	}
 	for i, action := range actions {
 		change := Change{
-			Event:  &event,
+			Update: &update,
 			Action: action,
 		}
 		if prevRoot != nil {
 			change.Prev = inverse[i].Fields
 		}
 		r.Change = append(r.Change, &change)
-		event.Changes = append(event.Changes, &change)
+		update.Changes = append(update.Changes, &change)
 
 		switch action.Element {
 		case diff.Class:
@@ -450,9 +450,9 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 			})
 		}
 	}
-	r.Event = append(r.Event, &event)
+	r.Update = append(r.Update, &update)
 	if prev != nil {
-		prev.Next = &event
+		prev.Next = &update
 	}
 }
 
@@ -487,9 +487,9 @@ func (r *Root) addTypeRefs(value any, ref TypeRef) {
 	}
 }
 
-// Uses an event chain to generate an in-place API dump.
+// Uses an update chain to generate an in-place API dump.
 type Cursor struct {
-	Target *Event
+	Target *Update
 	Dump   *rbxdump.Root
 }
 
@@ -497,8 +497,8 @@ type Cursor struct {
 // Returns false if target is nil, or target is not in the chain of c.Target. If
 // c.Target is nil, the cursor rolls from the start of target's chain, until it
 // reaches target. If true is returned, then c.Dump has been patched to
-// represent the state of the target event.
-func (c *Cursor) Roll(target *Event) bool {
+// represent the state of the target update.
+func (c *Cursor) Roll(target *Update) bool {
 	if target == nil {
 		return false
 	}
@@ -507,7 +507,7 @@ func (c *Cursor) Roll(target *Event) bool {
 	}
 
 	var direction int
-	var start *Event
+	var start *Update
 	if c.Target == nil {
 		// Begin at start of chain, rolling forward until target.
 		direction = 1
@@ -548,27 +548,27 @@ roll:
 	patcher := diff.Patch{Root: c.Dump}
 	switch direction {
 	case 1:
-		for event := start; ; event = event.Next {
-			for _, change := range event.Changes {
+		for update := start; ; update = update.Next {
+			for _, change := range update.Changes {
 				actions := [1]diff.Action{change.Action}
 				patcher.Patch(actions[:])
 			}
-			c.Target = event
-			if event == target {
+			c.Target = update
+			if update == target {
 				break
 			}
 		}
 		return true
 	case -1:
-		for event := start; ; event = event.Prev {
-			for _, change := range event.Changes {
+		for update := start; ; update = update.Prev {
+			for _, change := range update.Changes {
 				actions := [1]diff.Action{change.Action}
 				actions[0].Type = -actions[0].Type
 				actions[0].Fields = change.Prev
 				patcher.Patch(actions[:])
 			}
-			c.Target = event
-			if event == target {
+			c.Target = update
+			if update == target {
 				break
 			}
 		}

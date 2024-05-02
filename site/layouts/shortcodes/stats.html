@@ -377,13 +377,13 @@
 	<tbody>
 		<tr>
 			<td>updates</td>
-			<td class="r">{{len $history.Event}}</td>
+			<td class="r">{{len $history.Update}}</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>updates with changes</td>
 			{{- $total := 0 }}
-			{{- range $history.Event }}
+			{{- range $history.Update }}
 				{{- if .ChangesCount }}
 					{{- $total = add $total 1 }}
 				{{- end }}
@@ -399,18 +399,18 @@
 		<tr>
 			<td>latest update</td>
 			<td class="r"></td>
-			<td>{{partial "updates/update.html" (index (last 1 $history.Event) 0)}}</td>
+			<td>{{partial "updates/update.html" (index (last 1 $history.Update) 0)}}</td>
 		</tr>
 		<tr>
 			<td>earliest update</td>
 			<td class="r"></td>
-			<td>{{partial "updates/update.html" (index (first 1 $history.Event) 0)}}</td>
+			<td>{{partial "updates/update.html" (index (first 1 $history.Update) 0)}}</td>
 		</tr>
 		<tr>
 			<td>most changes per update</td>
 			{{- $items := slice }}
 			{{- $max := 0 }}
-			{{- range $history.Event }}
+			{{- range $history.Update }}
 				{{- if gt .ChangesCount $max }}
 					{{- $max = .ChangesCount }}
 					{{- $items = slice . }}

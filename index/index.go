@@ -71,10 +71,10 @@ type Type struct {
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
 	r.MemberTypes = slices.Clone(MemberTypes)
 
-	if earliest := hist.EarliestEvent(); earliest != nil {
+	if earliest := hist.EarliestUpdate(); earliest != nil {
 		r.MinYear = earliest.Date.Year()
 	}
-	if latest := hist.LatestEvent(); latest != nil {
+	if latest := hist.LatestUpdate(); latest != nil {
 		r.MaxYear = latest.Date.Year()
 	}
 

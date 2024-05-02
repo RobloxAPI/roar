@@ -1,4 +1,4 @@
-{{- $all := site.Data.History.Event | collections.Reverse }}
+{{- $all := site.Data.History.Update | collections.Reverse }}
 {{- $updates := slice }}
 {{- $recent := site.GetPage "updates" }}
 {{- $latestNonEmpty := false }}
@@ -26,7 +26,7 @@
 					<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time> ({{partial "component/version.html" .Version}})</a>
 					{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" .Version)}}
 					<ul class="change-list">
-						{{- $event := . }}
+						{{- $update := . }}
 						{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
 
 						{{- /* For added primary entities, subsequent matching
@@ -35,9 +35,9 @@
 						{{- $parent := false }}
 						{{- $prev := false }}
 
-						{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
-							{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
-							{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
+						{{- range seq 0 (div (int $update.ChangesCount) $limit) }}
+							{{- $start := add (int $update.ChangesStart) (mul . $limit) }}
+							{{- $count := sub (int $update.ChangesCount) (mul . $limit) }}
 							{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
 							{{- range seq $start $max }}
 								{{- $change := index site.Data.History.Change . }}
