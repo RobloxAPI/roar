@@ -7,9 +7,7 @@ nolink: bool // If true, don't render link for simple types.
 hascontext: bool? // If true, include only the name of the referred element (no primary).
 
 */ -}}
-{{- if eq .value "" -}}
-	<span class="api-none"></span>
-{{- else if eq .value "__api_dump_class_not_creatable__" -}}
+{{- if eq .value "__api_dump_class_not_creatable__" -}}
 	<span class="api-default-not-creatable"></span>
 {{- else if eq .value "__api_dump_no_string_value__" -}}
 	<span class="api-default-no-string-value"></span>
@@ -17,14 +15,20 @@ hascontext: bool? // If true, include only the name of the referred element (no 
 	<span class="api-default-skipped-class"></span>
 {{- else if eq .value "__api_dump_write_only_property__" -}}
 	<span class="api-default-write-only"></span>
+{{- else if eq .type.Name "string" "BinaryString" "ProtectedString" "Content" -}}
+	{{- if eq .value "" -}}
+		<span class="api-string-empty"></span>
+	{{- else -}}
+		<a class="api-default">{{printf "%q" .value}}</a>
+	{{- end -}}
+{{- else if eq .value "" -}}
+	<span class="api-none"></span>
 {{- else if eq .type.Category "Class" -}}
 	{{- partial "entity/link.html" (dict "type" "class" "primary" .type.Name "optional" .type.Optional "simple" .simple "hascontext" .hascontext) }}
 {{- else if eq .type.Category "Enum" -}}
 	{{- partial "entity/link.html" (dict "type" "enumitem" "primary" .type.Name "secondary" .value "optional" .type.Optional "simple" .simple "hascontext" .hascontext) }}
 {{- else if eq .type.Name "bool" "int" "int64" "float" "double" -}}
 	<span class="api-default">{{.value}}</a>
-{{- else if eq .type.Name "string" "BinaryString" "ProtectedString" "Content" -}}
-	<a class="api-default">{{printf "%q" .value}}</a>
 {{- else -}}
 	{{if not .hascontext}}{{- partial "member/type.html" (dict "type" .type "simple" .simple)}}({{end}}{{.value}}{{if not .hascontext}}){{end}}
 {{- end -}}

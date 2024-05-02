@@ -18,13 +18,7 @@
 				<td class="col-type">{{partial "member/type.html" (dict "type" .Type "simple" true)}}</td>
 				<td class="col-default">
 					{{- if .Optional -}}
-						<span class="api-default">
-							{{- if eq .Default "" -}}
-								<span class="api-string-empty"></span>
-							{{- else -}}
-								{{- .Default -}}
-							{{- end -}}
-						</span>
+						{{- partial "member/default.html" (dict "type" .Type "value" .Default "hascontext" true) -}}
 					{{- else -}}
 						<span class="api-none"></span>
 					{{- end -}}
