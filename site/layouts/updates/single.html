@@ -7,7 +7,7 @@
 <article id="content">
 	<header>
 		<h2>API updates in {{.Title}}
-			<aside>
+			<aside class="expand-all-changes js">
 				<label>
 					<input id="expand-all" type="checkbox"/>
 					Show all changes.
@@ -15,7 +15,7 @@
 			</aside>
 		</h2>
 	</header>
-	<p>Click a date to expand or collapse changes.</p>
+	<p class="expand-all-changes js">Click a date to expand or collapse changes.</p>
 	{{- partial "updates/list.html" . }}
 </article>
 {{- end }}
