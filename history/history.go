@@ -396,7 +396,7 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 		switch action.Element {
 		case diff.Class:
 			r.Object.Class[action.Primary] = append(r.Object.Class[action.Primary], &change)
-			// Removal of primary element is relevant to each secondary element.
+			// Removal of primary entity is relevant to each secondary entity.
 			if prevRoot != nil && action.Type == diff.Remove {
 				if class := prevRoot.Classes[action.Primary]; class != nil {
 					for member := range class.Members {
@@ -416,7 +416,7 @@ func (r *Root) AppendEvent(build archive.Build, actions []diff.Action, prevRoot 
 				r.Object.Enum = map[id.Enum][]*Change{}
 			}
 			r.Object.Enum[action.Primary] = append(r.Object.Enum[action.Primary], &change)
-			// Removal of primary element is relevant to each secondary element.
+			// Removal of primary entity is relevant to each secondary entity.
 			if prevRoot != nil && action.Type == diff.Remove {
 				if enum := prevRoot.Enums[action.Primary]; enum != nil {
 					for item := range enum.Items {

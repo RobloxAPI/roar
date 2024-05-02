@@ -34,7 +34,7 @@ value: any // The value to render, the type depending on context.
 {{- else if eq .field "PreferredDescriptor" -}}
 	{{- template "preferred-descriptor" . -}}
 {{- else if eq .field "Default" -}}
-	{{- /* TODO: Type must reflect state of element at time of change, not latest. */ -}}
+	{{- /* TODO: Type must reflect state of entity at time of change, not latest. */ -}}
 	{{- $type := index site.Data.Dump.Classes .change.Action.Primary "Members" .change.Action.Secondary "ValueType" -}}
 	{{- partial "member/default.html" (dict "type" $type "value" .value "simple" true) -}}
 {{- else if eq .value "" -}}

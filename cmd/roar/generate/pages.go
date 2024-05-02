@@ -79,7 +79,7 @@ func GeneratePages(index *index.Root, rootPath string) {
 		filepath.Join(rootPath, "updates"),
 	)
 
-	// Generate for each type of element.
+	// Generate for each type of primary entity.
 	generatePageType(rootPath, "class", pages, index.Class)
 	generatePageType(rootPath, "enum", pages, index.Enum)
 	generatePageType(rootPath, "type", pages, index.Type)

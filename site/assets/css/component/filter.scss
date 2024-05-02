@@ -14,8 +14,8 @@
 	&.history-member-filter {
 		&:has(.filter-input:checked) {
 			.filter-element:not(
-				[data-element="Class"],
-				[data-element="Enum"]
+				[data-entity="Class"],
+				[data-entity="Enum"]
 			) {
 				display: none;
 			}

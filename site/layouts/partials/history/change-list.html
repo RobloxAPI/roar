@@ -11,6 +11,6 @@ hascontext: bool? // If true, any primary context is excluded.
 		{{- $change := index site.Data.History.Change (int .) }}
 		{{- $type := partial "history/type.html" $change }}
 		{{- $field := partial "history/field.html" $change }}
-		<li class="filter-element" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" (dict "change" $change "hascontext" $hascontext)}}</li>
+		<li class="filter-element" data-entity="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{partial "history/tag.html" $change}} {{partial "history/change.html" (dict "change" $change "hascontext" $hascontext)}}</li>
 	{{- end }}
 </ul>

@@ -43,9 +43,9 @@ year corresponding to the page title are rendered. */}}
 						{{- $event := . }}
 						{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
 
-						{{/* For added primary elements, subsequent matching
-						secondary elements are indented within it. Assumes that
-						such elements are ordered correctly. */}}
+						{{/* For added primary entities, subsequent matching
+						secondary entities are indented within it. Assumes that
+						such entities are ordered correctly. */}}
 						{{- $parent := false }}
 
 						{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
@@ -61,7 +61,7 @@ year corresponding to the page title are rendered. */}}
 								{{- end }}
 								{{- $type := partial "history/type.html" $change }}
 								{{- $field := partial "history/field.html" $change }}
-								<li id="{{$event.GUID}}-{{$change.Index}}" data-element="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{- partial "history/change.html" (dict "change" $change "hascontext" $parent) -}}
+								<li id="{{$event.GUID}}-{{$change.Index}}" data-entity="{{$change.Action.Element}}"{{if $field}} data-field="{{$field}}"{{end}}>{{- partial "history/change.html" (dict "change" $change "hascontext" $parent) -}}
 								{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
 									{{- $parent = $change }}
 									<ul>
