@@ -5,22 +5,22 @@
 	font-family: var(--monospace);
 	line-height: 1;
 	&.added {
-		background-color: var(--theme-history-add);
-		color: var(--theme-history-add-text);
+		background-color: var(--theme-history-add) !important;
+		color: var(--theme-history-add-text) !important;
 		&::before {
 			content: "+";
 		}
 	}
 	&.changed {
-		background-color: var(--theme-history-change);
-		color: var(--theme-history-change-text);
+		background-color: var(--theme-history-change) !important;
+		color: var(--theme-history-change-text) !important;
 		&::before {
 			content: "Δ";
 		}
 	}
 	&.removed {
-		background-color: var(--theme-history-remove);
-		color: var(--theme-history-remove-text);
+		background-color: var(--theme-history-remove) !important;
+		color: var(--theme-history-remove-text) !important;
 		&::before {
 			content: "−";
 		}
