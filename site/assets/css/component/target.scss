@@ -1,11 +1,12 @@
 // Elements that should be highlighted when targeted.
-#root-main :target > header,
-.index-card :target,
-.update:target > .change-list-toggle,
-.change-list li:target {
-	background-color: var(--theme-highlight);
-	color: var(--theme-highlight-text);
-	a {
-		color: var(--theme-highlight-link);
+#root-main {
+	section:target > header,
+	section.update:target > .change-list-toggle,
+	:not(section):target {
+		background-color: var(--theme-highlight);
+		color: var(--theme-highlight-text);
+		a {
+			color: var(--theme-highlight-link);
+		}
 	}
 }
