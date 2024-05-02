@@ -22,52 +22,50 @@
 	<ul id="update-list" class="entity-list">
 		{{- range $updates }}
 			{{- if .ChangesCount }}
-				<li>
-					<section class="update">
-						<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time> ({{partial "component/version.html" .Version}})</a>
-						{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" .Version)}}
-						<ul class="change-list">
-							{{- $event := . }}
-							{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
+				<li class="update">
+					<a class="permalink" title="Permanent link" href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}"><time datetime="{{(time .Date).Format `2006-01-02 15:04:05-0700`}}">{{(time .Date).Format `2006-01-02 15:04`}}</time> ({{partial "component/version.html" .Version}})</a>
+					{{- partial "entity/link.html" (dict "type" "releasenotes" "primary" .Version)}}
+					<ul class="change-list">
+						{{- $event := . }}
+						{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
 
-							{{- /* For added primary elements, subsequent matching
-							secondary elements are indented within it. Assumes that
-							such elements are ordered correctly. */}}
-							{{- $parent := false }}
-							{{- $prev := false }}
+						{{- /* For added primary elements, subsequent matching
+						secondary elements are indented within it. Assumes that
+						such elements are ordered correctly. */}}
+						{{- $parent := false }}
+						{{- $prev := false }}
 
-							{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
-								{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
-								{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
-								{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
-								{{- range seq $start $max }}
-									{{- $change := index site.Data.History.Change . }}
-									{{- if and ($parent) (ne $change.Action.Primary $parent.Action.Primary) }}
-										{{- $parent = false }}
-									{{- end }}
-									{{- $type := partial "history/type.html" $change }}
-									{{- $field := partial "history/field.html" $change }}
-									{{- if not $parent }}
-										{{/* Because changes are abbreviated, multiple changed fields will look the same.
-										Only display them once. */}}
-										{{- $matching := $prev }}
-										{{- $matching := and $matching (eq (int $change.Action.Type) 0) }}
-										{{- $matching := and $matching (eq (int $prev.Action.Type) 0) }}
-										{{- $matching := and $matching (eq $change.Action.Primary $prev.Action.Primary) }}
-										{{- $matching := and $matching (eq $change.Action.Secondary $prev.Action.Secondary) }}
-										{{- if not $matching }}
-											<li class="{{$type|lower}}">{{partial "history/entity.html" (dict "change" $change)}}</li>
-											{{- $prev = $change }}
-										{{- end }}
-									{{- end }}
-									{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
-										{{- $parent = $change }}
+						{{- range seq 0 (div (int $event.ChangesCount) $limit) }}
+							{{- $start := add (int $event.ChangesStart) (mul . $limit) }}
+							{{- $count := sub (int $event.ChangesCount) (mul . $limit) }}
+							{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
+							{{- range seq $start $max }}
+								{{- $change := index site.Data.History.Change . }}
+								{{- if and ($parent) (ne $change.Action.Primary $parent.Action.Primary) }}
+									{{- $parent = false }}
+								{{- end }}
+								{{- $type := partial "history/type.html" $change }}
+								{{- $field := partial "history/field.html" $change }}
+								{{- if not $parent }}
+									{{/* Because changes are abbreviated, multiple changed fields will look the same.
+									Only display them once. */}}
+									{{- $matching := $prev }}
+									{{- $matching := and $matching (eq (int $change.Action.Type) 0) }}
+									{{- $matching := and $matching (eq (int $prev.Action.Type) 0) }}
+									{{- $matching := and $matching (eq $change.Action.Primary $prev.Action.Primary) }}
+									{{- $matching := and $matching (eq $change.Action.Secondary $prev.Action.Secondary) }}
+									{{- if not $matching }}
+										<li class="{{$type|lower}}">{{partial "history/entity.html" (dict "change" $change)}}</li>
+										{{- $prev = $change }}
 									{{- end }}
 								{{- end }}
+								{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
+									{{- $parent = $change }}
+								{{- end }}
 							{{- end }}
-							<li><a href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}">more...</a></li>
-						</ul>
-					</section>
+						{{- end }}
+						<li><a href="{{($recent.GetPage (print (time .Date).Year)).RelPermalink}}#{{.GUID}}">more...</a></li>
+					</ul>
 				</li>
 			{{- end }}
 		{{- end }}
