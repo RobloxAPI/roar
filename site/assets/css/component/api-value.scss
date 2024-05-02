@@ -12,8 +12,13 @@
 }
 
 .api-none::before { content: "none" }
-.api-string-empty::before { content: '""' }
 .api-default-not-creatable::before { content: "(not creatable)" }
 .api-default-no-string-value::before { content: "(no value)" }
 .api-default-skipped-class::before { content: "(skipped)" }
 .api-default-write-only::before { content: "(write only)" }
+.api-string {
+	&::before, &::after {
+		content: '"';
+		opacity: 0.6,
+	}
+}

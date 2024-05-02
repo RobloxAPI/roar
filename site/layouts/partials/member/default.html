@@ -16,11 +16,7 @@ hascontext: bool? // If true, include only the name of the referred element (no 
 {{- else if eq .value "__api_dump_write_only_property__" -}}
 	<span class="api-default-write-only"></span>
 {{- else if eq .type.Name "string" "BinaryString" "ProtectedString" "Content" -}}
-	{{- if eq .value "" -}}
-		<span class="api-string-empty"></span>
-	{{- else -}}
-		<a class="api-default">{{printf "%q" .value}}</a>
-	{{- end -}}
+	<span class="api-string">{{.value}}</span>
 {{- else if eq .value "" -}}
 	<span class="api-none"></span>
 {{- else if eq .type.Category "Class" -}}
