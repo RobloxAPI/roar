@@ -97,7 +97,7 @@ const settingsDef = [
 	}
 ];
 
-function generateMenu(parent, settingsDef, changed) {
+function generateMenu(settings, parent, settingsDef) {
 	let form = document.createElement("form");
 	const idPrefix = "setting-";
 	for (let setting of settingsDef) {
@@ -117,7 +117,10 @@ function generateMenu(parent, settingsDef, changed) {
 			input.defaultChecked = value;
 			// Fires on toggle.
 			input.addEventListener("change", function(event) {
-				changed(event.target.name, event.target.checked, false);
+				settings.Changed(event.target.name, event.target.checked, false);
+			});
+			settings.Listen(setting.name, function(name, value, initial) {
+				input.checked = value;
 			});
 
 			let label = document.createElement("label");
@@ -127,6 +130,7 @@ function generateMenu(parent, settingsDef, changed) {
 			section.appendChild(input);
 			section.appendChild(label);
 		} else if (setting.type === "radio") {
+			const options = new Map();
 			for (let option of setting.options) {
 				let input = document.createElement("input");
 				input.type = "radio";
@@ -137,8 +141,9 @@ function generateMenu(parent, settingsDef, changed) {
 				input.defaultChecked = value === option.value;
 				// Fires on checked.
 				input.addEventListener("change", function(event) {
-					changed(event.target.name, event.target.value, false);
+					settings.Changed(event.target.name, event.target.value, false);
 				});
+				options.set(option.value, input);
 
 				let label = document.createElement("label");
 				label.htmlFor = input.id;
@@ -147,22 +152,37 @@ function generateMenu(parent, settingsDef, changed) {
 				section.appendChild(input);
 				section.appendChild(label);
 			};
+			settings.Listen(setting.name, function(name, value, initial) {
+				const input = options.get(value);
+				if (!input) {
+					return;
+				};
+				input.checked = true;
+			});
 		} else if (setting.type === "select") {
 			let select = document.createElement("select");
 			select.id = idPrefix + setting.name;
 			select.disabled = setting.disabled;
+			const options = new Map();
 			for (let option of setting.options) {
 				let element = document.createElement("option");
 				element.value = option.value;
 				element.text = option.text || option.value;
 				element.disabled = setting.disabled || option.disabled;
 				element.defaultSelected = value === option.value;
+				options.set(option.value, element);
 				select.appendChild(element);
 			};
 			// Fires on select.
 			select.addEventListener("change", function(event) {
-				// Unknown support for HTMLSelectElement.name.
-				changed(setting.name, event.target.value, false);
+				settings.Changed(setting.name, event.target.value, false);
+			});
+			settings.Listen(setting.name, function(name, value, initial) {
+				const element = options.get(value);
+				if (!element) {
+					return;
+				};
+				element.selected = true;
 			});
 
 			let label = document.createElement("label");
@@ -178,8 +198,39 @@ function generateMenu(parent, settingsDef, changed) {
 };
 
 class Settings {
-	constructor() {
+	constructor(def) {
 		this.settings = new Map();
+		for (let setting of def) {
+			this.settings.set(setting.name, {
+				"config": setting,
+				"listeners": [],
+			});
+			if (setting.migrate) {
+				setting.migrate(window.localStorage);
+			};
+			if (setting.disabled) {
+				continue;
+			};
+			if (window.localStorage.getItem(setting.name) === null) {
+				window.localStorage.setItem(setting.name, setting.default);
+			};
+		};
+		window.addEventListener("storage", (e) => {
+			if (e.storageArea !== window.localStorage) {
+				return;
+			};
+			const setting = this.settings.get(e.key);
+			if (!setting) {
+				return;
+			};
+			for (let listener of setting.listeners) {
+				let value = e.newValue;
+				if (setting.config.type === "checkbox") {
+					value = value === true || value === "true";
+				};
+				listener(e.key, value, false);
+			};
+		});
 	};
 	Listen(name, listener) {
 		let setting = this.settings.get(name);
@@ -219,22 +270,7 @@ class Settings {
 	};
 };
 
-export const settings = new Settings();
-for (let setting of settingsDef) {
-	settings.settings.set(setting.name, {
-		"config": setting,
-		"listeners": [],
-	});
-	if (setting.migrate) {
-		setting.migrate(window.localStorage);
-	};
-	if (setting.disabled) {
-		continue;
-	};
-	if (window.localStorage.getItem(setting.name) === null) {
-		window.localStorage.setItem(setting.name, setting.default);
-	};
-};
+export const settings = new Settings(settingsDef);
 
 settings.Listen("Theme", function(name, value, initial) {
 	if (initial) {
@@ -312,9 +348,7 @@ function initSettingsMenu() {
 		return;
 	};
 
-	generateMenu(section, settingsDef, function(name, value, initial) {
-		settings.Changed(name, value, initial)
-	});
+	generateMenu(settings, section, settingsDef);
 
 	for (let focuser of document.querySelectorAll(".settings-focuser")) {
 		focuser.classList.remove("js");
