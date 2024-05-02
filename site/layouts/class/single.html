@@ -102,29 +102,29 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
 					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Member Type</th><td class="value">Property</td></tr>
-						<tr class="pair"><th class="name">Value Type</th><td class="value">{{partial "member/type.html" (dict "type" $dump.ValueType)}}</td></tr>
-						<tr class="pair"><th class="name">Default Value</th><td class="value">{{partial "member/default.html" (dict "type" $dump.ValueType "value" $dump.Default "hascontext" true)}}</td></tr>
+						<tr class="pair"><th class="name">Member type</th><td class="value">Property</td></tr>
+						<tr class="pair"><th class="name">Value type</th><td class="value">{{partial "member/type.html" (dict "type" $dump.ValueType)}}</td></tr>
+						<tr class="pair"><th class="name">Default value</th><td class="value">{{partial "member/default.html" (dict "type" $dump.ValueType "value" $dump.Default "hascontext" true)}}</td></tr>
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
 								<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>
 							{{- end }}
 						{{- else }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
-								<tr class="pair"><th class="name">Read Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>
+								<tr class="pair"><th class="name">Read security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>
 							{{- end }}
 							{{- if and $dump.WriteSecurity (ne $dump.WriteSecurity "None") }}
-								<tr class="pair"><th class="name">Write Security</th><td class="value">{{$dump.WriteSecurity}}</td></tr>
+								<tr class="pair"><th class="name">Write security</th><td class="value">{{$dump.WriteSecurity}}</td></tr>
 							{{- end }}
 						{{- end }}
 						<tr class="pair"><th class="name">Category</th><td class="value">{{$dump.Category}}</td></tr>
-						<tr class="pair"><th class="name">Can Load</th><td class="value">{{$dump.CanLoad}}</td></tr>
-						<tr class="pair"><th class="name">Can Save</th><td class="value">{{$dump.CanSave}}</td></tr>
+						<tr class="pair"><th class="name">Can load</th><td class="value">{{$dump.CanLoad}}</td></tr>
+						<tr class="pair"><th class="name">Can save</th><td class="value">{{$dump.CanSave}}</td></tr>
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
 					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Member Type</th><td class="value">Function</td></tr>
+						<tr class="pair"><th class="name">Member type</th><td class="value">Function</td></tr>
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
 						{{- end }}
@@ -137,7 +137,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					</table>
 				{{- else if eq $dump.MemberType "Event"}}
 					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Member Type</th><td class="value">Event</td></tr>
+						<tr class="pair"><th class="name">Member type</th><td class="value">Event</td></tr>
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
 						{{- end }}
@@ -149,7 +149,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 					</table>
 				{{- else if eq $dump.MemberType "Callback"}}
 					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Member Type</th><td class="value">Callback</td></tr>
+						<tr class="pair"><th class="name">Member type</th><td class="value">Callback</td></tr>
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
 						{{- end }}
@@ -351,7 +351,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 		<header><h2>Summary</h2></header>
 		{{- partial "status/list.html" (dict "type" "class" "primary" $className) }}
 		<table class="metadata-pairs">
-			<tr class="pair"><th class="name">Memory Category</th><td class="value">{{$classDump.MemoryCategory}}</td></tr>
+			<tr class="pair"><th class="name">Memory category</th><td class="value">{{$classDump.MemoryCategory}}</td></tr>
 		</table>
 		{{- if $classDump.Tags }}
 			<div class="tags">Tags: [{{delimit $classDump.Tags ", "}}]</div>
