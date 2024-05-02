@@ -5,4 +5,7 @@
 .change-list li:target {
 	background-color: var(--theme-highlight);
 	color: var(--theme-highlight-text);
+	a {
+		color: var(--theme-highlight-link);
+	}
 }
