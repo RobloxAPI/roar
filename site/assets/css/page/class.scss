@@ -12,9 +12,11 @@ body.kind-page.type-class {
 					padding: 0;
 					padding-right: 0.5ch;
 					&:checked::before {
+						color: var(--theme-link);
 						content: "⏷";
 					}
 					&:not(:checked)::before {
+						color: var(--theme-link);
 						content: "⏵";
 					}
 				}
