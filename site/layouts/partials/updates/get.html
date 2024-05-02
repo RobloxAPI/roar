@@ -1,0 +1,40 @@
+{{/* Returns a list of updates.
+
+recent: bool? // If true, render only recent updates, where the epoch is set to the latest non-empty update.
+years:  int?  // If recent is true, indicates the number of years before the epoch.
+months: int?  // If recent is true, indicates the number of months before the epoch.
+days:   int?  // If recent is true, indicates the number of days before the epoch.
+year:   int?  // If recent is false, updates are render only for the given year.
+
+*/}}
+{{$all := site.Data.History.Update | collections.Reverse}}
+{{$updates := slice}}
+{{if .recent}}
+	{{$latestNonEmpty := false}}
+	{{range $all}}
+		{{if gt .ChangesCount 0}}
+			{{$latestNonEmpty = .}}
+			{{break}}
+		{{end}}
+	{{end}}
+	{{$years := int (mul -1 (default 0 .years))}}
+	{{$months := int (mul -1 (default 0 .months))}}
+	{{$days := int (mul -1 (default 0 .days))}}
+	{{$startTime := now.AddDate $years $months $days}}
+	{{if $latestNonEmpty}}
+		{{$startTime = (time $latestNonEmpty.Date).AddDate $years $months $days}}
+	{{end}}
+	{{range $all}}
+		{{if $startTime.Before (time .Date)}}
+			{{$updates = $updates | append .}}
+		{{end}}
+	{{end}}
+{{else}}
+	{{$year := default (now.Year) .year}}
+	{{range $all}}
+		{{if eq $year (time .Date).Year}}
+			{{$updates = $updates | append .}}
+		{{end}}
+	{{end}}
+{{end}}
+{{return $updates}}

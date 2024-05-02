@@ -1,35 +1,13 @@
-{{- /* Renders a list of updates for the current page. If the current page is
-the root updates, then recent updates are rendered. Otherwise, updates for the
-year corresponding to the page title are rendered. */}}
+{{- /* Renders a list of updates.
 
-{{- $all := site.Data.History.Update | collections.Reverse }}
-{{- $updates := slice }}
-{{- $recent := site.GetPage "updates" }}
-{{- if eq . $recent }}
-	{{- $latestNonEmpty := false }}
-	{{- range $all }}
-		{{- if gt .ChangesCount 0 }}
-			{{- $latestNonEmpty = . }}
-			{{- break }}
-		{{- end }}
-	{{- end }}
-	{{- $startTime := (now.AddDate 0 -3 0) }}
-	{{- if $latestNonEmpty }}
-		{{- $startTime = (time $latestNonEmpty.Date).AddDate 0 -3 0 }}
-	{{- end }}
-	{{- range $all }}
-		{{- if $startTime.Before (time .Date) }}
-			{{- $updates = $updates | append . }}
-		{{- end }}
-	{{- end }}
-{{- else }}
-	{{- $year := int .Title }}
-	{{- range $all }}
-		{{- if eq $year (time .Date).Year }}
-			{{- $updates = $updates | append . }}
-		{{- end }}
-	{{- end }}
-{{- end }}
+recent: bool? // If true, render only recent updates, where the epoch is set to the latest non-empty update.
+years:  int?  // If recent is true, indicates the number of years before the epoch.
+months: int?  // If recent is true, indicates the number of months before the epoch.
+days:   int?  // If recent is true, indicates the number of days before the epoch.
+year:   int?  // If recent is false, updates are render only for the given year.
+
+*/}}
+{{- $updates := partial "updates/get.html" . }}
 <ul id="update-list">
 	{{- range $updates }}
 		<li>

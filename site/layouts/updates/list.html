@@ -16,6 +16,6 @@
 		</h2>
 	</header>
 	<p class="expand-all-changes js">Click a date to expand or collapse changes.</p>
-	{{- partial "updates/list.html" . }}
+	{{- partial "updates/list.html" (dict "recent" true "months" 3) }}
 </article>
 {{- end }}

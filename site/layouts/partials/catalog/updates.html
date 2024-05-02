@@ -1,22 +1,5 @@
-{{- $all := site.Data.History.Update | collections.Reverse }}
-{{- $updates := slice }}
 {{- $recent := site.GetPage "updates" }}
-{{- $latestNonEmpty := false }}
-{{- range $all }}
-	{{- if gt .ChangesCount 0 }}
-		{{- $latestNonEmpty = . }}
-		{{- break }}
-	{{- end }}
-{{- end }}
-{{- $startTime := (now.AddDate 0 0 -14) }}
-{{- if $latestNonEmpty }}
-	{{- $startTime = (time $latestNonEmpty.Date).AddDate 0 0 -14 }}
-{{- end }}
-{{- range $all }}
-	{{- if $startTime.Before (time .Date) }}
-		{{- $updates = $updates | append . }}
-	{{- end }}
-{{- end }}
+{{- $updates := partial "updates/get.html" (dict "recent" true "days" 14) }}
 <article id="updates">
 	<header><h2>Recent updates</h2></header>
 	<ul id="update-list" class="entity-list">
