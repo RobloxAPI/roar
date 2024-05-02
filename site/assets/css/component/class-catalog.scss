@@ -1,0 +1,21 @@
+#classes.catalog {
+	label {
+		--border-size: 2px;
+		border: 0;
+		margin: 0;
+		padding: var(--halfbase);
+		padding-bottom: calc(var(--halfbase) - var(--border-size));
+		border-bottom: var(--border-size) solid transparent;
+		transition: border-bottom 100ms linear;
+		text-align: center;
+		cursor: pointer;
+	}
+	input[type="radio"] {
+		display: none;
+	}
+	&:has(input#class-sort-present-Tree:checked) label[for="class-sort-present-Tree"] { border-bottom-color: var(--theme-border) }
+	&:has(input#class-sort-present-Name:checked) label[for="class-sort-present-Name"] { border-bottom-color: var(--theme-border) }
+	&:has(input#class-sort-removed-Tree:checked) label[for="class-sort-removed-Tree"] { border-bottom-color: var(--theme-border) }
+	&:has(input#class-sort-removed-Name:checked) label[for="class-sort-removed-Name"] { border-bottom-color: var(--theme-border) }
+}
+
