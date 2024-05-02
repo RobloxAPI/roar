@@ -39,3 +39,10 @@ body.kind-section.type-updates {
 		}
 	}
 }
+body.kind-section:not(.type-updates) {
+	#root-main {
+		grid-template-columns: 1fr auto 1fr;
+		grid-template-areas: ". article .";
+		> article { grid-area: article }
+	}
+}
