@@ -61,6 +61,8 @@ new Promise(resolve => {
 			"Name": sortByName,
 		};
 
+		const settingName = "ClassSort";
+		const setting = window.localStorage.getItem(settingName);
 		for (let label of labels) {
 			let input = document.getElementById(label.htmlFor);
 			if (!input) {
@@ -71,10 +73,16 @@ new Promise(resolve => {
 				continue;
 			};
 			let update = function(event) {
+				input.checked = true;
 				method(tree, classes, parents);
+				window.localStorage.setItem(settingName, input.value);
 			}
 			input.addEventListener("click", update);
-			if (input.checked) {
+			if (setting) {
+				if (setting === input.value) {
+					update();
+				};
+			} else if (input.checked) {
 				update();
 			};
 		};

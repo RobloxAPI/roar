@@ -13,9 +13,6 @@
 	input[type="radio"] {
 		display: none;
 	}
-	&:has(input#class-sort-present-Tree:checked) label[for="class-sort-present-Tree"] { border-bottom-color: var(--theme-border) }
-	&:has(input#class-sort-present-Name:checked) label[for="class-sort-present-Name"] { border-bottom-color: var(--theme-border) }
-	&:has(input#class-sort-removed-Tree:checked) label[for="class-sort-removed-Tree"] { border-bottom-color: var(--theme-border) }
-	&:has(input#class-sort-removed-Name:checked) label[for="class-sort-removed-Name"] { border-bottom-color: var(--theme-border) }
+	&:has(input#class-sort-Tree:checked) label[for="class-sort-Tree"] { border-bottom-color: var(--theme-border) }
+	&:has(input#class-sort-Name:checked) label[for="class-sort-Name"] { border-bottom-color: var(--theme-border) }
 }
-
