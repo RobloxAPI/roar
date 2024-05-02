@@ -95,6 +95,7 @@ new Promise(resolve => {
 			list = target.querySelector(".change-list")
 			if (list) {
 				list.style.display = "";
+				target.scrollIntoView(true);
 				return;
 			};
 		};
