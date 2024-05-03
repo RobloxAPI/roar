@@ -63,6 +63,7 @@ $theme: {{site.Params.theme}};
 @import "page/type";
 @import "page/updates";
 @import "page/debug";
+@import "page/404";
 
 // Singletons
 @import "singleton/nav-panel";

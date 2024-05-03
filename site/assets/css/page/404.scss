@@ -1,0 +1,8 @@
+#content:has(#notfound) {
+	h1 {
+		--heading-scale: 4;
+		margin: var(--baseline);
+	}
+	font-size: 1.5rem;
+	text-align: center;
+}
