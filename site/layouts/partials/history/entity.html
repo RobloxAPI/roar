@@ -4,18 +4,22 @@ change: Change
 hascontext: bool? // If true, the link text will exclude any primary context.
 
 */}}
-{{- if eq .change.Action.Element "Class" }}
-	{{- partial "entity/link.html" (dict "type" "class" "primary" .change.Action.Primary) }}
-{{- else if eq .change.Action.Element "Property" }}
-	{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
-{{- else if eq .change.Action.Element "Function" }}
-	{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
-{{- else if eq .change.Action.Element "Event" }}
-	{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
-{{- else if eq .change.Action.Element "Callback" }}
-	{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
-{{- else if eq .change.Action.Element "Enum" }}
-	{{- partial "entity/link.html" (dict "type" "enum" "primary" .change.Action.Primary) }}
-{{- else if eq .change.Action.Element "EnumItem" }}
-	{{- partial "entity/link.html" (dict "type" "enumitem" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
+{{- if .astext }}
+	{{- .change.Action.Element}} {{.change.Action.Primary}}{{if .change.Action.Secondary}}.{{.change.Action.Secondary}}{{end}}
+{{- else }}
+	{{- if eq .change.Action.Element "Class" }}
+		{{- partial "entity/link.html" (dict "type" "class" "primary" .change.Action.Primary) }}
+	{{- else if eq .change.Action.Element "Property" }}
+		{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
+	{{- else if eq .change.Action.Element "Function" }}
+		{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
+	{{- else if eq .change.Action.Element "Event" }}
+		{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
+	{{- else if eq .change.Action.Element "Callback" }}
+		{{- partial "entity/link.html" (dict "type" "member" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
+	{{- else if eq .change.Action.Element "Enum" }}
+		{{- partial "entity/link.html" (dict "type" "enum" "primary" .change.Action.Primary) }}
+	{{- else if eq .change.Action.Element "EnumItem" }}
+		{{- partial "entity/link.html" (dict "type" "enumitem" "primary" .change.Action.Primary "secondary" .change.Action.Secondary "hascontext" .hascontext) }}
+	{{- end }}
 {{- end }}
