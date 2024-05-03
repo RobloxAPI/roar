@@ -67,9 +67,31 @@
 	.col-type   { width: 0 }
 
 	@media #{$small} {
+		display: grid;
+		justify-content: stretch;
+		grid-template-columns: 1fr;
 		overflow-wrap: anywhere;
+		> * {
+			display: block;
+			> * {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				grid-auto-columns: 1fr;
+			}
+		}
 		.col-member { width: auto }
 		.col-type   { width: auto }
+		th.col-default { display: none }
+		td.col-default {
+			&::before {
+				content: "Default: ";
+				font-weight: bold;
+			}
+			width: auto;
+			grid-area: 2 / span 2;
+			padding: 0 var(--cell-spacing) var(--cell-spacing);
+			border-top: 0;
+		}
 	}
 }
 
