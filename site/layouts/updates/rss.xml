@@ -1,0 +1,67 @@
+{{- printf `<?xml version="1.0" encoding="utf-8" standalone="yes" ?>` | safeHTML }}
+<rss version="2.0"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	>
+	<channel>
+		<title>Roblox API Reference</title>
+		<link>https://robloxapi.github.io/ref/updates.html</link>
+		<description>Updates to Roblox engine API.</description>
+		<language>en-us</language>
+		<atom:link href="https://robloxapi.github.io/ref/updates/index.xml" rel="self" type="application/rss+xml"/>
+{{- $updates := partial "updates/get.html" (dict "recent" true "years" 1) }}
+{{- range $updates }}
+	{{- if .ChangesCount }}
+		<item>
+			<title>{{partial "component/version-string.html" .Version}}</title>
+			<link>{{((site.GetPage `updates`).GetPage (print (time .Date).Year)).Permalink}}#{{.GUID}}</link>
+			<description>{{if eq .ChangesCount 1}}1 revision{{else}}{{.ChangesCount}} revisions{{end}} to the API.</description>
+			<guid>{{.GUID}}</guid>
+			<pubDate>{{(time .Date).Format `Mon, 02 Jan 2006 15:04:05 MST`}}</pubDate>
+			<content:encoded>{{printf `<![CDATA[` | safeHTML}}
+				<ul>
+					{{- $update := . }}
+					{{- $limit := 2000 }}{{/* seq allows up to this number of elements. */}}
+
+					{{- /* For added primary entities, subsequent matching
+					secondary entities are indented within it. Assumes that
+					such entities are ordered correctly. */}}
+					{{- $parent := false }}
+					{{- $prev := false }}
+
+					{{- range seq 0 (div (int $update.ChangesCount) $limit) }}
+						{{- $start := add (int $update.ChangesStart) (mul . $limit) }}
+						{{- $count := sub (int $update.ChangesCount) (mul . $limit) }}
+						{{- $max := (add $start (sub (math.Min $count $limit) 1))}}
+						{{- range seq $start $max }}
+							{{- $change := index site.Data.History.Change . }}
+							{{- if and ($parent) (ne $change.Action.Primary $parent.Action.Primary) }}
+								{{- $parent = false }}
+							{{- end }}
+							{{- $type := partial "history/type.html" $change }}
+							{{- $field := partial "history/field.html" $change }}
+							{{- if not $parent }}
+								{{- /* Because changes are abbreviated, multiple changed fields will look the same.
+								Only display them once. */}}
+								{{- $matching := $prev }}
+								{{- $matching := and $matching (eq (int $change.Action.Type) 0) }}
+								{{- $matching := and $matching (eq (int $prev.Action.Type) 0) }}
+								{{- $matching := and $matching (eq $change.Action.Primary $prev.Action.Primary) }}
+								{{- $matching := and $matching (eq $change.Action.Secondary $prev.Action.Secondary) }}
+								{{- if not $matching }}
+					<li>{{$type | htmlEscape}} {{partial "history/entity.html" (dict "change" $change "astext" true) | htmlEscape}}</li>
+									{{- $prev = $change }}
+								{{- end }}
+							{{- end }}
+							{{- if and (not $parent) (eq (int $change.Action.Type) 1 -1) (eq $change.Action.Element "Class" "Enum") }}
+								{{- $parent = $change }}
+							{{- end }}
+						{{- end }}
+					{{- end }}
+				</ul>
+			{{printf `]]>` | safeHTML}}</content:encoded>
+		</item>
+	{{- end }}
+{{- end }}
+	</channel>
+</rss>
