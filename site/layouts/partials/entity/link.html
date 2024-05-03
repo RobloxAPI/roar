@@ -51,7 +51,7 @@ optional: bool? // If true, add ? suffix to type name.
 			{{- $href = relref site.Home (path.Join `type` .primary) -}}
 		{{- end -}}
 	{{- end -}}
-	<a class="entity-link{{if $ishub}} hub-link{{else if not .nostatus}} {{$statuskind}} {{$status}}{{end}}" href="{{$href}}">
+	<a class="entity-link{{if $ishub}} hub-link{{else if not .nostatus}} {{$statuskind}} {{$status}}{{end}}" href="{{$href}}"{{if $ishub}} target="_blank" rel="external"{{end}}>
 {{- end -}}
 {{- if eq .type "releasenotes" -}}
 	{{- if not .simple -}}{{partial "entity/icon.html" (dict "type" "hub")}}{{- end -}}
