@@ -2,6 +2,7 @@
 package history
 
 import (
+	"cmp"
 	"encoding/json"
 	"slices"
 	"sort"
@@ -361,6 +362,18 @@ func filterFields(keys, values rbxdump.Fields) rbxdump.Fields {
 	return result
 }
 
+// Visit map keys in consistent order.
+func visitOrderedMap[K cmp.Ordered, V any](m map[K]V, visit func(k K, v V)) {
+	keys := make([]K, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	for _, k := range keys {
+		visit(k, m[k])
+	}
+}
+
 // Appends an update derived from the given build and actions. The latest update
 // is assumed to be the previous.
 //
@@ -431,7 +444,7 @@ func (r *Root) AppendUpdate(build archive.Build, actions []diff.Action, prevRoot
 		}
 
 		// Add a reference for each type found in the change.
-		for name, value := range change.Prev {
+		visitOrderedMap(change.Prev, func(name string, value any) {
 			r.addTypeRefs(value, TypeRef{
 				Change: &change,
 				Prev:   true,
@@ -439,8 +452,8 @@ func (r *Root) AppendUpdate(build archive.Build, actions []diff.Action, prevRoot
 				Type:   "Type",
 				Index:  -1,
 			})
-		}
-		for name, value := range change.Action.Fields {
+		})
+		visitOrderedMap(change.Action.Fields, func(name string, value any) {
 			r.addTypeRefs(value, TypeRef{
 				Change: &change,
 				Prev:   false,
@@ -448,7 +461,7 @@ func (r *Root) AppendUpdate(build archive.Build, actions []diff.Action, prevRoot
 				Type:   "Type",
 				Index:  -1,
 			})
-		}
+		})
 	}
 	r.Update = append(r.Update, &update)
 	if prev != nil {
