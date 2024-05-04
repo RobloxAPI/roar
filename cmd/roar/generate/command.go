@@ -28,12 +28,13 @@ const (
 	siteContent = "content"
 	siteData    = "data"
 
-	historyData = "History.json"
-	indexData   = "Index.json"
-	docsData    = "Docs.json"
-	dumpData    = "Dump.json"
-	reflectData = "Reflect.json"
-	searchDB    = "search.db"
+	manifestData = "manifest.json"
+	historyData  = "History.json"
+	indexData    = "Index.json"
+	docsData     = "Docs.json"
+	dumpData     = "Dump.json"
+	reflectData  = "Reflect.json"
+	searchDB     = "search.db"
 )
 
 var Def = snek.Def{
@@ -110,10 +111,25 @@ func (c *Command) Run(opt snek.Options) error {
 		c.Source += "/"
 	}
 
+	manifestPath := filepath.Join(c.Site, siteData, manifestData)
+	manifest, err := ReadManifest(manifestPath)
+	if err != nil && err != ErrSchemaMismatch {
+		return err
+	}
+	if err == ErrSchemaMismatch {
+		var embedded Manifest
+		json.Unmarshal(ManifestEmbed, &embedded)
+		fmt.Printf("schema mismatch: current %s, found: %s\n", embedded.Schema, manifest.Schema)
+		manifest = embedded
+	} else {
+		fmt.Printf("found matching schema: %s\n", manifest.Schema)
+	}
+
 	// Read history file, if available.
 	histPath := filepath.Join(c.Site, siteData, historyData)
 	var storedHist *history.Root
-	if c.NoCache {
+	// If there's a schema mismatch, then force a fresh start.
+	if c.NoCache || err == ErrSchemaMismatch {
 		storedHist = history.NewRoot()
 	} else {
 		var err error
@@ -189,6 +205,11 @@ func (c *Command) Run(opt snek.Options) error {
 
 	// Generate search database.
 	if err := search.WriteDB(filepath.Join(c.Site, siteAssets, searchDB), indexRoot, patcher.Root); err != nil {
+		return err
+	}
+
+	// Write manifest file.
+	if err := WriteManifest(manifestPath, manifest); err != nil {
 		return err
 	}
 
