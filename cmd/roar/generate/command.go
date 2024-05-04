@@ -3,12 +3,15 @@ package generate
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime/pprof"
 	"strings"
 
 	"github.com/anaminus/snek"
+	"github.com/publysher/httpfs"
 	"github.com/robloxapi/rbxdump"
 	"github.com/robloxapi/rbxdump/diff"
 	"github.com/robloxapi/roar/archive"
@@ -139,7 +142,14 @@ func (c *Command) Run(opt snek.Options) error {
 	}
 
 	// Create archive repository.
-	repo, err := archive.NewRepo(c.Source)
+	sourceURL, _ := url.Parse(c.Source)
+	var source fs.FS
+	if sourceURL.Scheme == "http" || sourceURL.Scheme == "https" {
+		source = httpfs.NewFS(sourceURL)
+	} else {
+		source = os.DirFS(c.Source)
+	}
+	repo, err := archive.NewRepo(source)
 	if err != nil {
 		return fmt.Errorf("failed to read repo: %w", err)
 	}

@@ -6,14 +6,11 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"net/url"
-	"os"
 	"path"
 	"slices"
 	"sort"
 	"time"
 
-	"github.com/publysher/httpfs"
 	"github.com/robloxapi/rbxver"
 )
 
@@ -44,16 +41,8 @@ type Repo struct {
 // Returns a new Repo that uses the given source. The source is expected to be
 // compliant with the build archive format. The source must point to the data
 // directory. For an HTTP source, the path must have a trailing slash.
-func NewRepo(source string) (repo *Repo, err error) {
-	var src fs.FS
-	u, _ := url.Parse(source)
-	if u.Scheme == "http" || u.Scheme == "https" {
-		src = httpfs.NewFS(u)
-	} else {
-		src = os.DirFS(source)
-	}
-
-	repo = &Repo{fs: src}
+func NewRepo(source fs.FS) (repo *Repo, err error) {
+	repo = &Repo{fs: source}
 	if err := repo.fetchData(); err != nil {
 		return nil, err
 	}
