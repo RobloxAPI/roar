@@ -18,17 +18,6 @@ body.kind-section.type-updates {
 		> nav { grid-area: nav }
 		> article { grid-area: article }
 
-		// Using margins instead of gap allows the first column to collapse
-		// completely, because the left and right margin belong to the same
-		// element. This also prevents extraneous gaps caused by fr columns.
-		margin: var(--halfbase) 0;
-		> :first-child {
-			margin-left: var(--halfbase);
-		}
-		> * {
-			margin-right: var(--halfbase);
-		}
-
 		@media #{$reduced}, #{$small} {
 			grid-template-columns:
 				1fr

@@ -18,9 +18,8 @@ main.prime {
 	> :first-child {
 		margin-left: var(--halfbase);
 	}
-	> * {
+	> :only-child, > :not(:last-child) {
 		margin-right: var(--halfbase);
-		// overflow-x: clip;
 	}
 
 	// Headings may contain inline control inputs.
