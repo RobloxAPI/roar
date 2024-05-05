@@ -1,7 +1,13 @@
 {{- define "main" }}
 	<article id="content">
 		{{- if ne (.Title | lower) "empty" }}
-			<h1>{{ .Title }}</h1>
+			{{- $rss := .OutputFormats.Get "rss"}}
+			<header><h1>
+					{{- if $rss -}}
+						{{- partial "component/heading-icon.html" (dict "icon" "feed" "title" "RSS feed" "href" $rss.RelPermalink)}}
+					{{- end -}}
+					{{- .Title -}}
+			</h1></header>
 		{{- end }}
 		{{- .Content }}
 	</article>
