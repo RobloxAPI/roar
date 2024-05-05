@@ -55,9 +55,11 @@
 			}
 		}
 		.checkbox {
+			> label { order: 1 }
+			> input { order: 2 }
 			input {
 				margin: var(--halfbase);
-				margin-left: 0;
+				margin-right: 0;
 			}
 		}
 		input:disabled+label,
