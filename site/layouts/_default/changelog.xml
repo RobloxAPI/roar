@@ -1,0 +1,31 @@
+{{- printf `<?xml version="1.0" encoding="utf-8" standalone="yes" ?>` | safeHTML }}
+<rss version="2.0"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	>
+	<channel>
+		<title>Roblox API Reference Changelog</title>
+		<link>{{.Permalink}}</link>
+		<description>Changes to the Roblox API Reference website.</description>
+		<language>en-us</language>
+		<atom:link href="{{(.OutputFormats.Get `rss`).Permalink}}" rel="self" type="application/rss+xml"/>
+	{{- $sections := findRE (print "(?s:## .*?<!---->)") page.RawContent }}
+	{{- $root := false }}
+	{{- range .Fragments.Headings }}
+		{{- $root = . }}
+		{{- break }}
+	{{- end }}
+	{{- range $i, $_ := $root.Headings }}
+		<item>
+			<title>{{.Title}}</title>
+			<link>{{page.Permalink}}#{{.ID}}</link>
+			<description>DESCRIPTION</description>
+			<guid>changelog-{{.Title}}</guid>
+			<pubDate>{{(time .Title).Format `Mon, 02 Jan 2006 15:04:05 MST`}}</pubDate>
+			<content:encoded>{{printf `<![CDATA[` | safeHTML}}
+				{{- index $sections $i | strings.TrimPrefix (print "## " .Title "\n") | strings.TrimSuffix "<!---->" | markdownify -}}
+			{{printf `]]>` | safeHTML}}</content:encoded>
+		</item>
+	{{- end }}
+	</channel>
+</rss>
