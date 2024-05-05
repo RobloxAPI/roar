@@ -5,7 +5,7 @@
 	>
 	<channel>
 		<title>Roblox API Reference</title>
-		<link>https://robloxapi.github.io/ref/updates.html</link>
+		<link>{{.Permalink}}</link>
 		<description>Updates to Roblox engine API.</description>
 		<language>en-us</language>
 		<atom:link href="https://robloxapi.github.io/ref/updates/index.xml" rel="self" type="application/rss+xml"/>
@@ -14,7 +14,7 @@
 	{{- if .ChangesCount }}
 		<item>
 			<title>{{partial "component/version-string.html" .Version}}</title>
-			<link>{{((site.GetPage `updates`).GetPage (print (time .Date).Year)).Permalink}}#{{.GUID}}</link>
+			<link>{{(page.GetPage (print (time .Date).Year)).Permalink}}#{{.GUID}}</link>
 			<description>{{if eq .ChangesCount 1}}1 revision{{else}}{{.ChangesCount}} revisions{{end}} to the API.</description>
 			<guid>{{.GUID}}</guid>
 			<pubDate>{{(time .Date).Format `Mon, 02 Jan 2006 15:04:05 MST`}}</pubDate>
