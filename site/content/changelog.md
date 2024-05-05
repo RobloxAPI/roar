@@ -7,6 +7,12 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Improve appearance of settings panel.
+- Add descriptions for each setting (via tooltip).
+- Hide default value column if no parameters have default values.
+<!---->
+
 ## 2024-05-04
 - Add website change log.
 - Add [RSS feed](/ref/updates/index.xml) for API updates.
