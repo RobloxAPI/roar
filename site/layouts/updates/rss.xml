@@ -8,7 +8,7 @@
 		<link>{{.Permalink}}</link>
 		<description>Updates to Roblox engine API.</description>
 		<language>en-us</language>
-		<atom:link href="https://robloxapi.github.io/ref/updates/index.xml" rel="self" type="application/rss+xml"/>
+		<atom:link href="{{(.OutputFormats.Get `rss`).Permalink}}" rel="self" type="application/rss+xml"/>
 {{- $updates := partial "updates/get.html" (dict "recent" true "years" 1) }}
 {{- range $updates }}
 	{{- if .ChangesCount }}
