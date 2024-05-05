@@ -16,6 +16,9 @@
 		{{- break }}
 	{{- end }}
 	{{- range $i, $_ := $root.Headings }}
+		{{- if not (findRE "^\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d$" .Title) }}
+			{{- continue }}
+		{{- end }}
 		<item>
 			<title>{{.Title}}</title>
 			<link>{{page.Permalink}}#{{.ID}}</link>
