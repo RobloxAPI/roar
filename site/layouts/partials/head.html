@@ -3,6 +3,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{(resources.Get `favicons/favicon-32x32.png`).RelPermalink}}">
 <link rel="icon" type="image/png" sizes="16x16" href="{{(resources.Get `favicons/favicon-16x16.png`).RelPermalink}}">
 <link rel="shortcut icon" href="{{(resources.Get `favicons/favicon.ico`).RelPermalink}}">
+{{- range .AlternativeOutputFormats }}
+	{{printf `<link rel=%q type=%q href=%q>` .Rel .MediaType.Type .Permalink | safeHTML}}
+{{- end }}
 {{- $title := site.Title }}
 {{- if not .IsHome }}
 	{{- $title = printf "%s | %s" .Title site.Title }}
