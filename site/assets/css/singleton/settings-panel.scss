@@ -6,12 +6,22 @@
 		.none-focuser { grid-area: close }
 	}
 	> section {
-		border: 0;
-		padding: 0 var(--baseline);
-		margin: 0;
-		> form > div {
+		> form {
+			margin: var(--halfbase);
+			padding: 0;
 			display: flex;
-			margin: var(--halfbase) 0;
+			flex-direction: column;
+			gap: var(--halfbase);
+			fieldset {
+				margin: 0;
+				padding: 0 var(--baseline);
+				border: 1px solid var(--theme-border);
+				flex: 1 0 auto;
+			}
+			div {
+				display: flex;
+				margin: var(--halfbase) 0;
+			}
 		}
 		label {
 			--border-size: 2px;

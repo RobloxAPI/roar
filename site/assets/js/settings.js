@@ -35,6 +35,7 @@ const settingsDef = [
 	{
 		"name": "Theme",
 		"type": "radio",
+		"group": "Appearance",
 		"default": "Auto",
 		"options": [
 			{"text": "Auto", "value": "Auto"},
@@ -45,6 +46,7 @@ const settingsDef = [
 	{
 		"name": "SecurityIdentity",
 		"type": "select",
+		"group": "Visibility",
 		"default": securityIdentities[0],
 		"text": "Permission",
 		"options": securityIdentities.map((v) => ({"value": v})),
@@ -52,12 +54,14 @@ const settingsDef = [
 	{
 		"name": "ExpandMembers",
 		"type": "checkbox",
+		"group": "Visibility",
 		"default": false,
 		"text": "Expand all members",
 	},
 	{
 		"name": "ShowDeprecated",
 		"type": "checkbox",
+		"group": "Visibility",
 		"default": true,
 		"text": "Show deprecated",
 		"method": "show",
@@ -66,6 +70,7 @@ const settingsDef = [
 	{
 		"name": "ShowNotBrowsable",
 		"type": "checkbox",
+		"group": "Visibility",
 		"default": true,
 		"text": "Show unbrowsable",
 		"method": "show",
@@ -74,6 +79,7 @@ const settingsDef = [
 	{
 		"name": "ShowNotScriptable",
 		"type": "checkbox",
+		"group": "Visibility",
 		"default": true,
 		"text": "Show unscriptable",
 		"method": "show",
@@ -82,6 +88,7 @@ const settingsDef = [
 	{
 		"name": "ShowHidden",
 		"type": "checkbox",
+		"group": "Visibility",
 		"default": true,
 		"text": "Show hidden",
 		"method": "show",
@@ -90,6 +97,7 @@ const settingsDef = [
 	{
 		"name": "ShowRemoved",
 		"type": "checkbox",
+		"group": "Visibility",
 		"default": true,
 		"text": "Show removed",
 		"method": "show",
@@ -99,6 +107,17 @@ const settingsDef = [
 
 function generateMenu(settings, parent, settingsDef) {
 	let form = document.createElement("form");
+	const groups = new Map();
+	for (let setting of settingsDef) {
+		if (setting.group && !groups.get(setting.group)) {
+			const fieldset = document.createElement("fieldset");
+			const legend = document.createElement("legend");
+			legend.textContent = setting.group;
+			fieldset.appendChild(legend);
+			form.appendChild(fieldset);
+			groups.set(setting.group, fieldset);
+		};
+	};
 	const idPrefix = "setting-";
 	for (let setting of settingsDef) {
 		let value = window.localStorage.getItem(setting.name);
@@ -192,7 +211,12 @@ function generateMenu(settings, parent, settingsDef) {
 			section.appendChild(select);
 			section.appendChild(label);
 		};
-		form.appendChild(section);
+		const fieldset = groups.get(setting.group);
+		if (fieldset) {
+			fieldset.appendChild(section);
+		} else {
+			form.appendChild(section);
+		};
 	};
 	parent.appendChild(form);
 };
