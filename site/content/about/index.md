@@ -22,11 +22,11 @@ Information presented by this website is derived from the following sources:
 - {{%external href=`https://github.com/Roblox/creator-docs`%}}**Creator Docs**{{%/external%}}:
   The source repository for Roblox engine documentation.
 
-This site is hosted statically on {{<external href="https://pages.github.com">}}GitHub Pages{{</external>}}.
-
 This project is an alternative to the {{<external param="creatorhub">}}Roblox Engine API Reference{{</external>}}
 on the Creator Hub. The Creator Hub provides official, canonical, up-to-date
 documentation for the Roblox engine API.
+
+This website is hosted statically on {{<external href="https://pages.github.com">}}GitHub Pages{{</external>}}.
 
 If you find a bug, have a suggestion, or otherwise wish to contribute, you may
 post an issue or make a pull request on the {{<external param="issues">}}issues page{{</external>}}.
