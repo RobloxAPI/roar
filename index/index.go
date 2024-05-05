@@ -2,6 +2,7 @@
 package index
 
 import (
+	"cmp"
 	"fmt"
 	"slices"
 	"sort"
@@ -69,7 +70,28 @@ type Type struct {
 }
 
 func (r *Root) Build(hist *history.Root, dump *rbxdump.Root) error {
-	r.MemberTypes = slices.Clone(MemberTypes)
+	memberTypes := map[string]int{}
+	for _, class := range dump.Classes {
+		for _, member := range class.Members {
+			memberTypes[member.MemberType()] = 0
+		}
+	}
+	for t := range memberTypes {
+		i := slices.Index(MemberTypes, t)
+		if i < 0 {
+			// Unknown member types are sorted after known types, in
+			// lexicographical order.
+			i = len(MemberTypes)
+		}
+		memberTypes[t] = i
+		r.MemberTypes = append(r.MemberTypes, t)
+	}
+	slices.SortFunc(r.MemberTypes, func(a, b string) int {
+		if i, j := memberTypes[a], memberTypes[b]; i != j {
+			return cmp.Compare(i, j)
+		}
+		return cmp.Compare(a, b)
+	})
 
 	if earliest := hist.EarliestUpdate(); earliest != nil {
 		r.MinYear = earliest.Date.Year()
