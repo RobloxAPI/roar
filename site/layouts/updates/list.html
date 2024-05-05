@@ -6,7 +6,8 @@
 {{- partial "singleton/nav-panel-end.html" . }}
 <article id="content">
 	<header>
-		<h2>Recent API updates
+		{{- $rss := ((site.GetPage "updates").OutputFormats.Get "rss")}}
+		<h2>{{partial "component/heading-icon.html" (dict "icon" "feed" "title" "RSS feed" "href" $rss.RelPermalink)}}Recent API updates
 			<aside class="expand-all-changes js">
 				<label>
 					<input id="expand-all" type="checkbox"/>
