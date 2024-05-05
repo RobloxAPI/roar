@@ -42,6 +42,7 @@ const settingsDef = [
 			{"text": "Light", "value": "Light"},
 			{"text": "Dark",  "value": "Dark"},
 		],
+		"description": "Controls the preferred color scheme.",
 	},
 	{
 		"name": "SecurityIdentity",
@@ -50,6 +51,7 @@ const settingsDef = [
 		"default": securityIdentities[0],
 		"text": "Permission",
 		"options": securityIdentities.map((v) => ({"value": v})),
+		"description": "Sets visibility according to context in which entities can be accessed.",
 	},
 	{
 		"name": "ExpandMembers",
@@ -57,6 +59,7 @@ const settingsDef = [
 		"group": "Visibility",
 		"default": false,
 		"text": "Expand all members",
+		"description": "If enabled, inherited member sections in member index are expanded by default.",
 	},
 	{
 		"name": "ShowDeprecated",
@@ -66,6 +69,7 @@ const settingsDef = [
 		"text": "Show deprecated",
 		"method": "show",
 		"class": "deprecated",
+		"description": "Sets visibility of entities with the Deprecated tag.",
 	},
 	{
 		"name": "ShowNotBrowsable",
@@ -75,6 +79,7 @@ const settingsDef = [
 		"text": "Show unbrowsable",
 		"method": "show",
 		"class": "unbrowsable",
+		"description": "Sets visibility of entities with the NotBrowsable tag.",
 	},
 	{
 		"name": "ShowNotScriptable",
@@ -84,6 +89,7 @@ const settingsDef = [
 		"text": "Show unscriptable",
 		"method": "show",
 		"class": "unscriptable",
+		"description": "Sets visibility of entities with the NotScriptable tag.",
 	},
 	{
 		"name": "ShowHidden",
@@ -93,6 +99,7 @@ const settingsDef = [
 		"text": "Show hidden",
 		"method": "show",
 		"class": "hidden",
+		"description": "Sets visibility of entities with the Hidden tag.",
 	},
 	{
 		"name": "ShowRemoved",
@@ -102,6 +109,7 @@ const settingsDef = [
 		"text": "Show removed",
 		"method": "show",
 		"class": "removed",
+		"description": "Sets visibility of entities that are not present in the current revision of the API.",
 	}
 ];
 
@@ -126,6 +134,7 @@ function generateMenu(settings, parent, settingsDef) {
 		};
 		let section = document.createElement("div");
 		section.className = setting.type;
+		section.title = setting.description;
 		if (setting.type === "checkbox") {
 			value = value === true || value === "true";
 			let input = document.createElement("input");
