@@ -3,12 +3,21 @@
 []Parameter
 
 */}}
+{{- $hasDefaults := false }}
+{{- range . }}
+	{{- if .Optional }}
+		{{- $hasDefaults = true }}
+		{{- break }}
+	{{- end }}
+{{- end }}
 <table class="index-card params">
 	<thead>
 		<tr>
 			<th class="col-member">Name</th>
 			<th class="col-type">Type</th>
-			<th class="col-default">Default</th>
+			{{- if $hasDefaults }}
+				<th class="col-default">Default</th>
+			{{- end }}
 		</tr>
 	</thead>
 	<tbody>
@@ -16,13 +25,15 @@
 			<tr class="row-{{.Name}}">
 				<td class="col-member">{{.Name}}</td>
 				<td class="col-type">{{partial "member/type.html" (dict "type" .Type "simple" true)}}</td>
-				<td class="col-default">
-					{{- if .Optional -}}
-						{{- partial "member/default.html" (dict "type" .Type "value" .Default "hascontext" true) -}}
-					{{- else -}}
-						<span class="api-none"></span>
-					{{- end -}}
-				</td>
+				{{- if $hasDefaults }}
+					<td class="col-default">
+						{{- if .Optional -}}
+							{{- partial "member/default.html" (dict "type" .Type "value" .Default "hascontext" true) -}}
+						{{- else -}}
+							<span class="api-none"></span>
+						{{- end -}}
+					</td>
+				{{- end -}}
 			</tr>
 		{{- else }}
 			<tr>

@@ -63,8 +63,10 @@
 	.col-type    { text-align: left }
 	.col-default { text-align: left }
 
-	.col-member { width: 0 }
-	.col-type   { width: 0 }
+	.col-member  { width: 0 }
+	.col-type    { width: 0 }
+	.col-default { width: 0 }
+	tr > :last-child { width: auto }
 
 	@media #{$small} {
 		display: grid;
