@@ -1,0 +1,6 @@
+// SVG icon based off of .runner-icon that appears in headings.
+.runner-icon.heading-icon {
+	--runner-height: calc(var(--baseline) * var(--heading-scale));
+	--runner-step: 0;
+	align-self: center;
+}
