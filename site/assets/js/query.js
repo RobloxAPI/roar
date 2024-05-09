@@ -1,5 +1,4 @@
-import * as grammar from "./grammar.js"
-
+// Constant literals.
 const SPACE         = /^\s*/;
 const WORD          = /^\w+/;
 const COMMENT_OPEN  = "#{";
@@ -34,10 +33,15 @@ const DIGITS        = /^\d+/;
 
 export const all = Symbol("all");
 
-function queryGrammar({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) {
+export function forDatabase(DB, F, M) {
+return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 	// Generates a prefix term.
-	function prefix(name, value) {
-		return seq(lit(name), lit(PREFIX), value);
+	function prefix(name, value, fn) {
+		return seq(lit(name), lit(PREFIX), value).call(fn);
+	}
+	// Generates a lit that matches w and only w. Case-insensitive.
+	function word(w) {
+		return name(w).lit(new RegExp(`^${w}\\b`, "i"));
 	}
 
 	return [
@@ -116,51 +120,113 @@ function queryGrammar({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase
 		)],
 
 		// Terms that produce metadata.
-		["meta", init(()=>({expr:"meta",type:undefined})).seq(lit(META), alt(
-			lit(`type`),
-			lit(`tag`),
-			lit(`security`),
-			lit(`threadsafety`),
-			lit(`typecat`),
-		).field("type"))],
+		["meta", seq(lit(META), ref("word").set()).call((a,x)=>{
+			switch (x.toLowerCase()) {
+			case "type":
+			case "tag":
+			case "security":
+			case "threadsafety":
+			case "typecat":
+				break;
+			default:
+				throw `unknown term '$${x}'`;
+			};
+			return {expr: "meta", type: x.toLowerCase()};
+		})],
 
 		// Terms denoted by a prefix.
 		["prefixes", alt(
-			prefix(`is`, ref("word")),
-			prefix(`tag`, opt(ref("word"))),
-			prefix(`has`, opt(ref("word"))),
-			prefix(`removed`, opt(ref("bool"))),
-			prefix(`superclasses`, opt(ref("number_expr"))),
-			prefix(`subclasses`, opt(ref("number_expr"))),
-			prefix(`members`, opt(ref("number_expr"))),
-			prefix(`superclass`, opt(ref("name"))),
-			prefix(`subclass`, opt(ref("name"))),
-			prefix(`memcat`, opt(ref("name"))),
-			prefix(`memecat`, opt(ref("name"))),
-			prefix(`threadsafety`, opt(ref("word"))),
-			prefix(`security`, opt(ref("word"))),
-			prefix(`cansave`, opt(ref("bool"))),
-			prefix(`canload`, opt(ref("bool"))),
-			prefix(`readsecurity`, opt(ref("word"))),
-			prefix(`writesecurity`, opt(ref("word"))),
-			prefix(`valuetypename`, opt(ref("name"))),
-			prefix(`category`, opt(ref("name"))),
-			prefix(`default`, opt(alt(ref("number_expr"), ref("name")))),
-			prefix(`returns`, opt(ref("number_expr"))),
-			prefix(`parameters`, opt(ref("number_expr"))),
-			prefix(`returntypecat`, opt(ref("word"))),
-			prefix(`returntypename`, opt(ref("name"))),
-			prefix(`returntypeopt`, opt(ref("bool"))),
-			prefix(`paramtypecat`, opt(ref("word"))),
-			prefix(`paramtypename`, opt(ref("name"))),
-			prefix(`paramtypeopt`, opt(ref("bool"))),
-			prefix(`paramname`, opt(ref("name"))),
-			prefix(`paramdefault`, opt(alt(ref("number_expr"), ref("name")))),
-			prefix(`enumitems`, opt(ref("number_expr"))),
-			prefix(`itemvalue`, opt(ref("number_expr"))),
-			prefix(`legacynames`, opt(ref("number_expr"))),
-			prefix(`legacyname`, opt(ref("name"))),
-			prefix(`typecat`, opt(ref("word"))),
+			prefix(`is`, ref("word").set(), (a,x)=>{
+				switch (x.toLowerCase()) {
+				case "class":
+					return {expr:"any",types:DB.T.CLASS};
+				case "property":
+					return {expr:"any",types:DB.T.PROPERTY};
+				case "function":
+					return {expr:"any",types:DB.T.FUNCTION};
+				case "event":
+					return {expr:"any",types:DB.T.EVENT};
+				case "callback":
+					return {expr:"any",types:DB.T.CALLBACK};
+				case "enum":
+					return {expr:"any",types:DB.T.ENUM};
+				case "enumitem":
+					return {expr:"any",types:DB.T.ENUMITEM};
+				case "type":
+					return {expr:"any",types:DB.T.TYPE};
+				};
+				throw `unknown term 'is:${x}'`;
+			}),
+			prefix(`tag`, opt(ref("word")), (a,x)=>{
+				throw `'tag:' term not implemented`;
+			}),
+			prefix(`has`, ref("word").set(), (a,x)=>{
+				return {expr: "op",
+					types: DB.T.ALL,
+					field: F[x], //TODO: map to friendly name
+					method: M.TRUE, args: [],
+				};
+			}),
+			prefix(`removed`, opt(ref("bool").set()), (a,x)=>{
+				let v = {expr: "op",
+					types: DB.T.ALL,
+					field: F.FLAGS,
+					method: M.REMOVED, args: [],
+				};
+				if (!x) {
+					v = {expr: "not", operand: v};
+				};
+				return v;
+			}),
+			prefix(`superclasses`, opt(ref("number_expr")).set(), (a,x)=>{
+				if (x === "") { // "" from non-matching opt
+					throw `expected number`;
+				};
+				return {expr:"op",
+					types: DB.T.CLASS,
+					field: F.SUPERCLASSES,
+					method: x.method, args: [x.args[0]],
+				};
+			}),
+			prefix(`subclasses`, opt(ref("number_expr")), (a,x)=>{
+				if (x === "") { // "" from non-matching opt
+					throw `expected number`;
+				};
+				return {expr:"op",
+					types: DB.T.CLASS,
+					field: F.SUBCLASSES,
+					method: x.method, args: [x.args[0]],
+				};
+			}),
+			prefix(`members`, opt(ref("number_expr")), (a,x)=>{}),
+			prefix(`superclass`, opt(ref("name")), (a,x)=>{}),
+			prefix(`subclass`, opt(ref("name")), (a,x)=>{}),
+			prefix(`memcat`, opt(ref("name")), (a,x)=>{}),
+			prefix(`memecat`, opt(ref("name")), (a,x)=>{}),
+			prefix(`threadsafety`, opt(ref("word")), (a,x)=>{}),
+			prefix(`security`, opt(ref("word")), (a,x)=>{}),
+			prefix(`cansave`, opt(ref("bool")), (a,x)=>{}),
+			prefix(`canload`, opt(ref("bool")), (a,x)=>{}),
+			prefix(`readsecurity`, opt(ref("word")), (a,x)=>{}),
+			prefix(`writesecurity`, opt(ref("word")), (a,x)=>{}),
+			prefix(`valuetypename`, opt(ref("name")), (a,x)=>{}),
+			prefix(`category`, opt(ref("name")), (a,x)=>{}),
+			prefix(`default`, opt(alt(ref("number_expr"), ref("name"))), (a,x)=>{}),
+			prefix(`returns`, opt(ref("number_expr")), (a,x)=>{}),
+			prefix(`parameters`, opt(ref("number_expr")), (a,x)=>{}),
+			prefix(`returntypecat`, opt(ref("word")), (a,x)=>{}),
+			prefix(`returntypename`, opt(ref("name")), (a,x)=>{}),
+			prefix(`returntypeopt`, opt(ref("bool")), (a,x)=>{}),
+			prefix(`paramtypecat`, opt(ref("word")), (a,x)=>{}),
+			prefix(`paramtypename`, opt(ref("name")), (a,x)=>{}),
+			prefix(`paramtypeopt`, opt(ref("bool")), (a,x)=>{}),
+			prefix(`paramname`, opt(ref("name")), (a,x)=>{}),
+			prefix(`paramdefault`, opt(alt(ref("number_expr"), ref("name"))), (a,x)=>{}),
+			prefix(`enumitems`, opt(ref("number_expr")), (a,x)=>{}),
+			prefix(`itemvalue`, opt(ref("number_expr")), (a,x)=>{}),
+			prefix(`legacynames`, opt(ref("number_expr")), (a,x)=>{}),
+			prefix(`legacyname`, opt(ref("name")), (a,x)=>{}),
+			prefix(`typecat`, opt(ref("word")), (a,x)=>{}),
 		)],
 
 		// Prefixes related to search results.
@@ -211,27 +277,35 @@ function queryGrammar({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase
 		],
 		["any", name("any").lit(ANY)],
 
-		// Literals that translate to a boolean.
+		// Words that translate to a boolean.
 		["bool", alt(
 			alt(
-				lit(`0`),
-				lit(`no`),
-				lit(`false`),
-				lit(`n`),
-				lit(`f`),
+				word(`0`),
+				word(`no`),
+				word(`false`),
+				word(`n`),
+				word(`f`),
 			).set(false),
 			alt(
-				lit(`1`),
-				lit(`yes`),
-				lit(`true`),
-				lit(`y`),
-				lit(`t`),
+				word(`1`),
+				word(`yes`),
+				word(`true`),
+				word(`y`),
+				word(`t`),
 			).set(true),
 		)],
 
 		// Terms for numbers.
-		["number_expr", seq(opt(ref("number_op")), ref("number"))],
-		["number_op", alt(lit(LE), lit(LT), lit(GE), lit(GT))],
+		["number_expr", init(()=>({method:M.EQ,args:[]})).seq(
+			opt(ref("number_op").field("method")),
+			ref("number").appendField("args"),
+		)],
+		["number_op", alt(
+			lit(LE).set(M.LE),
+			lit(LT).set(M.LT),
+			lit(GE).set(M.GE),
+			lit(GT).set(M.GT),
+		)],
 		["number", alt(
 			// Number.
 			init(() => ({sign:POS,value:undefined})).seq(
@@ -260,5 +334,4 @@ function queryGrammar({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase
 		["digits", lit(DIGITS)],
 	];
 };
-
-export const parse = grammar.make(queryGrammar);
+};
