@@ -7,7 +7,7 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
-## Pending
+## 2024-05-09
 - Improve appearance of settings panel.
 - Add descriptions for each setting (via tooltip).
 - Hide default value column if no parameters have default values.
