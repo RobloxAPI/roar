@@ -590,12 +590,12 @@ function getDatabase() {
 			})
 	})
 	.then((buffer) => {
-		const db = new Database(buffer);
-		console.log("DATABASE", db);
-		return db;
+		const DB = new Database(buffer);
+		console.log("DATABASE", DB);
+		return [DB, F, M];
 	})
 	return databasePromise;
-}
+};
 
 const fields = {
 	Class: [
@@ -742,7 +742,7 @@ function renderSearchData() {
 	main.style.margin = "var(--halfbase)";
 	main.replaceChildren();
 	getDatabase()
-		.then(function(db) {
+		.then(function([db]) {
 			main.appendChild(element("h2", "Database enumerations"));
 			const enums = document.createElement("ul");
 			enums.style = `display:flex; flex-flow:wrap row; gap:var(--indent)`;
@@ -956,23 +956,23 @@ function initSearchInput() {
 		console.log("SEARCHING", query);
 		render("Searching...");
 		getDatabase()
-			.then(function(db) {
+			.then(function([DB, F, M]) {
 				// Basic query that performs a fuzzy match of query on the
 				// primary field of primary entities, and the secondary field of
 				// secondary entities.
 				const expr = {expr: "or", operands: [
 					{expr: "op",
-						types: db.T.PRIMARY,
+						types: DB.T.PRIMARY,
 						field: F.PRIMARY,
 						method: M.FUZZY, args: [query],
 					},
 					{expr: "op",
-						types: db.T.SECONDARY,
+						types: DB.T.SECONDARY,
 						field: F.SECONDARY,
 						method: M.FUZZY, args: [query],
 					},
 				]};
-				render(statusFilter(search(db, expr)));
+				render(statusFilter(search(DB, expr)));
 			})
 			.catch(function(msg, err) {
 				console.log(msg, err);
