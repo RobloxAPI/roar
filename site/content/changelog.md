@@ -7,6 +7,14 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Fix missing thread safety field in member sections.
+- Remove redundant member type field in member sections.
+- Consolidate can-load and can-save fields in property sections.
+- Reorganize member sections to display principle data (parameters, types) more
+  prominently.
+- Use index card to display property type and default value.
+
 ## 2024-05-09
 - Improve appearance of settings panel.
 - Add descriptions for each setting (via tooltip).
