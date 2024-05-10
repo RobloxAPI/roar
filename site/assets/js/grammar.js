@@ -284,6 +284,9 @@ export function make(grammar) {
 			} else {
 				value = capture;
 			};
+			if (rule.$global) {
+				rule.$global(ctx.global, value);
+			};
 		} else {
 			value = capture;
 		};
@@ -378,6 +381,14 @@ export function make(grammar) {
 		};
 		rule.call = (f) => {
 			rule.$cap = f;
+			return rule;
+		};
+		rule.global = (f, v) => {
+			if (v === undefined) {
+				rule.$global = (g, x) => g[f] = x;
+			} else {
+				rule.$global = (g) => g[f] = v;
+			};
 			return rule;
 		};
 		rule.debug = (v) => {
@@ -589,6 +600,7 @@ export function make(grammar) {
 			debug: debug,
 			source: source,
 			i: 0,
+			global: {},
 		};
 
 		const [ok, match, capture] = invoke(rule, ctx);
@@ -605,6 +617,7 @@ export function make(grammar) {
 			return {
 				match: match,
 				capture: capture,
+				global: ctx.global,
 			};
 		};
 		throw match;

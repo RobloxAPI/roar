@@ -61,10 +61,12 @@ class Database {
 		};
 
 		this.tags = new Map();
+		this.tagsLower = new Map();
 		for (let i = 0; i < this.LEN_TAGS; i++) {
 			const tag = this.strings[u8(this.data, this.OFF_TAGS + i)];
 			// First bit reserved for removed flag.
 			this.tags.set(tag, i + 1);
+			this.tagsLower.set(tag.toLowerCase(), i + 1);
 		};
 
 		this.secs = Array(this.LEN_SECS);
@@ -296,9 +298,13 @@ export const M = {
 	},
 	// Returns 1 if the field matches the given regular expression, and -1
 	// otherwise.
-	REGEXP: function(field, value, flags) {
-		const re = new RegExp(value, flags);
-		return (field.match(re)) ? 1 : -1;
+	REGEXP: function(field, regexp) {
+		return (field.match(regexp)) ? 1 : -1;
+	},
+	// Returns 1 if the field contains the given value as a substring, and -1
+	// otherwise.
+	SUB: function(field, value) {
+		return (field.indexOf(value)) >= 0 ? 1 : -1;
 	},
 	// Returns the removed bit.
 	REMOVED: function(flags) {
@@ -327,8 +333,8 @@ export const M = {
 	GE: function(field, value) {
 		return (field >= value) ? 1 : -1;
 	},
-	TRUE: function(field, value, flags) {
-		return 1;
+	TRUE: function(field, score) {
+		return score ? score : 1;
 	},
 };
 
@@ -355,7 +361,7 @@ function rowMatches(row, expr) {
 		if (flags === undefined) {
 			return 0;
 		};
-		const n = row.db.tags.get(flag);
+		const n = row.db.tagsLower.get(expr.flag);
 		if (!n) {
 			return 0;
 		};
