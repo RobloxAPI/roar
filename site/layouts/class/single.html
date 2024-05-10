@@ -100,11 +100,10 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			<section id="member-{{.Name}}" class="set {{partial `entity/status-class.html` (dict `type` `member` `primary` .Class `secondary` .Name)}}">
 				<header><h3>{{partial "entity/icon.html" (dict "type" "member" "primary" .Class "secondary" .Name)}}{{.Name}}<aside>{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "hub" true)}}</aside></h3></header>
 				{{- if eq $dump.MemberType "Property"}}
-					<h4>Value type: {{partial "member/type.html" (dict "type" $dump.ValueType)}}</h4>
+					{{- partial "member/parameters-table.html" (dict "type" $dump.ValueType "default" $dump.Default) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- /* TODO: Documentation */ -}}
 					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Default value</th><td class="value">{{partial "member/default.html" (dict "type" $dump.ValueType "value" $dump.Default "hascontext" true)}}</td></tr>
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
 								<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.ReadSecurity}}</td></tr>

@@ -12,35 +12,37 @@ returns: []Type?
 	{{- end }}
 {{- end }}
 <table class="index-card params">
-	<thead>
-		<tr>
-			<th class="col-name" colspan="2">Parameters ({{partial "component/element-count.html" (len .params)}})</th>
-			{{- if $hasDefaults }}
-				<th class="col-default">Default</th>
-			{{- end }}
-		</tr>
-	</thead>
-	<tbody>
-		{{- range .params }}
-			<tr class="row-{{.Name}}">
-				<td class="col-name">{{.Name}}</td>
-				<td class="col-type">{{partial "member/type.html" (dict "type" .Type "simple" true)}}</td>
-				{{- if $hasDefaults }}
-					<td class="col-default">
-						{{- if .Optional -}}
-							{{- partial "member/default.html" (dict "type" .Type "value" .Default "hascontext" true) -}}
-						{{- else -}}
-							<span class="api-none"></span>
-						{{- end -}}
-					</td>
-				{{- end -}}
-			</tr>
-		{{- else }}
+	{{- if ne .params nil }}
+		<thead>
 			<tr>
-				<td colspan="3">No parameters.</td>
+				<th class="col-name" colspan="2">Parameters ({{partial "component/element-count.html" (len .params)}})</th>
+				{{- if $hasDefaults }}
+					<th class="col-default">Default</th>
+				{{- end }}
 			</tr>
-		{{- end }}
-	</tbody>
+		</thead>
+		<tbody>
+			{{- range .params }}
+				<tr class="row-{{.Name}}">
+					<td class="col-name">{{.Name}}</td>
+					<td class="col-type">{{partial "member/type.html" (dict "type" .Type "simple" true)}}</td>
+					{{- if $hasDefaults }}
+						<td class="col-default">
+							{{- if .Optional -}}
+								{{- partial "member/default.html" (dict "type" .Type "value" .Default "hascontext" true) -}}
+							{{- else -}}
+								<span class="api-none"></span>
+							{{- end -}}
+						</td>
+					{{- end -}}
+				</tr>
+			{{- else }}
+				<tr>
+					<td colspan="3">No parameters.</td>
+				</tr>
+			{{- end }}
+		</tbody>
+	{{- end }}
 	{{- if .returns }}
 		<thead>
 			<tr><th class="col-return" colspan="3">Returns ({{partial "component/element-count.html" (len .returns)}})</th></tr>
@@ -51,6 +53,20 @@ returns: []Type?
 					<td class="col-return" colspan="3">{{partial "member/type.html" (dict "type" .)}}</td>
 				</tr>
 			{{- end }}
+		</tbody>
+	{{- end }}
+	{{- if .type }}
+		<thead>
+			<tr>
+				<th class="col-valuetype" colspan="2">Type</th>
+				<th class="col-default">Default</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="col-valuetype" colspan="2">{{partial "member/type.html" (dict "type" .type)}}</td>
+				<td class="col-default">{{partial "member/default.html" (dict "type" .type "value" .default "hascontext" true)}}</td>
+			</tr>
 		</tbody>
 	{{- end }}
 </table>

@@ -59,16 +59,22 @@
 
 // Displaying member parameters.
 .index-card.params {
-	.col-name    { text-align: left }
-	.col-type    { text-align: left }
-	.col-default { text-align: left }
-	.col-return  { text-align: left }
+	.col-name      { text-align: left }
+	.col-type      { text-align: left }
+	.col-valuetype { text-align: left }
+	.col-default   { text-align: left }
+	.col-return    { text-align: left }
 
-	.col-name    { width: 0 }
-	.col-type    { width: 0 }
-	.col-default { width: 0 }
-	.col-return  { width: 0 }
+	.col-name      { width: 1% }
+	.col-type      { width: 1% }
+	.col-valuetype { width: 1% }
+	.col-default   { width: 1% }
+	.col-return    { width: 1% }
 	tr > :last-child { width: auto }
+
+	th.col-name    { white-space: nowrap }
+	th.col-return  { white-space: nowrap }
+	.col-valuetype { white-space: nowrap }
 
 	@media #{$small} {
 		display: grid;
@@ -83,11 +89,13 @@
 				grid-auto-columns: 1fr;
 			}
 		}
-		.col-name   { width: auto }
-		.col-return { width: auto }
-		.col-type   { width: auto }
+		.col-name      { width: auto }
+		.col-return    { width: auto }
+		.col-valuetype { width: auto }
+		.col-type      { width: auto }
 
 		th.col-name, .col-return { grid-area: 2 / span 2 }
+		th.col-valuetype { grid-area: 2 / span 2 }
 
 		th.col-default { display: none }
 		td.col-default {
