@@ -101,8 +101,8 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				<header><h3>{{partial "entity/icon.html" (dict "type" "member" "primary" .Class "secondary" .Name)}}{{.Name}}<aside>{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "hub" true)}}</aside></h3></header>
 				{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 				{{- if eq $dump.MemberType "Property"}}
+					<h4>Value type: {{partial "member/type.html" (dict "type" $dump.ValueType)}}</h4>
 					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Value type</th><td class="value">{{partial "member/type.html" (dict "type" $dump.ValueType)}}</td></tr>
 						<tr class="pair"><th class="name">Default value</th><td class="value">{{partial "member/default.html" (dict "type" $dump.ValueType "value" $dump.Default "hascontext" true)}}</td></tr>
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
@@ -130,6 +130,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
+					<h4>Parameters {{partial "component/element-count.html" (len $dump.Parameters)}}</h4>
+					{{- partial "member/parameters-table.html" $dump.Parameters }}
+					<h4>Returns: {{partial "member/returns-list.html" $dump.ReturnType}}</h4>
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -137,14 +140,11 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{- if $dump.ThreadSafety }}
 							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
 						{{- end }}
-						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "component/element-count.html" (len $dump.Parameters)}}</td></tr>
-					</table>
-					{{- partial "member/parameters-table.html" $dump.Parameters }}
-					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Returns</th><td class="value">{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Event"}}
+					<h4>Parameters {{partial "component/element-count.html" (len $dump.Parameters)}}</h4>
+					{{- partial "member/parameters-table.html" $dump.Parameters }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -152,13 +152,12 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{- if $dump.ThreadSafety }}
 							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
 						{{- end }}
-						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "component/element-count.html" (len $dump.Parameters)}}</td></tr>
-					</table>
-					{{- partial "member/parameters-table.html" $dump.Parameters }}
-					<table class="metadata-pairs">
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Callback"}}
+					<h4>Parameters {{partial "component/element-count.html" (len $dump.Parameters)}}</h4>
+					{{- partial "member/parameters-table.html" $dump.Parameters }}
+					<h4>Returns: {{partial "member/returns-list.html" $dump.ReturnType}}</h4>
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -166,11 +165,6 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{- if $dump.ThreadSafety }}
 							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
 						{{- end }}
-						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "component/element-count.html" (len $dump.Parameters)}}</td></tr>
-					</table>
-					{{- partial "member/parameters-table.html" $dump.Parameters }}
-					<table class="metadata-pairs">
-						<tr class="pair"><th class="name">Returns</th><td class="value">{{partial "member/returns-list.html" $dump.ReturnType}}</td></tr>
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- end }}
