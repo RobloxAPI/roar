@@ -120,8 +120,13 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
 						{{- end }}
 						<tr class="pair"><th class="name">Category</th><td class="value">{{$dump.Category}}</td></tr>
-						<tr class="pair"><th class="name">Can load</th><td class="value">{{$dump.CanLoad}}</td></tr>
-						<tr class="pair"><th class="name">Can save</th><td class="value">{{$dump.CanSave}}</td></tr>
+						<tr class="pair"><th class="name">Loaded/Saved</th><td class="value">
+							{{- if eq $dump.CanLoad $dump.CanSave -}}
+								{{- $dump.CanLoad -}}
+							{{- else -}}
+								{{- $dump.CanLoad}}/{{$dump.CanSave -}}
+							{{- end -}}
+						</td></tr>
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
