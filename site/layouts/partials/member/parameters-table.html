@@ -1,10 +1,11 @@
-{{/* Render member parameters as a table.
+{{/* Render member parameters and returns as a table.
 
-[]Parameter
+params: []Parameter
+returns: []Type?
 
 */}}
 {{- $hasDefaults := false }}
-{{- range . }}
+{{- range .params }}
 	{{- if .Optional }}
 		{{- $hasDefaults = true }}
 		{{- break }}
@@ -13,15 +14,14 @@
 <table class="index-card params">
 	<thead>
 		<tr>
-			<th class="col-name">Name</th>
-			<th class="col-type">Type</th>
+			<th class="col-name" colspan="2">Parameters ({{partial "component/element-count.html" (len .params)}})</th>
 			{{- if $hasDefaults }}
 				<th class="col-default">Default</th>
 			{{- end }}
 		</tr>
 	</thead>
 	<tbody>
-		{{- range . }}
+		{{- range .params }}
 			<tr class="row-{{.Name}}">
 				<td class="col-name">{{.Name}}</td>
 				<td class="col-type">{{partial "member/type.html" (dict "type" .Type "simple" true)}}</td>
@@ -41,4 +41,16 @@
 			</tr>
 		{{- end }}
 	</tbody>
+	{{- if .returns }}
+		<thead>
+			<tr><th class="col-return" colspan="3">Returns ({{partial "component/element-count.html" (len .returns)}})</th></tr>
+		</thead>
+		<tbody>
+			{{- range .returns }}
+				<tr>
+					<td class="col-return" colspan="3">{{partial "member/type.html" (dict "type" .)}}</td>
+				</tr>
+			{{- end }}
+		</tbody>
+	{{- end }}
 </table>

@@ -131,9 +131,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
-					<h4>Parameters {{partial "component/element-count.html" (len $dump.Parameters)}}</h4>
-					{{- partial "member/parameters-table.html" $dump.Parameters }}
-					<h4>Returns: {{partial "member/returns-list.html" $dump.ReturnType}}</h4>
+					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters "returns" $dump.ReturnType) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- /* TODO: Documentation */ -}}
 					<table class="metadata-pairs">
@@ -146,8 +144,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Event"}}
-					<h4>Parameters {{partial "component/element-count.html" (len $dump.Parameters)}}</h4>
-					{{- partial "member/parameters-table.html" $dump.Parameters }}
+					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- /* TODO: Documentation */ -}}
 					<table class="metadata-pairs">
@@ -160,9 +157,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{/* TODO: reflection metadata */}}
 					</table>
 				{{- else if eq $dump.MemberType "Callback"}}
-					<h4>Parameters {{partial "component/element-count.html" (len $dump.Parameters)}}</h4>
-					{{- partial "member/parameters-table.html" $dump.Parameters }}
-					<h4>Returns: {{partial "member/returns-list.html" $dump.ReturnType}}</h4>
+					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters "returns" $dump.ReturnType) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- /* TODO: Documentation */ -}}
 					<table class="metadata-pairs">
