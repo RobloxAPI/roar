@@ -59,11 +59,11 @@
 
 // Displaying member parameters.
 .index-card.params {
-	.col-member  { text-align: left }
+	.col-name    { text-align: left }
 	.col-type    { text-align: left }
 	.col-default { text-align: left }
 
-	.col-member  { width: 0 }
+	.col-name    { width: 0 }
 	.col-type    { width: 0 }
 	.col-default { width: 0 }
 	tr > :last-child { width: auto }
@@ -81,7 +81,7 @@
 				grid-auto-columns: 1fr;
 			}
 		}
-		.col-member { width: auto }
+		.col-name   { width: auto }
 		.col-type   { width: auto }
 		th.col-default { display: none }
 		td.col-default {

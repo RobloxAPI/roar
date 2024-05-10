@@ -13,7 +13,7 @@
 <table class="index-card params">
 	<thead>
 		<tr>
-			<th class="col-member">Name</th>
+			<th class="col-name">Name</th>
 			<th class="col-type">Type</th>
 			{{- if $hasDefaults }}
 				<th class="col-default">Default</th>
@@ -23,7 +23,7 @@
 	<tbody>
 		{{- range . }}
 			<tr class="row-{{.Name}}">
-				<td class="col-member">{{.Name}}</td>
+				<td class="col-name">{{.Name}}</td>
 				<td class="col-type">{{partial "member/type.html" (dict "type" .Type "simple" true)}}</td>
 				{{- if $hasDefaults }}
 					<td class="col-default">
