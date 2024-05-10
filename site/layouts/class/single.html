@@ -117,6 +117,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 								<tr class="pair"><th class="name">Write security</th><td class="value">{{$dump.WriteSecurity}}</td></tr>
 							{{- end }}
 						{{- end }}
+						{{- if $dump.ThreadSafety }}
+							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
+						{{- end }}
 						<tr class="pair"><th class="name">Category</th><td class="value">{{$dump.Category}}</td></tr>
 						<tr class="pair"><th class="name">Can load</th><td class="value">{{$dump.CanLoad}}</td></tr>
 						<tr class="pair"><th class="name">Can save</th><td class="value">{{$dump.CanSave}}</td></tr>
@@ -127,6 +130,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						<tr class="pair"><th class="name">Member type</th><td class="value">Function</td></tr>
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
+						{{- end }}
+						{{- if $dump.ThreadSafety }}
+							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
 						{{- end }}
 						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "component/element-count.html" (len $dump.Parameters)}}</td></tr>
 					</table>
@@ -141,6 +147,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
 						{{- end }}
+						{{- if $dump.ThreadSafety }}
+							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
+						{{- end }}
 						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "component/element-count.html" (len $dump.Parameters)}}</td></tr>
 					</table>
 					{{- partial "member/parameters-table.html" $dump.Parameters }}
@@ -152,6 +161,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 						<tr class="pair"><th class="name">Member type</th><td class="value">Callback</td></tr>
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
+						{{- end }}
+						{{- if $dump.ThreadSafety }}
+							<tr class="pair"><th class="name">Thread safety</th><td class="value">{{$dump.ThreadSafety}}</td></tr>
 						{{- end }}
 						<tr class="pair"><th class="name">Parameters</th><td class="value">{{partial "component/element-count.html" (len $dump.Parameters)}}</td></tr>
 					</table>
