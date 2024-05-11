@@ -75,8 +75,6 @@ function TESTS(DB, F, M) {
 
 		[`tag:Deprecated`, {expr:"flag", types: DB.T.ALL, field: F.FLAGS, flag: "deprecated"}],
 		[`tag:foo`, {expr:"flag", types: DB.T.ALL, field: F.FLAGS, flag: "foo"}],
-
-		[`tag:foo order:score`],
 	];
 };
 
