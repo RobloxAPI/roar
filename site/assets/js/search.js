@@ -1,6 +1,8 @@
 import {settings, matchSecurity} from "./settings.js";
 import {fuzzy_match} from "./fuzzy.js";
 import {sanitize, entityLink} from "./link.js";
+import * as grammar from "./grammar.js";
+import * as queryGrammar from "./query.js";
 
 function element(type, text) {
 	const e = document.createElement(type);
@@ -955,6 +957,7 @@ function initSearchInput() {
 		searchResults.appendChild(list);
 	};
 
+	let parseQuery;
 	function doSearch(query, render) {
 		render ||= renderResults;
 		if (query.length === 0) {
@@ -965,22 +968,47 @@ function initSearchInput() {
 		render("Searching...");
 		getDatabase()
 			.then(function([DB, F, M]) {
-				// Basic query that performs a fuzzy match of query on the
-				// primary field of primary entities, and the secondary field of
-				// secondary entities.
-				const expr = {expr: "or", operands: [
-					{expr: "op",
-						types: DB.T.PRIMARY,
-						field: F.PRIMARY,
-						method: M.FUZZY, args: [query],
-					},
-					{expr: "op",
-						types: DB.T.SECONDARY,
-						field: F.SECONDARY,
-						method: M.FUZZY, args: [query],
-					},
-				]};
-				render(statusFilter(search(DB, expr)));
+				if (!parseQuery) {
+					parseQuery = grammar.make(queryGrammar.forDatabase(DB, F, M));
+				};
+				let expr;
+				if (window.DEBUG) {
+					expr = parseQuery(query);
+					console.log("RESULT", expr);
+					if (!expr || (expr instanceof grammar.Error)) {
+						render(`Error parsing query: line ${expr.line}, column ${expr.column}: ${expr.error}`);
+					};
+					render(statusFilter(search(DB, expr.capture)));
+				} else {
+					try {
+						expr = parseQuery(query);
+					} catch (error) {
+						console.log("PARSE ERROR", error);
+					};
+					if (!expr || (expr instanceof grammar.Error)) {
+						// Fallback to fuzzy search.
+						expr = {
+							capture: {expr: "or", operands: [
+								{expr: "op",
+									types: DB.T.PRIMARY,
+									field: F.PRIMARY,
+									method: M.FUZZY, args: [query],
+								},
+								{expr: "op",
+									types: DB.T.SECONDARY,
+									field: F.SECONDARY,
+									method: M.FUZZY, args: [query],
+								},
+							]},
+						};
+					};
+					try {
+						render(statusFilter(search(DB, expr.capture)));
+					} catch (error) {
+						console.log("SEARCH ERROR", error);
+						render("An error occurred.");
+					};
+				};
 			})
 			.catch(function(msg, err) {
 				console.log(msg, err);
