@@ -378,15 +378,16 @@ function rowMatches(row, expr) {
 		// Returns always negative match.
 		return -1;
 	case "and":
-		// All operands must return a positive score. Result is the lowest
+		// All operands must return a positive score. Result is the highest
 		// score.
-		let result = Infinity;
+		let result = 0;
 		for (let op of expr.operands) {
 			const r = rowMatches(row, op);
-			if (r < result) {
+			if (r > result) {
 				result = r;
 			};
 			if (r <= 0) {
+				result = r;
 				break;
 			};
 		};
