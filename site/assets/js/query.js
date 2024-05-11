@@ -337,7 +337,12 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 					...x,
 				};
 			}),
-			prefix(`default`, opt(alt(ref("number_expr"), ref("string_expr")))).call((a,x)=>{
+			prefix(`default`, opt(ref("default"))).call((a,x)=>{
+				return {expr:"op",
+					types: [DB.T.PROPERTY],
+					field: F.DEFAULT,
+					...x,
+				};
 			}),
 			prefix(`returns`, opt(ref("number_expr")).set()).call((a,x)=>{
 				if (x === "") { throw `expected number` };
@@ -404,7 +409,12 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 					...x,
 				};
 			}),
-			prefix(`paramdefault`, opt(alt(ref("number_expr"), ref("string_expr")))).call((a,x)=>{
+			prefix(`paramdefault`, opt(ref("default"))).call((a,x)=>{
+				return {expr:"op",
+					types: [DB.T.FUNCTION, DB.T.CALLBACK],
+					field: F.PARAM_DEFAULT,
+					...x,
+				};
 			}),
 			prefix(`enumitems`, opt(ref("number_expr")).set()).call((a,x)=>{
 				if (x === "") { throw `expected number` };
@@ -512,6 +522,10 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 				},
 			]};
 		})],
+
+		// Term that tries to match a numeric expression, then falls back to a
+		// string expression.
+		["default", alt(ref("number_expr"), ref("string_expr"))],
 
 		// Terms for matching stringlike values.
 		["string_expr", alt(
