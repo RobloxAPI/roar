@@ -188,21 +188,21 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 			prefix(`is`, ref("word").set()).call((a,x)=>{
 				switch (x.toLowerCase()) {
 				case "class":
-					return {expr:"any",types:DB.T.CLASS};
+					return {expr:"any",types:[DB.T.CLASS]};
 				case "property":
-					return {expr:"any",types:DB.T.PROPERTY};
+					return {expr:"any",types:[DB.T.PROPERTY]};
 				case "function":
-					return {expr:"any",types:DB.T.FUNCTION};
+					return {expr:"any",types:[DB.T.FUNCTION]};
 				case "event":
-					return {expr:"any",types:DB.T.EVENT};
+					return {expr:"any",types:[DB.T.EVENT]};
 				case "callback":
-					return {expr:"any",types:DB.T.CALLBACK};
+					return {expr:"any",types:[DB.T.CALLBACK]};
 				case "enum":
-					return {expr:"any",types:DB.T.ENUM};
+					return {expr:"any",types:[DB.T.ENUM]};
 				case "enumitem":
-					return {expr:"any",types:DB.T.ENUMITEM};
+					return {expr:"any",types:[DB.T.ENUMITEM]};
 				case "type":
-					return {expr:"any",types:DB.T.TYPE};
+					return {expr:"any",types:[DB.T.TYPE]};
 				};
 				throw `unknown term 'is:${x}'`;
 			}),
@@ -234,7 +234,7 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 			prefix(`superclasses`, opt(ref("number_expr")).set()).call((a,x)=>{
 				if (x === "") { throw `expected number` };
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: F.SUPERCLASSES,
 					...x,
 				};
@@ -242,7 +242,7 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 			prefix(`subclasses`, opt(ref("number_expr")).set()).call((a,x)=>{
 				if (x === "") { throw `expected number` };
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: F.SUBCLASSES,
 					...x,
 				};
@@ -250,28 +250,28 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 			prefix(`members`, opt(ref("number_expr")).set()).call((a,x)=>{
 				if (x === "") { throw `expected number` };
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: F.MEMBERS,
 					...x,
 				};
 			}),
 			prefix(`superclass`, opt(ref("string_expr")).set()).call((a,x)=>{
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: F.SUPERCLASS,
 					...x,
 				};
 			}),
 			prefix(`subclass`, opt(ref("string_expr")).set()).call((a,x)=>{
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: F.SUBCLASS,
 					...x,
 				};
 			}),
 			prefix(`memcat`, opt(ref("string_expr")).set()).call((a,x)=>{
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: F.MEM_CAT,
 					...x,
 				};
@@ -279,7 +279,7 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 			prefix(`memecat`, opt(ref("string_expr")).set()).call((a,x)=>{
 				let s = `˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚ᓚ₍ ˆ•⩊•ˆ₎`+(x?` ⦟⟮ ${x.args[0]} ⟯`:``);
 				return {expr:"op",
-					types: DB.T.CLASS,
+					types: [DB.T.CLASS],
 					field: [(t,d,v)=>v, s],
 					method: M.TRUE, args:[Infinity],
 				};
