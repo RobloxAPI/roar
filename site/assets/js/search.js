@@ -413,9 +413,6 @@ function rowMatches(row, expr) {
 // Recursively finds the types of each operation in expr.
 function exprTypes(types, expr) {
 	switch (expr.expr) {
-	case "op":
-		types.push(...expr.types);
-		break;
 	case "and":
 		for (let op of expr.operands) {
 			exprTypes(types, op);
@@ -428,6 +425,9 @@ function exprTypes(types, expr) {
 		break;
 	case "not":
 		exprTypes(types, expr.operand);
+		break;
+	default:
+		types.push(...expr.types);
 		break;
 	};
 };
