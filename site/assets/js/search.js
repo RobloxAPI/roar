@@ -946,6 +946,8 @@ function initSearchInput() {
 		case results instanceof Error:
 			searchResults.appendChild(element("p", `Error: ${results.message}`));
 			return;
+		case results instanceof Element:
+			searchResults.appendChild(results);
 		};
 
 		const list = document.createElement("ul");
