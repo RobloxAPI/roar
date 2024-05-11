@@ -516,13 +516,13 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 		// Terms for matching stringlike values.
 		["string_expr", alt(
 			ref("all"),
-			ref("word").call((a,x) => ({method: M.FUZZY, args:[x]})),
+			ref("fuzzy"),
 			ref("string"),
 			ref("regexp"),
 		)],
 		["all", lit(ALL).call((a,x) => ({method: M.TRUE, args:[]}))],
-		["word", name("word").lit(WORD)],
 		["string", alt(ref("string_sq"), ref("string_dq"))],
+		["fuzzy", ref("word").call((a,x) => ({method: M.FUZZY, args:[x]}))],
 		["string_sq",
 			seq(
 				lit(SUB_STRING),
@@ -551,6 +551,9 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 			}),
 		],
 		["any", name("any").lit(ANY)],
+
+		// Sequence of letter characters.
+		["word", name("word").lit(WORD)],
 
 		// Words that translate to a boolean.
 		["bool", alt(
