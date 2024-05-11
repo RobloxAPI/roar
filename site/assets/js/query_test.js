@@ -47,7 +47,7 @@ function TESTS(DB, F, M) {
 		[`removed:`, {expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}],
 		[`removed:true`, {expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}],
 		[`removed:false`, {expr:"not",operand:{expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}}],
-		[`removed:falsey`, null, /^1:9: unexpected character .*$/],
+		[`removed:falsey`, null, {line: 1, column: 9, error: /^unexpected character .*$/}],
 
 		[`superclasses:`, null, `expected number`],
 		[`superclasses:4`, {expr:"op", types: DB.T.CLASS, field: F.SUPERCLASSES, method: M.EQ, args: [4]}],
@@ -117,55 +117,50 @@ function deepeq(a, b, lvl, ref) {
 	return a === b;
 };
 
+function matchError(expected, got) {
+	if (expected instanceof RegExp) {
+		return expected.test(got.error);
+	} else if (typeof expected === "string") {
+		return expected === got.error;
+	} else {
+		if (expected.error !== undefined && !matchError(expected.error, got)) {
+			return false;
+		}
+		if (expected.line !== undefined && expected.line !== got.line) {
+			return false;
+		}
+		if (expected.column !== undefined && expected.column !== got.column) {
+			return false;
+		}
+		if (expected.offset !== undefined && expected.offset !== got.offset) {
+			return false;
+		}
+	};
+	return true;
+};
+
 export function run([DB, F, M]) {
 	const queryParser = grammar.make(queryGrammar.forDatabase(DB, F, M));
 	for (let test of TESTS(DB, F, M)) {
 		const [input, expected, err] = test;
-		try {
-			const result = queryParser(input, "main", "debug");
+		const result = queryParser(input, "main", "debug");
+		if (!(result instanceof grammar.Error)) {
 			if (expected === undefined) {
-				console.log(
-`INPUT  ${input}
-OUTPUT ${JSON.stringify(result.capture)}
-GLOBAL ${JSON.stringify(result.global)}
-`);
-				continue;
+				console.log(`INPUT  ${input}\nOUTPUT ${JSON.stringify(result.capture)}\nGLOBAL ${JSON.stringify(result.global)}\n`);
 			} else if (expected === null) {
-				console.log(
-`INPUT    ${input}
-EXPECTED ERROR
-GLOBAL ${JSON.stringify(result.global)}
-`);
+				console.log(`INPUT    ${input}\nEXPECTED ERROR\nGLOBAL ${JSON.stringify(result.global)}\n`);
 			} else {
 				if (!deepeq(expected, result.capture)) {
-					console.log(
-`INPUT    ${input}
-EXPECTED ${JSON.stringify(expected)}
-OUTPUT   ${JSON.stringify(result.capture)}
-GLOBAL ${JSON.stringify(result.global)}
-`);
+					console.log(`INPUT    ${input}\nEXPECTED ${JSON.stringify(expected)}\nOUTPUT   ${JSON.stringify(result.capture)}\nGLOBAL ${JSON.stringify(result.global)}\n`);
 				};
 			};
-		} catch (error) {
+		} else {
 			if (expected === null) {
-				let match;
-				if (err instanceof RegExp) {
-					match = err.test(error);
-				} else {
-					match = error === err;
-				};
-				if (!match) {
-			console.log(
-`INPUT    ${input}
-EXPECTED ${err}
-ERROR    ${error}
-`);
+				if (!matchError(err, result)) {
+					console.log(`INPUT    ${input}\nEXPECTED ${err}\nERROR    ${result.error}\n`);
 				};
 			} else {
-			console.log(
-`INPUT ${input}
-ERROR ${error}
-`);
+				console.log(`INPUT ${input}\nERROR ${result.error}\n`);
 			};
 		};
 	};

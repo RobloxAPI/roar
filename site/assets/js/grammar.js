@@ -603,23 +603,44 @@ export function make(grammar) {
 			global: {},
 		};
 
-		const [ok, match, capture] = invoke(rule, ctx);
-		if (ok) {
-			if (ctx.i < source.length) {
-				const [line, column] = position(ctx.source, ctx.i);
-				const char = ctx.source[ctx.i];
-				let delim = '"';
-				if (char === delim) {
-					delim = "'";
+		let err;
+		try {
+			const [ok, match, capture] = invoke(rule, ctx);
+			if (ok) {
+				if (ctx.i < source.length) {
+					const char = ctx.source[ctx.i];
+					let delim = '"';
+					if (char === delim) {
+						delim = "'";
+					};
+					err = `unexpected character ${delim}${char}${delim}`;
+				} else {
+					return {
+						match: match,
+						capture: capture,
+						global: ctx.global,
+					};
 				};
-				throw `${line}:${column}: unexpected character ${delim}${char}${delim}`;
 			};
-			return {
-				match: match,
-				capture: capture,
-				global: ctx.global,
-			};
+		} catch (error) {
+			err = error;
 		};
-		throw match;
+		if (err) {
+			return new Error(err, ctx);
+		};
+	};
+};
+
+export class Error {
+	constructor(err, ctx) {
+		const [line, column] = position(ctx.source, ctx.i);
+		this.error = err;
+		this.offset = ctx.i;
+		this.line = line;
+		this.column = column;
+		this.global = ctx.global;
+	};
+	toString() {
+		return `${this.line}:${this.column}: ${this.err}`;
 	};
 };
