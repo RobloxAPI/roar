@@ -598,16 +598,16 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 		)],
 
 		// Terms for numbers.
-		["number_expr", init(()=>({method:M.EQ,args:[]})).seq(
+		["number_expr", init(()=>({method:M.N_EQ,args:[]})).seq(
 			//TODO:range: `lower-upper`
 			opt(ref("number_op").field("method")),
 			ref("number").appendField("args"),
 		)],
 		["number_op", alt(
-			lit(LE).set(M.LE),
-			lit(LT).set(M.LT),
-			lit(GE).set(M.GE),
-			lit(GT).set(M.GT),
+			lit(LE).set(M.N_LE),
+			lit(LT).set(M.N_LT),
+			lit(GE).set(M.N_GE),
+			lit(GT).set(M.N_GT),
 		)],
 		["number", alt(
 			// Number.

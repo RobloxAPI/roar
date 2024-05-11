@@ -312,32 +312,26 @@ export const M = {
 	REMOVED: function(flags) {
 		return ((flags&(1<<0)) !== 0) ? 1 : -1;
 	},
-	// Returns 1 if the field is with the bounds of lower and upper, and -1
-	// otherwise.
-	RANGE: function(field, lower, upper) {
-		return (lower <= field && field <= upper) ? 1 : -1;
-	},
-	EQ: function(field, value) {
-		return (field === value) ? 1 : -1;
-	},
-	NE: function(field, value) {
-		return (field !== value) ? 1 : -1;
-	},
-	LT: function(field, value) {
-		return (field < value) ? 1 : -1;
-	},
-	LE: function(field, value) {
-		return (field <= value) ? 1 : -1;
-	},
-	GT: function(field, value) {
-		return (field > value) ? 1 : -1;
-	},
-	GE: function(field, value) {
-		return (field >= value) ? 1 : -1;
-	},
 	TRUE: function(field, score) {
 		return score ? score : 1;
 	},
+	// Matches if the field is with the bounds of lower and upper. Returns the
+	// field as the score.
+	RANGE: (field, lower, upper) => ((lower <= field && field <= upper) ? field : -1),
+	// Comparison operators.
+	EQ: (field, value) => ((field === value) ? 1 : -1),
+	NE: (field, value) => ((field !== value) ? 1 : -1),
+	LT: (field, value) => ((field <   value) ? 1 : -1),
+	LE: (field, value) => ((field <=  value) ? 1 : -1),
+	GT: (field, value) => ((field >   value) ? 1 : -1),
+	GE: (field, value) => ((field >=  value) ? 1 : -1),
+	// Variants that return field as score (assuming number).
+	N_EQ: (field, value) => ((field === value) ? field : -1),
+	N_NE: (field, value) => ((field !== value) ? field : -1),
+	N_LT: (field, value) => ((field <   value) ? field : -1),
+	N_LE: (field, value) => ((field <=  value) ? field : -1),
+	N_GT: (field, value) => ((field >   value) ? field : -1),
+	N_GE: (field, value) => ((field >=  value) ? field : -1),
 };
 
 // Recursively checks if row matches expr.
