@@ -38,18 +38,22 @@ function TESTS(DB, F, M) {
 			]},
 		]}],
 
-		[`$tag`, {expr:"meta",type:"tag"}],
-		[`$foo`, null, `unknown term '$foo'`],
+		[`$type`, null],
+		[`$tag`, null],
+		[`$security`, null],
+		[`$threadsafety`, null],
+		[`$typecat`, null],
+		[`$foo`, new grammar.Error(`unknown term`)],
 
 		[`is:class`, {expr:"any",types:[DB.T.CLASS]}],
-		[`is:foo`, null, `unknown term 'is:foo'`],
+		[`is:foo`, new grammar.Error(`unknown term 'is:foo'`)],
 
 		[`removed:`, {expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}],
 		[`removed:true`, {expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}],
 		[`removed:false`, {expr:"not",operand:{expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}}],
-		[`removed:falsey`, null, {line: 1, column: 9, error: /^unexpected character .*$/}],
+		[`removed:falsey`, new grammar.Error(/^unexpected character .*$/)],
 
-		[`superclasses:`, null, `expected number`],
+		[`superclasses:`, {expr:"op", types: [DB.T.CLASS], field: F.SUPERCLASSES, method: M.TRUE, args: []}],
 		[`superclasses:4`, {expr:"op", types: [DB.T.CLASS], field: F.SUPERCLASSES, method: M.N_EQ, args: [4]}],
 		[`superclasses:<4`, {expr:"op", types: [DB.T.CLASS], field: F.SUPERCLASSES, method: M.N_LT, args: [4]}],
 		[`superclasses:<=4`, {expr:"op", types: [DB.T.CLASS], field: F.SUPERCLASSES, method: M.N_LE, args: [4]}],
@@ -57,7 +61,7 @@ function TESTS(DB, F, M) {
 		[`superclasses:>=4`, {expr:"op", types: [DB.T.CLASS], field: F.SUPERCLASSES, method: M.N_GE, args: [4]}],
 		[`SUPERCLASSES:4`, {expr:"op", types: [DB.T.CLASS], field: F.SUPERCLASSES, method: M.N_EQ, args: [4]}],
 
-		[`subclasses:`, null, `expected number`],
+		[`subclasses:`, {expr:"op", types: [DB.T.CLASS], field: F.SUBCLASSES, method: M.TRUE, args: []}],
 		[`subclasses:4`, {expr:"op", types: [DB.T.CLASS], field: F.SUBCLASSES, method: M.N_EQ, args: [4]}],
 		[`subclasses:<4`, {expr:"op", types: [DB.T.CLASS], field: F.SUBCLASSES, method: M.N_LT, args: [4]}],
 		[`subclasses:<=4`, {expr:"op", types: [DB.T.CLASS], field: F.SUBCLASSES, method: M.N_LE, args: [4]}],
@@ -65,7 +69,7 @@ function TESTS(DB, F, M) {
 		[`subclasses:>=4`, {expr:"op", types: [DB.T.CLASS], field: F.SUBCLASSES, method: M.N_GE, args: [4]}],
 		[`SUBCLASSES:4`, {expr:"op", types: [DB.T.CLASS], field: F.SUBCLASSES, method: M.N_EQ, args: [4]}],
 
-		[`members:`, null, `expected number`],
+		[`members:`, {expr:"op", types: [DB.T.CLASS], field: F.MEMBERS, method: M.TRUE, args: []}],
 		[`members:4`, {expr:"op", types: [DB.T.CLASS], field: F.MEMBERS, method: M.N_EQ, args: [4]}],
 		[`members:<4`, {expr:"op", types: [DB.T.CLASS], field: F.MEMBERS, method: M.N_LT, args: [4]}],
 		[`members:<=4`, {expr:"op", types: [DB.T.CLASS], field: F.MEMBERS, method: M.N_LE, args: [4]}],
@@ -97,6 +101,8 @@ function deepeq(a, b, lvl, ref) {
 			};
 		};
 		return true;
+	} else if (a === null || b === null) {
+		return a === b;
 	} else if (typeof a === "object" && typeof b === "object") {
 		const s = new Set();
 		for (let k in a) { s.add(k) };
@@ -137,15 +143,22 @@ function matchError(expected, got) {
 	return true;
 };
 
+function tostring(s) {
+	if (s instanceof grammar.Error) {
+		return s.toString();
+	}
+	return s;
+}
+
 export function run([DB, F, M]) {
-	const queryParser = grammar.make(queryGrammar.forDatabase(DB, F, M));
+	const queryParser = queryGrammar.forDatabase(DB, F, M);
 	for (let test of TESTS(DB, F, M)) {
-		const [input, expected, err] = test;
+		const [input, expected] = test;
 		const result = queryParser(input, "main", "debug");
 		if (!(result instanceof grammar.Error)) {
 			if (expected === undefined) {
 				console.log(`INPUT  ${input}\nOUTPUT ${JSON.stringify(result.capture)}\nGLOBAL ${JSON.stringify(result.global)}\n`);
-			} else if (expected === null) {
+			} else if (expected instanceof grammar.Error) {
 				console.log(`INPUT    ${input}\nEXPECTED ERROR\nGLOBAL ${JSON.stringify(result.global)}\n`);
 			} else {
 				if (!deepeq(expected, result.capture)) {
@@ -153,9 +166,9 @@ export function run([DB, F, M]) {
 				};
 			};
 		} else {
-			if (expected === null) {
-				if (!matchError(err, result)) {
-					console.log(`INPUT    ${input}\nEXPECTED ${err}\nERROR    ${result.error}\n`);
+			if (expected instanceof grammar.Error) {
+				if (!matchError(expected, result)) {
+					console.log(`INPUT    ${input}\nEXPECTED ${tostring(expected)}\nERROR    ${result.error}\n`);
 				};
 			} else {
 				console.log(`INPUT ${input}\nERROR ${result.error}\n`);

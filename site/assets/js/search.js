@@ -431,39 +431,48 @@ function exprTypes(types, expr) {
 
 // Performs a search of db using expr as the query.
 function search(db, expr) {
-	// Select only types relevant to the query.
-	let types = [];
-	exprTypes(types, expr);
-	types = [... new Set(types)];
+	let searchResults = [];
+	if (expr.global.results) {
+		for (let x of expr.global.results) {
+			searchResults.push({row: x, score: 1000});
+		};
+	};
+	if (expr.capture) {
+		// Select only types relevant to the query.
+		let types = [];
+		exprTypes(types, expr.capture);
+		types = [... new Set(types)];
 
-	let results = [];
-	for (let type of types) {
-		const length = db.tables.get(type).length;
-		for (let i = 0; i < length; i++) {
-			const row = new Row(db, type, i);
-			const score = rowMatches(row, expr)
-			if (score > 0) {
-				results.push({row: row, score: score});
+		let results = [];
+		for (let type of types) {
+			const length = db.tables.get(type).length;
+			for (let i = 0; i < length; i++) {
+				const row = new Row(db, type, i);
+				const score = rowMatches(row, expr.capture);
+				if (score > 0) {
+					results.push({row: row, score: score});
+				};
 			};
 		};
-	};
 
-	// Group results by identifier. JS does not have tuples, so an identifier is
-	// built as a null-separated string.
-	let ids = new Set();
-	let final = [];
-	for (let result of results) {
-		const row = result.row;
-		const id = row.type + "\0" + row.primary + (row.secondary ? ("\0"+row.secondary) : "");
-		if (ids.has(id)) {
-			continue;
+		// Group results by identifier. JS does not have tuples, so an identifier is
+		// built as a null-separated string.
+		let ids = new Set();
+		let final = [];
+		for (let result of results) {
+			const row = result.row;
+			const id = row.type + "\0" + row.primary + (row.secondary ? ("\0"+row.secondary) : "");
+			if (ids.has(id)) {
+				continue;
+			};
+			ids.add(id);
+			final.push(result);
 		};
-		ids.add(id);
-		final.push(result);
+		// Sort results descending by score.
+		final.sort((a, b) => b.score - a.score);
+		searchResults.push(...final);
 	};
-	// Sort results descending by score.
-	final.sort((a, b) => b.score - a.score);
-	return new SearchResults(db, final, 50);
+	return new SearchResults(db, searchResults, 50);
 };
 
 function forEachSecurity(row, visit) {
@@ -499,6 +508,11 @@ class SearchResults {
 			const score = result.score;
 			const item = document.createElement("li");
 			item.title = `score: ${score}`
+			if (typeof row === "string") {
+				item.textContent = row;
+				parent.appendChild(item);
+				continue;
+			};
 
 			item.classList.add("set");
 			if (row.tag("Deprecated")) {
@@ -964,25 +978,26 @@ function initSearchInput() {
 		getDatabase()
 			.then(function([DB, F, M]) {
 				if (!parseQuery) {
-					parseQuery = grammar.make(queryGrammar.forDatabase(DB, F, M));
+					parseQuery = queryGrammar.forDatabase(DB, F, M);
 				};
 				let expr;
 				if (window.DEBUG) {
-					expr = parseQuery(query);
-					console.log("RESULT", expr);
+					expr = parseQuery(query, "main", "debug");
+					console.log("EXPR", expr);
 					if (!expr || (expr instanceof grammar.Error)) {
 						render(`Error parsing query: line ${expr.line}, column ${expr.column}: ${expr.error}`);
 					};
-					render(statusFilter(search(DB, expr.capture)));
+					render(statusFilter(search(DB, expr)));
 				} else {
 					try {
-						expr = parseQuery(query);
+						expr = parseQuery(query, "main", "debug");
 					} catch (error) {
 						console.log("PARSE ERROR", error);
 					};
 					if (!expr || (expr instanceof grammar.Error)) {
 						// Fallback to fuzzy search.
 						expr = {
+							global: {},
 							capture: {expr: "or", operands: [
 								{expr: "op",
 									types: DB.T.PRIMARY,
@@ -998,7 +1013,7 @@ function initSearchInput() {
 						};
 					};
 					try {
-						render(statusFilter(search(DB, expr.capture)));
+						render(statusFilter(search(DB, expr)));
 					} catch (error) {
 						console.log("SEARCH ERROR", error);
 						render("An error occurred.");

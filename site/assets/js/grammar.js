@@ -240,7 +240,7 @@ function expected(s, i, expected, got) {
 };
 
 // Produces a new parser from a grammar.
-export function make(grammar) {
+export function make(grammar, globalValue) {
 	const globalRules = new Map(grammar({
 		ref: ref,
 		lit: lit,
@@ -257,7 +257,7 @@ export function make(grammar) {
 
 	// Invokes rule while handling any decorators and context.
 	function invoke(rule, ctx) {
-		if (rule.$debug_before && ctx.debug !== undefined) {
+		if (rule.$debug_before) {
 			debugger;
 		};
 		const prevName = ctx.name;
@@ -275,7 +275,7 @@ export function make(grammar) {
 		};
 		ctx.outer = value;
 		const [ok, match, capture] = rule(ctx);
-		if (rule.$debug_after && ctx.debug !== undefined) {
+		if (rule.$debug_after) {
 			debugger;
 		};
 		if (ok) {
@@ -391,6 +391,28 @@ export function make(grammar) {
 			};
 			return rule;
 		};
+		rule.appendGlobal = (f, v) => {
+			if (v === undefined) {
+				rule.$global = (g, x) => {
+					if (!(g[f] instanceof Array)) {
+						g[f] = [];
+					};
+					g[f].push(x);
+				};
+			} else {
+				rule.$global = (g) => {
+					if (!(g[f] instanceof Array)) {
+						g[f] = [];
+					};
+					g[f].push(v);
+				};
+			};
+			return rule;
+		};
+		rule.callGlobal = (f) => {
+			rule.$global = f;
+			return rule;
+		};
 		rule.debug = (v) => {
 			rule.$debug_after = v === undefined ? true : v;
 			return rule;
@@ -491,11 +513,10 @@ export function make(grammar) {
 	// capture.
 	function seq(...rules) {
 		return suffixDecorators((ctx) => {
-			let ok, match, capture;
+			let capture;
 			const i = ctx.i;
 			for (let rule of rules) {
-				let cap;
-				[ok, match, cap] = invoke(rule, ctx);
+				let [ok, match, cap] = invoke(rule, ctx);
 				if (!ok) {
 					ctx.i = i
 					return [false, match];
@@ -589,7 +610,7 @@ export function make(grammar) {
 		});
 	};
 
-	return function(source, name, debug) {
+	return function(source, name) {
 		name = typeof name === "string" ? name : "main";
 		const rule = globalRules.get(name);
 		if (!rule) {
@@ -597,13 +618,12 @@ export function make(grammar) {
 		};
 
 		const ctx = {
-			debug: debug,
 			source: source,
 			i: 0,
-			global: {},
+			global: globalValue ? globalValue() : {},
 		};
 
-		let err;
+		let err, cap;
 		try {
 			const [ok, match, capture] = invoke(rule, ctx);
 			if (ok) {
@@ -615,11 +635,7 @@ export function make(grammar) {
 					};
 					err = `unexpected character ${delim}${char}${delim}`;
 				} else {
-					return {
-						match: match,
-						capture: capture,
-						global: ctx.global,
-					};
+					cap = capture;
 				};
 			};
 		} catch (error) {
@@ -628,19 +644,27 @@ export function make(grammar) {
 		if (err) {
 			return new Error(err, ctx);
 		};
+		return {capture: cap, global: ctx.global};
 	};
 };
 
 export class Error {
 	constructor(err, ctx) {
-		const [line, column] = position(ctx.source, ctx.i);
 		this.error = err;
-		this.offset = ctx.i;
-		this.line = line;
-		this.column = column;
-		this.global = ctx.global;
+		if (ctx) {
+			this.global = ctx.global;
+			if (ctx.i) {
+				const [line, column] = position(ctx.source, ctx.i);
+				this.line = line;
+				this.column = column;
+				this.offset = ctx.i;
+			};
+		};
 	};
 	toString() {
-		return `${this.line}:${this.column}: ${this.err}`;
+		if (this.line && this.column) {
+			return `${this.line}:${this.column}: ${this.error}`;
+		};
+		return this.error;
 	};
 };
