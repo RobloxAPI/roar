@@ -213,13 +213,6 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 					flag: x.toLowerCase(),
 				};
 			}),
-			prefix(`has`, ref("word").set()).call((a,x)=>{
-				return {expr: "op",
-					types: DB.T.ALL,
-					field: F[x], //TODO: map to friendly name
-					method: M.TRUE, args: [],
-				};
-			}),
 			prefix(`removed`, opt(ref("bool").set())).call((a,x)=>{
 				let v = {expr: "op",
 					types: DB.T.ALL,
