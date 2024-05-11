@@ -92,9 +92,26 @@ return ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 		)],
 
 		// Binary operators.
-		["or_op", seq(ref("space"), alt(lit(OR_OP_ALT), lit(OR_OP)), ref("space"))],
-		["and_op", seq(alt(name("space").lit(AND_OP_ALT), lit(AND_OP)), ref("space"))],
-		["not_op", seq(ref("space"), lit(NOT_OP), ref("space"))],
+		["or_op", seq(
+			ref("space"),
+			alt(
+				lit(OR_OP),
+				lit(OR_OP_ALT),
+			),
+			ref("space"),
+		)],
+		["and_op", seq(
+			alt(
+				seq(ref("space"), lit(AND_OP)),
+				name("space").lit(AND_OP_ALT),
+			),
+			ref("space"),
+		)],
+		["not_op", seq(
+			ref("space"),
+			lit(NOT_OP),
+			ref("space"),
+		)],
 
 		// Expression is divided in order to implement operator precedence. The
 		// top expression allows || and &&, while the inner expression only
