@@ -171,8 +171,10 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- end }}
 				{{- $changes := slice | append (index site.Data.History.Object.Member .Class .Name) }}
 				{{- if $changes }}
-					<h4>History {{partial "component/element-count.html" (len $changes)}}</h4>
+					<details>
+					<summary><h4>History {{partial "component/element-count.html" (len $changes)}}</h4></summary>
 					{{- partial "history/change-list.html" (dict "changes" $changes "truncated" true "hascontext" true) }}
+					</details>
 				{{- end }}
 			{{- if $dump.Tags }}
 				<div class="tags">Tags: [{{delimit $dump.Tags ", "}}]</div>

@@ -1,5 +1,5 @@
 // Headings.
-h1,h2,h3,h4,h5,h6 {
+h1,h2,h3,h4,h5,h6,summary:has(:is(h1,h2,h3,h4,h5,h6))  {
 	--heading-font-size: calc(var(--heading-scale,1) * var(--font-size));
 	--heading-bottom: var(--baseline);
 	font-size: var(--heading-font-size);
@@ -14,3 +14,14 @@ h3 { --heading-scale: calc(7/6) }
 h4 { --heading-scale: calc(6/6) }
 h5 { --heading-scale: calc(5/6) }
 h6 { --heading-scale: calc(4/6) }
+
+summary:has(:is(h1,h2,h3,h4,h5,h6)) {
+	cursor: pointer;
+	:is(h1,h2,h3,h4,h5,h6) {
+		margin: 0;
+		display: inline-block;
+	}
+}
+details:not([open]) summary :is(h1,h2,h3,h4,h5,h6):after {
+	content: " ...";
+}
