@@ -472,7 +472,7 @@ function search(db, expr) {
 		final.sort((a, b) => b.score - a.score);
 		searchResults.push(...final);
 	};
-	return new SearchResults(db, searchResults, 50);
+	return new SearchResults(db, searchResults, expr.global.limit);
 };
 
 function forEachSecurity(row, visit) {
@@ -497,11 +497,14 @@ class SearchResults {
 		let n = this.rows.length;
 		if (n === 0) {
 			parent.appendChild(element("i", "No results found."));
-			return;
+			return 0;
 		};
-		if (this.limit && this.limit > 0 && this.limit < n) {
+		if (typeof this.limit === "number") {
 			n = this.limit;
+		} else {
+			n = 50;
 		};
+		n = Math.max(0, Math.min(n, this.rows.length));
 		for (let i = 0; i < n; i++) {
 			const result = this.rows[i];
 			const row = result.row;
@@ -537,6 +540,7 @@ class SearchResults {
 			item.appendChild(entityLink(row));
 			parent.appendChild(item);
 		};
+		return n;
 	};
 };
 
@@ -949,6 +953,7 @@ function initSearchInput() {
 		// Show results.
 		main.style.display = "none";
 		searchResults.style.display = "";
+		heading.textContent = `Search results`
 
 		switch (true) {
 		case typeof results === "string":
@@ -959,11 +964,13 @@ function initSearchInput() {
 			return;
 		case results instanceof Element:
 			searchResults.appendChild(results);
+			return;
 		};
 
 		const list = document.createElement("ul");
-		results.render(list);
+		const n = results.render(list);
 		searchResults.appendChild(list);
+		heading.textContent += ` (${n})`;
 	};
 
 	let parseQuery;
