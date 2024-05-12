@@ -459,7 +459,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		)],
 
 		// Prefixes related to search results.
-		["results", init(()=>({})).alt(
+		["results", alt(
 			prefix(`limit`, ref("number").global("limit")),
 			prefix(`order`, seq(
 				opt(alt(lit(LT), lit(GT))).field("direction"),
