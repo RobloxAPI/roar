@@ -469,14 +469,15 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		).call(()=>null)],
 
 		// Term for dot-separated names.
-		["compound", init(()=>[]).alt(
-			seq(
+		["compound", alt(
+			init(()=>[]).seq(
 				ref("string_expr").call((a,x) => {
 					a.push({expr:"op",
 						types: DB.T.ALL,
 						field: F.PRIMARY,
 						...x,
 					});
+					return a;
 				}),
 				lit(COMPOUND),
 				ref("string_expr").call((a,x) => {
@@ -485,19 +486,21 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 						field: F.SECONDARY,
 						...x,
 					});
+					return a;
 				}),
-			),
-			seq(
+			).set(),
+			init(()=>[]).seq(
 				ref("string_expr").call((a,x) => {
 					a.push({expr:"op",
 						types: DB.T.ALL,
 						field: F.PRIMARY,
 						...x,
 					});
+					return a;
 				}),
 				lit(COMPOUND),
-			),
-			seq(
+			).set(),
+			init(()=>[]).seq(
 				lit(COMPOUND),
 				ref("string_expr").call((a,x) => {
 					a.push({expr:"op",
@@ -505,8 +508,9 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 						field: F.SECONDARY,
 						...x,
 					});
+					return a;
 				}),
-			),
+			).set(),
 		).call((a,x) => (x.length==1 ? x[0] : {expr: "or", operands: x}))],
 
 		// Term matching primary or secondary name.
