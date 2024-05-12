@@ -274,24 +274,24 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			prefix(`memecat`, ref("opt_string_expr").set().callGlobal((g,x)=>{
 				g.results.push(`˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚ᓚ₍ ˆ•⩊•ˆ₎`+(x?` ⦟⟮ ${x.args[0]} ⟯`:``));
 			})).call(()=>null),
-			prefix(`threadsafety`, opt(ref("word")).set()).call((a,x)=>{
+			prefix(`threadsafety`, ref("opt_string_expr").set()).call((a,x)=>{
 				return {expr:"op",
 					types: DB.T.MEMBERS,
 					field: F.THREAD_SAFETY,
-					method: M.FUZZY, args:[x],
+					...x,
 				};
 			}),
-			prefix(`security`, opt(ref("word")).set()).call((a,x)=>{
+			prefix(`security`, ref("opt_string_expr").set()).call((a,x)=>{
 				return {expr:"or", operands:[
 					{expr:"op",
 						types: DB.T.MEMBERS,
 						field: F.SECURITY,
-						method: M.FUZZY, args:["foo"],
+						...x,
 					},
 					{expr:"op",
 						types: [DB.T.PROPERTY],
 						field: F.WRITE_SECURITY,
-						method: M.FUZZY, args:["foo"],
+						...x,
 					},
 				]};
 			}),
@@ -309,18 +309,18 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 					method: M.EQ, args:[!!x],
 				};
 			}),
-			prefix(`readsecurity`, opt(ref("word")).set()).call((a,x)=>{
+			prefix(`readsecurity`, ref("opt_string_expr").set()).call((a,x)=>{
 				return {expr:"op",
 					types: [DB.T.PROPERTY],
 					field: F.READ_SECURITY,
-					method: M.FUZZY, args:["foo"],
+					...x,
 				};
 			}),
-			prefix(`writesecurity`, opt(ref("word")).set()).call((a,x)=>{
+			prefix(`writesecurity`, ref("opt_string_expr").set()).call((a,x)=>{
 				return {expr:"op",
 					types: [DB.T.PROPERTY],
 					field: F.WRITE_SECURITY,
-					method: M.FUZZY, args:["foo"],
+					...x,
 				};
 			}),
 			prefix(`valuetypecat`, ref("opt_string_expr").set()).call((a,x)=>{
