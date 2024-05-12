@@ -511,7 +511,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 					return a;
 				}),
 			).set(),
-		).call((a,x) => (x.length==1 ? x[0] : {expr: "or", operands: x}))],
+		).call((a,x) => (x.length==1 ? x[0] : {expr: "and", operands: x}))],
 
 		// Term matching primary or secondary name.
 		["name", ref("string_expr").call((a,x) => {
