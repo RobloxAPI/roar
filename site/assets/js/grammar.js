@@ -489,7 +489,7 @@ export function make(grammar, globalValue) {
 				const match = ctx.source.slice(ctx.i).match(re);
 				if (match) {
 					ctx.i += match.index + match[0].length;
-					return [true, match[0]];
+					return [true, match[1]||match[0]];
 				};
 				return [false, expected(ctx.source, ctx.i, ctx.name?ctx.name:token)];
 			});
