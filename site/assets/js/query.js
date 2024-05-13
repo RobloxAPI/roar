@@ -143,13 +143,13 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		["expr_and",
 			init(()=>({expr: "", operands: []})).seq(
 				ref("selector").call(appendOperand),
-				opt(alt(
+				opt(
 					seq(
 						ref("and_op").field("expr", "and"),
 						ref("selector").call(appendOperand),
 						rep(ref("and_op"), ref("selector").call(appendOperand)),
 					),
-				)),
+				),
 			).call(collapse),
 		],
 		["expr_not",
