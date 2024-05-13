@@ -973,7 +973,7 @@ function initSearchInput() {
 		heading.textContent += ` (${n})`;
 	};
 
-	let parseQuery;
+	let parseQuery, printQuery;
 	function doSearch(query, render) {
 		render ||= renderResults;
 		if (query.length === 0) {
@@ -985,10 +985,15 @@ function initSearchInput() {
 		getDatabase()
 			.then(function([DB, F, M]) {
 				if (!parseQuery) {
-					parseQuery = queryGrammar.forDatabase(DB, F, M);
+					[parseQuery, printQuery] = queryGrammar.forDatabase(DB, F, M);
+					parseQuery = parseQuery();
 				};
 				let expr;
 				if (window.DEBUG) {
+					if (printQuery) {
+						console.log(printQuery());
+						printQuery = undefined;
+					};
 					expr = parseQuery(query, "main", "debug");
 					console.log("EXPR", expr);
 					if (!expr || (expr instanceof grammar.Error)) {

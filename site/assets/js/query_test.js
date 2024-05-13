@@ -151,7 +151,8 @@ function tostring(s) {
 }
 
 export function run([DB, F, M]) {
-	const queryParser = queryGrammar.forDatabase(DB, F, M);
+	let [queryParser] = queryGrammar.forDatabase(DB, F, M);
+	queryParser = queryParser();
 	for (let test of TESTS(DB, F, M)) {
 		const [input, expected] = test;
 		const result = queryParser(input, "main", "debug");

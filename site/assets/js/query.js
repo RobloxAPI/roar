@@ -465,7 +465,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 				...x,
 			};
 		}),
-	))
+	).newline())
 
 	// Prefixes related to search results.
 	rule("results", alt(
@@ -678,5 +678,5 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 	))
 	rule("digits", lit(DIGITS))
 };
-return grammar.make(rules, globalValue);
+return [()=>grammar.make(rules, globalValue), ()=>grammar.print(rules)];
 };

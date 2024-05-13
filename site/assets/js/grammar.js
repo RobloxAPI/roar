@@ -239,6 +239,293 @@ function expected(s, i, expected, got) {
 	return `${line}:${column}: expected ${expected}, got ${got}`;
 };
 
+export function print(grammar, entry) {
+	const globalRules = new Map();
+	function globalRule(name, sub) {
+		globalRules.set(name, sub);
+	};
+
+	// Decorates rule with methods that add behaviors. Enables the decoration of
+	// a rule after it has been created.
+	//
+	//     rule().decorate()
+	function suffixDecorators(rule) {
+		rule.skip = () => {
+			rule.$cap = "skip";
+			return rule;
+		};
+		rule.set = (v) => {
+			if (v === undefined) {
+				rule.$cap = "set:v";
+			} else {
+				rule.$cap = "set:x";
+			};
+			return rule;
+		};
+		rule.append = (v) => {
+			if (v === undefined) {
+				rule.$cap = "append:x";
+			} else {
+				rule.$cap = "append:v";
+			};
+			return rule;
+		};
+		rule.field = (f, v) => {
+			if (v === undefined) {
+				rule.$cap = "field:x";
+			} else {
+				rule.$cap = "field:v";
+			};
+			return rule;
+		};
+		rule.appendField = (f, v) => {
+			if (v === undefined) {
+				rule.$cap = "appendField:x";
+			} else {
+				rule.$cap = "appendField:v";
+			};
+			return rule;
+		};
+		rule.call = (f) => {
+			rule.$cap = "call";
+			return rule;
+		};
+		rule.global = (f, v) => {
+			if (v === undefined) {
+				rule.$global = "global:x";
+			} else {
+				rule.$global = "global:v";
+			};
+			return rule;
+		};
+		rule.appendGlobal = (f, v) => {
+			if (v === undefined) {
+				rule.$global = "appendGlobal:x";
+			} else {
+				rule.$global = "appendGlobal:v";
+			};
+			return rule;
+		};
+		rule.callGlobal = (f) => {
+			rule.$global = "callGlobal";
+			return rule;
+		};
+		rule.debug = (v) => {
+			rule.$debug_after = v === undefined ? true : v;
+			return rule;
+		};
+		rule.newline = () => {
+			rule.$newline = true;
+			return rule;
+		};
+		return rule;
+	};
+
+	// Warning: This code is icky.
+
+	function stackPrev(fn, prev) {
+		return (rule) => {fn(rule); prev(rule)};
+	};
+
+	// Enables the decoration of a rule before it has been created.
+	//
+	//     decorate().rule()
+	function prefixDecorators(f) {
+		return (...a) => {
+			let fn = f(...a);
+			const self = {
+				ref: (...a) => {const r = ref(...a); fn(r); return r },
+				lit: (...a) => {const r = lit(...a); fn(r); return r },
+				seq: (...a) => {const r = seq(...a); fn(r); return r },
+				alt: (...a) => {const r = alt(...a); fn(r); return r },
+				opt: (...a) => {const r = opt(...a); fn(r); return r },
+				rep: (...a) => {const r = rep(...a); fn(r); return r },
+				exc: (...a) => {const r = exc(...a); fn(r); return r },
+
+				init:       (...a) => { fn = stackPrev(init      (...a), fn); return self },
+				name:       (...a) => { fn = stackPrev(name      (...a), fn); return self },
+				ignoreCase: (...a) => { fn = stackPrev(ignoreCase(...a), fn); return self },
+				debug:      (...a) => { fn = stackPrev(debug     (...a), fn); return self },
+			};
+			return self;
+		};
+	};
+
+	// Initializes a capture method.
+	function init() {
+		return (rule) => rule.$init = "init";
+	};
+	// Sets readable name for error messages.
+	function name(name) {
+		return (rule) => rule.$name = name;
+	};
+	// Causes lit rules to ignore casing.
+	function ignoreCase() {
+		return (rule) => rule.$ignoreCase = true;
+	};
+	function debug(v) {
+		return (rule) => rule.$debug_before = v === undefined ? true : v;
+	};
+
+	function invoke(rule, ctx) {
+		const prev = ctx.nl;
+		ctx.nl = rule.$newline;
+		rule(ctx);
+		ctx.nl = prev;
+	};
+
+	// Resolves a reference to a named production.
+	function ref(name) {
+		return suffixDecorators((ctx) => {
+			ctx.append(name);
+		});
+	};
+	// Literal. Matches when the given string or RegExp matches exactly.
+	function lit(token) {
+		if (token instanceof RegExp) {
+			return suffixDecorators((ctx) => {
+				ctx.append(token);
+			});
+		} else {
+			return suffixDecorators((ctx) => {
+				ctx.append("`", token, "`");
+			});
+		};
+	};
+	// Sequence. Matches when all rules match. Selects the last non-undefined
+	// capture.
+	function seq(...rules) {
+		return suffixDecorators((ctx) => {
+			if (rules.length == 1) {
+				rules[0](ctx);
+				return;
+			};
+			ctx.append("(");
+			ctx.newline(1);
+			let sep = false;
+			for (let rule of rules) {
+				if (sep) {
+					ctx.newline(0);
+				};
+				sep = true;
+				invoke(rule, ctx);
+			};
+			ctx.newline(-1);
+			ctx.append(")");
+		});
+	};
+	// Alteration. Matches when any rules match.
+	function alt(...rules) {
+		return suffixDecorators((ctx) => {
+			if (rules.length == 1) {
+				rule[0](ctx);
+				return;
+			};
+			ctx.append("(");
+			ctx.newline(1);
+			let sep = false;
+			for (let rule of rules) {
+				if (sep) {
+					ctx.newline(0);
+					ctx.append("| ");
+				};
+				sep = true;
+				invoke(rule, ctx);
+			};
+			ctx.newline(-1);
+			ctx.append(")");
+		});
+	};
+	// Optional. Matches 0 or 1 of seq(...rules).
+	function opt(...rules) {
+		return suffixDecorators((ctx) => {
+			ctx.append("[");
+			ctx.newline(1);
+			let sep = false;
+			for (let rule of rules) {
+				if (sep) {
+					ctx.newline(0);
+				};
+				sep = true;
+				invoke(rule, ctx);
+			};
+			ctx.newline(-1);
+			ctx.append("]");
+		});
+	};
+	// Repetition. Matches any number of seq(...rules).
+	function rep(...rules) {
+		return suffixDecorators((ctx) => {
+			ctx.append("{");
+			ctx.newline(1);
+			let sep = false;
+			for (let rule of rules) {
+				if (sep) {
+					ctx.newline(0);
+				};
+				sep = true;
+				invoke(rule, ctx);
+			};
+			ctx.newline(-1);
+			ctx.append("}");
+		});
+	};
+	// Exception. Match everything up to the given rule.
+	function exc(rule) {
+		return suffixDecorators((ctx) => {
+			ctx.append(`!`);
+			invoke(rule, ctx);
+		});
+	};
+
+	grammar({
+		rule: globalRule,
+		ref: ref,
+		lit: lit,
+		seq: seq,
+		alt: alt,
+		opt: opt,
+		rep: rep,
+		exc: exc,
+		init: prefixDecorators(init),
+		name: prefixDecorators(name),
+		ignoreCase: prefixDecorators(ignoreCase),
+		debug: prefixDecorators(debug),
+	});
+
+	entry = typeof entry === "string" ? entry : "main";
+	const rule = globalRules.get(entry);
+	if (!rule) {
+		throw `unknown rule: ${entry}`;
+	};
+
+	const builder = [];
+	const ctx = {
+		builder: builder,
+		append: (...x) => builder.push(...x),
+		level: 0,
+		newline: (l) => {
+			if (!ctx.nl) {
+				builder.push(" ");
+				return;
+			};
+			if (l) {
+				ctx.level += l;
+			};
+			if (builder.length > 0) {
+				builder[builder.length-1] = builder[builder.length-1].trimEnd();
+			};
+			builder.push("\n", "    ".repeat(ctx.level));
+		},
+	};
+	for (let [name, rule] of globalRules) {
+		builder.push(name, " = ");
+		invoke(rule, ctx);
+		builder.push(";\n");
+	};
+	return builder.join("");
+}
+
 // Produces a new parser from a grammar.
 export function make(grammar, globalValue) {
 	const globalRules = new Map();
@@ -408,6 +695,7 @@ export function make(grammar, globalValue) {
 			rule.$debug_after = v === undefined ? true : v;
 			return rule;
 		};
+		rule.newline = () => rule;
 		return rule;
 	};
 
