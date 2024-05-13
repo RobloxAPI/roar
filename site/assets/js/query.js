@@ -23,7 +23,7 @@ const SUB_STRING    = "'";
 const EXACT_STRING  = '"';
 const ESCAPE        = "\\";
 const REGEXP        = "/";
-const REGEXP_FLAGS  = /^[imsuv]/;
+const REGEXP_FLAGS  = /^[imsuv]*/;
 const ALL           = "*";
 const ANY           = /^./;;
 const POS           = "+";
@@ -46,6 +46,10 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 	function prefix(name, value) {
 		return seq(word(name), lit(PREFIX), value);
 	}
+	// lit that matches anything except char.
+	function except(char) {
+		return name(char).lit(new RegExp(`^[^${char}]`));
+	};
 
 	// .call: Append x only if it is valid.
 	function appendOperand(a, x) {
@@ -560,24 +564,24 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		["string_sq",
 			seq(
 				lit(SUB_STRING),
-				rep(alt(seq(lit(ESCAPE), ref("any")), exc(lit(SUB_STRING)))),
+				init(()=>[]).rep(alt(ref("escapes"), except(SUB_STRING).set()).append()).set(),
 				lit(SUB_STRING),
-			).call((a, x) => ({method: M.SUB, args:[JSON.parse('"'+x.slice(1, -1)+'"')]})),
+			).call((a, x) => ({method: M.SUB, args:[x.join("")]})),
 		],
 		["string_dq",
 			seq(
 				lit(EXACT_STRING),
-				rep(alt(seq(lit(ESCAPE), ref("any")), exc(lit(EXACT_STRING)))),
+				init(()=>[]).rep(alt(ref("escapes"), except(EXACT_STRING).set()).append()).set(),
 				lit(EXACT_STRING),
-			).call((a, x) => ({method: M.EQ, args:[JSON.parse(x)]})),
+			).call((a, x) => ({method: M.EQ, args:[x.join("")]})),
 		],
 		["regexp",
 			seq(
 				lit(REGEXP),
-				rep(alt(seq(lit(ESCAPE), ref("any")), exc(lit(REGEXP)))),
+				rep(alt(seq(lit(ESCAPE), lit(REGEXP)), except(REGEXP))),
 				lit(REGEXP),
-				opt(name("flags").lit(REGEXP_FLAGS)),
-			).call((a, x) => {
+				lit(REGEXP_FLAGS),
+			).call((a,x) => {
 				const i = x.lastIndexOf("/");
 				const pattern = x.slice(1, i);
 				const flags = x.slice(i+1);
@@ -585,6 +589,27 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			}),
 		],
 		["any", name("any").lit(ANY)],
+
+		["escapes", seq(lit(ESCAPE), alt(
+			lit(ESCAPE).set(ESCAPE),
+			lit(EXACT_STRING).set(EXACT_STRING),
+			lit(SUB_STRING).set(SUB_STRING),
+			lit(REGEXP).set(REGEXP),
+			lit("t").set("\t"),
+			lit("n").set("\n"),
+			lit("r").set("\r"),
+			lit("\n").set(""),
+			lit(/^x([0-9A-Fa-f]{2})/).call((a,x)=>(String.fromCharCode(parseInt(x, 16)))),
+			lit(/^u([0-9A-Fa-f]{4})/).call((a,x)=>(String.fromCharCode(parseInt(x, 16)))),
+			lit(/^U([0-9A-Fa-f]{8})/).call((a,x)=>{
+				x = parseInt(x, 16);
+				if (x > 0x10FFFF) {
+					return "\uFFFD";
+				};
+				return String.fromCodePoint(x);
+			}),
+			ref("any").set(),
+		))],
 
 		// Sequence of letter characters.
 		["word", name("word").lit(WORD)],
