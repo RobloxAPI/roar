@@ -97,7 +97,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		lit(COMMENT_CLOSE),
 	))
 
-	// Binary operators.
+	// Logical operators.
 	rule("or_op", seq(
 		ref("space"),
 		alt(
@@ -119,42 +119,33 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		ref("space"),
 	))
 
-	// Expression is divided in order to implement operator precedence. The
-	// top expression allows || and &&, while the inner expression only
-	// allows &&.
+	// Logical expression implementing operator precedence.
 	rule("expr",
-		init(()=>({expr: "", operands: []})).seq(
-			ref("selector").call(appendOperand),
-			opt(alt(
-				seq(
-					ref("or_op").field("expr", "or"),
-					ref("expr_and").call(appendOperand),
-					rep(ref("or_op"), ref("expr_and").call(appendOperand)),
-				),
-				seq(
-					ref("and_op").field("expr", "and"),
-					ref("expr_and").call(appendOperand),
-					rep(ref("and_op"), ref("expr_and").call(appendOperand)),
-				),
-			)),
-		).call(collapse),
-	)
-	rule("expr_and",
-		init(()=>({expr: "", operands: []})).seq(
-			ref("selector").call(appendOperand),
-			opt(
-				seq(
-					ref("and_op").field("expr", "and"),
-					ref("selector").call(appendOperand),
-					rep(ref("and_op"), ref("selector").call(appendOperand)),
-				),
+		init(()=>({expr: "or", operands: []})).seq(
+			ref("expr1").call(appendOperand),
+			rep(
+				ref("or_op"),
+				ref("expr1").call(appendOperand),
 			),
 		).call(collapse),
 	)
-	rule("expr_not",
-		init(()=>({expr: "not", operand: null})).seq(
-			ref("not_op"),
-			ref("selector").call(operand),
+	rule("expr1",
+		init(()=>({expr: "and", operands: []})).seq(
+			ref("expr2").call(appendOperand),
+			rep(
+				ref("and_op"),
+				ref("expr2").call(appendOperand),
+			),
+		).call(collapse),
+	)
+	rule("expr2",
+		alt(
+			ref("selector"),
+			init(()=>({expr: "not", operand: null})).seq(
+				ref("not_op"),
+				ref("expr2").call(operand),
+			),
+			ref("group"),
 		),
 	)
 	rule("group", seq(
@@ -164,14 +155,14 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		ref("space"),
 		lit(GROUP_CLOSE),
 	))
+
+	// All types of selector.
 	rule("selector", alt(
-		ref("expr_not"),
 		ref("meta"),
 		ref("prefixes"),
 		ref("results"),
 		ref("compound"),
 		ref("name"),
-		ref("group"),
 	))
 
 	// Selectors that produce metadata.
