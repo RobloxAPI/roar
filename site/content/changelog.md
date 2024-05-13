@@ -8,6 +8,10 @@ outputs = ["html", "rss"]
 This page lists changes to the website itself.
 
 ## Pending
+- **Implement advanced search engine parser.**
+- The basic search query syntax is the same as before: words will perform a
+  fuzzy search over names.
+- The [search]({{<relref "search">}}) page details the full syntax.
 - Fix missing thread safety field in member sections.
 - Remove redundant member type field in member sections.
 - Consolidate can-load and can-save fields in property sections.
