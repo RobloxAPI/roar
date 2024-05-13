@@ -471,10 +471,10 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		// Prefixes related to search results.
 		["results", alt(
 			prefix(`limit`, ref("number").global("limit")),
-			prefix(`order`, seq(
+			prefix(`sort`, seq(
 				opt(alt(lit(LT), lit(GT))).field("direction"),
 				ref("word").field("column"),
-			)).global("order"),
+			)).global("sort"),
 			prefix(`go`, ref("word").set()).global("go"),
 		).call(()=>null)],
 
