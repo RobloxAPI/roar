@@ -241,19 +241,10 @@ function expected(s, i, expected, got) {
 
 // Produces a new parser from a grammar.
 export function make(grammar, globalValue) {
-	const globalRules = new Map(grammar({
-		ref: ref,
-		lit: lit,
-		seq: seq,
-		alt: alt,
-		opt: opt,
-		rep: rep,
-		exc: exc,
-		init: prefixDecorators(init),
-		name: prefixDecorators(name),
-		ignoreCase: prefixDecorators(ignoreCase),
-		debug: prefixDecorators(debug),
-	}));
+	const globalRules = new Map();
+	function globalRule(name, sub) {
+		globalRules.set(name, sub);
+	};
 
 	// Invokes rule while handling any decorators and context.
 	function invoke(rule, ctx) {
@@ -609,6 +600,21 @@ export function make(grammar, globalValue) {
 			};
 		});
 	};
+
+	grammar({
+		rule: globalRule,
+		ref: ref,
+		lit: lit,
+		seq: seq,
+		alt: alt,
+		opt: opt,
+		rep: rep,
+		exc: exc,
+		init: prefixDecorators(init),
+		name: prefixDecorators(name),
+		ignoreCase: prefixDecorators(ignoreCase),
+		debug: prefixDecorators(debug),
+	});
 
 	return function(source, name) {
 		name = typeof name === "string" ? name : "main";
