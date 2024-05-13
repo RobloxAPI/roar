@@ -208,6 +208,12 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 					return {expr:"any",types:[DB.T.ENUMITEM]};
 				case "type":
 					return {expr:"any",types:[DB.T.TYPE]};
+				case "primary":
+					return {expr:"any",types:DB.T.PRIMARY};
+				case "secondary":
+					return {expr:"any",types:DB.T.SECONDARY};
+				case "member":
+					return {expr:"any",types:DB.T.MEMBERS};
 				};
 				throw `unknown term 'is:${x}'`;
 			}),
