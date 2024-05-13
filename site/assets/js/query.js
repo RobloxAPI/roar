@@ -42,7 +42,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 	function word(w) {
 		return name(w).lit(new RegExp(`^${w}\\b`, "i"));
 	}
-	// Generates a prefix term.
+	// Generates a prefix selector.
 	function prefix(name, value) {
 		return seq(word(name), lit(PREFIX), value);
 	}
@@ -125,7 +125,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		// allows &&.
 		["expr",
 			init(()=>({expr: "", operands: []})).seq(
-				ref("term").call(appendOperand),
+				ref("selector").call(appendOperand),
 				opt(alt(
 					seq(
 						ref("or_op").field("expr", "or"),
@@ -142,12 +142,12 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		],
 		["expr_and",
 			init(()=>({expr: "", operands: []})).seq(
-				ref("term").call(appendOperand),
+				ref("selector").call(appendOperand),
 				opt(alt(
 					seq(
 						ref("and_op").field("expr", "and"),
-						ref("term").call(appendOperand),
-						rep(ref("and_op"), ref("term").call(appendOperand)),
+						ref("selector").call(appendOperand),
+						rep(ref("and_op"), ref("selector").call(appendOperand)),
 					),
 				)),
 			).call(collapse),
@@ -155,7 +155,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 		["expr_not",
 			init(()=>({expr: "not", operand: null})).seq(
 				ref("not_op"),
-				ref("term").call(operand),
+				ref("selector").call(operand),
 			),
 		],
 		["group", seq(
@@ -165,7 +165,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			ref("space"),
 			lit(GROUP_CLOSE),
 		)],
-		["term", alt(
+		["selector", alt(
 			ref("expr_not"),
 			ref("meta"),
 			ref("prefixes"),
@@ -175,7 +175,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			ref("group"),
 		)],
 
-		// Terms that produce metadata.
+		// Selectors that produce metadata.
 		["meta", seq(
 			lit(META),
 			opt(alt(
@@ -186,13 +186,13 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 				word("typecat").callGlobal((g,x)=>(DB.cats.forEach((x)=>g.results.push(x)))),
 			)).call((a,x)=>{
 				if (!x) {
-					throw `unknown term`;
+					throw `unknown selector`;
 				};
 				return null;
 			}),
 		)],
 
-		// Terms denoted by a prefix.
+		// Selectors denoted by a prefix.
 		["prefixes", alt(
 			prefix(`is`, ref("word").set()).call((a,x)=>{
 				switch (x.toLowerCase()) {
@@ -219,7 +219,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 				case "member":
 					return {expr:"any",types:DB.T.MEMBERS};
 				};
-				throw `unknown term 'is:${x}'`;
+				throw `unknown selector 'is:${x}'`;
 			}),
 			prefix(`tag`, opt(ref("word")).set()).call((a,x)=>{
 				return {expr: "flag",
@@ -282,7 +282,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 				};
 			}),
 			prefix(`memecat`, ref("opt_string_expr").set().callGlobal((g,x)=>{
-				g.results.push(`˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚ᓚ₍ ˆ•⩊•ˆ₎`+(x?` ⦟⟮ ${x.args[0]} ⟯`:``));
+				g.results.push(`˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚ᓚ₍ ˆ•⩊•ˆ₎`+((x&&x.args[0])?` ⦟⟮ ${x.args[0]} ⟯`:``));
 			})).call(()=>null),
 			prefix(`threadsafety`, ref("opt_string_expr").set()).call((a,x)=>{
 				return {expr:"op",
@@ -478,7 +478,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			prefix(`go`, ref("word").set()).global("go"),
 		).call(()=>null)],
 
-		// Term for dot-separated names.
+		// Selector for dot-separated names.
 		["compound", alt(
 			init(()=>[]).seq(
 				ref("string_expr").call((a,x) => {
@@ -523,7 +523,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			).set(),
 		).call((a,x) => (x.length==1 ? x[0] : {expr: "and", operands: x}))],
 
-		// Term matching primary or secondary name.
+		// Selector matching primary or secondary name.
 		["name", ref("string_expr").call((a,x) => {
 			return {expr:"or", operands:[
 				{expr:"op",
@@ -539,8 +539,8 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			]};
 		})],
 
-		// Term that tries to match a numeric expression, then falls back to a
-		// string expression.
+		// Selector that tries to match a numeric expression, then falls back to
+		// a string expression.
 		["default", alt(ref("number_expr"), ref("string_expr"))],
 
 		// Optional string expression defaulting to matching all rows.
@@ -551,7 +551,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			return {method: M.TRUE, args: []};
 		})],
 
-		// Terms for matching stringlike values.
+		// Selectors for matching stringlike values.
 		["string_expr", alt(
 			ref("all"),
 			ref("fuzzy"),
@@ -640,7 +640,7 @@ const rules = ({ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug
 			return {method: M.TRUE, args: []};
 		})],
 
-		// Terms for numbers.
+		// Selectors for numbers.
 		["number_expr", init(()=>({method:M.N_EQ,args:[]})).seq(
 			//TODO:range: `lower-upper`
 			opt(ref("number_op").field("method")),

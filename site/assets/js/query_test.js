@@ -43,10 +43,10 @@ function TESTS(DB, F, M) {
 		[`$security`, null],
 		[`$threadsafety`, null],
 		[`$typecat`, null],
-		[`$foo`, new grammar.Error(`unknown term`)],
+		[`$foo`, new grammar.Error(`unknown selector`)],
 
 		[`is:class`, {expr:"any",types:[DB.T.CLASS]}],
-		[`is:foo`, new grammar.Error(`unknown term 'is:foo'`)],
+		[`is:foo`, new grammar.Error(`unknown selector 'is:foo'`)],
 
 		[`removed:`, {expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}],
 		[`removed:true`, {expr:"op",types:DB.T.ALL,field:F.FLAGS,method:M.REMOVED,args:[]}],
