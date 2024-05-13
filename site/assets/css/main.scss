@@ -50,6 +50,7 @@ $theme: {{site.Params.theme}};
 @import "component/search-database";
 @import "component/search-input";
 @import "component/select";
+@import "component/selector-term";
 @import "component/stats";
 @import "component/status";
 @import "component/tags";

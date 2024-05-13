@@ -1,0 +1,5 @@
+.selector-term {
+	&:hover .permalink::after {
+		content: " ¶";
+	};
+};

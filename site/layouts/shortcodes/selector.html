@@ -1,0 +1,9 @@
+<dt class="selector-term">
+	{{- if .Get "notimplemented" -}}<s>{{- end -}}
+	<code id="selector-{{.Get `id`}}">{{.Get "text"}}</code>
+	{{- if .Get "notimplemented" -}}</s>{{- end -}}
+	<a class="permalink" href="#selector-{{.Get `id`}}"></a>
+</dt>
+{{- if .Inner }}
+<dd>{{.Inner}}</dd>
+{{- end }}
