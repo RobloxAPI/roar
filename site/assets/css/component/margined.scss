@@ -2,10 +2,16 @@
 p, ul, ol, dl, table {
 	margin: var(--baseline) 0;
 }
-ul, ol {
+ul, ol, dd {
 	padding-left: var(--indent);
 }
 ul ul, ul ol, ol ul, ol ol, td ul, td ol {
 	margin-top: 0;
 	margin-bottom: 0;
+}
+dd + dt {
+	margin-top: var(--baseline);
+}
+dd, dd > p {
+	margin: 0;
 }
