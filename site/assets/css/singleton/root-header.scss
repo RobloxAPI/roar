@@ -15,6 +15,36 @@
 		display: none;
 	}
 
+	#search-input:not(:focus) {
+		text-overflow: ellipsis;
+	}
+	&:has(#search-input:focus) {
+		grid-template-columns:
+			minmax(0, 1fr) // Search
+			max-content // Close button
+		;
+		.logo,
+		h1,
+		nav,
+		.root-focuser,
+		.search-focuser,
+		.settings-focuser {
+			display: none;
+		}
+		.none-focuser {
+			display: flex;
+		}
+		#search-form {
+			width: 100%;
+			label {
+				width: 100%;
+				input {
+					width: 100%;
+				}
+			}
+		}
+	}
+
 	@media #{$reduced}, #{$small} {
 		grid-template-columns:
 			max-content // Panel button
