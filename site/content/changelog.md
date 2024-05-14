@@ -11,7 +11,7 @@ This page lists changes to the website itself.
 - **Implement advanced search engine parser.**
 - The basic search query syntax is the same as before: words will perform a
   fuzzy search over names.
-- The [search]({{<relref "search">}}) page details the full syntax.
+- The [search][search] page details the full syntax.
 - While focused, the search bar covers the full width of the header.
 - Fix missing thread safety field in member sections.
 - Remove redundant member type field in member sections.
@@ -19,6 +19,9 @@ This page lists changes to the website itself.
 - Reorganize member sections to display principle data (parameters, types) more
   prominently.
 - Use index card to display property type and default value.
+
+[search]: {{<relref "search">}}
+
 <!---->
 
 ## 2024-05-09
@@ -29,7 +32,7 @@ This page lists changes to the website itself.
 
 ## 2024-05-04
 - Add website change log.
-- Add [RSS feed](/ref/updates/index.xml) for API updates.
+- Add [RSS feed][rss] for API updates.
 - Display default values of class properties.
 - Consolidate and persist class list sorting setting.
 - Improve style of class sort buttons.
@@ -44,6 +47,9 @@ This page lists changes to the website itself.
 - Various minor styling and formatting improvements.
 - Fix nondeterminism in history data.
 - Improve GitHub workflow.
+
+[rss]: {{<relref path="updates" outputFormat="rss">}}
+
 <!---->
 
 ## 2024-04-30
@@ -70,10 +76,13 @@ This page lists changes to the website itself.
 - Add setting to toggle visibility of unscriptable properties.
 - Backend incorporates "full" API dump, which has more information than the
   standard API dump, including serialize-only properties.
-- Add [page listing statistics](/ref/stats.html) about the API.
+- Add [page listing statistics][stats] about the API.
 - Significantly more detailed search database (search syntax coming soon).
 - No longer includes Reflection Metadata (may be added back later).
 - No longer includes custom documentation (docs from creator-docs will be added
   later).
 - Fix search sometimes not including all possible results.
+
+[stats]: {{<relref "stats">}}
+
 <!---->
