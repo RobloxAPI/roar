@@ -604,6 +604,13 @@ Matches numbers that are greater than *N*.
 Matches numbers that are greater than or equal to *N*.
 
 {{%/selector%}}
+
+{{%selector id="number-range" text="N..M"%}}
+
+Matches numbers that are greater than or equal to *N* and less than or equal to
+*M*.
+
+{{%/selector%}}
 </dl>
 
 Also includes the [anything](#selector-any) component.

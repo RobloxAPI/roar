@@ -26,6 +26,7 @@ const REGEXP        = "/";
 const REGEXP_FLAGS  = /^[imsuv]*/;
 const ALL           = "*";
 const ANY           = /^./;;
+const RANGE         = "..";
 const POS           = "+";
 const NEG           = "-";
 const DECIMAL       = ".";
@@ -645,10 +646,15 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 	// Selectors for numbers.
 	rule("number_expr", alt(
 		ref("all"),
+		ref("number_range"),
 		ref("number_operation"),
 	))
+	rule("number_range", init(()=>[]).seq(
+		ref("number").append(),
+		lit(RANGE),
+		ref("number").append(),
+	).call((a,x)=>({method:M.RANGE, args:x})))
 	rule("number_operation", init(()=>({method:M.N_EQ,args:[]})).seq(
-		//TODO:range: `lower-upper`
 		opt(ref("number_op").field("method")),
 		ref("number").appendField("args"),
 	))
