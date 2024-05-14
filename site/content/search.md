@@ -513,49 +513,6 @@ following locations are valid:
 {{%/selector%}}
 </dl>
 
-## Meta selectors
-The inclusion of a meta selector causes certain values to be listed in the
-search results. These selectors are not included in the logic of the query
-expression. Their names are case-insensitive.
-
-<dl>
-{{%selector id="meta-type" text="$type"%}}
-
-Lists each type of entity.
-
-{{%/selector%}}
-
-{{%selector id="meta-tag" text="$tag"%}}
-
-Lists the name of each tag. These names can be used with the
-[`tag`](#selector-tag) selector.
-
-{{%/selector%}}
-
-{{%selector id="meta-security" text="$security"%}}
-
-Lists possible values for the Security field of member entities. These can be
-used with the [`security`](#selector-security),
-[`readsecurity`](#selector-readsecurity), and
-[`writesecurity`](#selector-writesecurity) selectors.
-
-{{%/selector%}}
-
-{{%selector id="meta-threadsafety" text="$threadsafety"%}}
-
-Lists possible values for the ThreadSafety field of member entities. These can
-be used with the [`threadsafety`](#selector-threadsafety) selector.
-
-{{%/selector%}}
-
-{{%selector id="meta-typecat" text="$typecat"%}}
-
-Lists possible values for the Category field of type entities. These can be used
-with the [`typecat`](#selector-typecat) selector.
-
-{{%/selector%}}
-</dl>
-
 ## Components
 These are not selectors themselves, but form components of more specific
 selectors.

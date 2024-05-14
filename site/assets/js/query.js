@@ -158,28 +158,10 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 
 	// All types of selector.
 	rule("selector", alt(
-		ref("meta"),
 		ref("prefixes"),
 		ref("results"),
 		ref("compound"),
 		ref("name"),
-	))
-
-	// Selectors that produce metadata.
-	rule("meta", seq(
-		lit(META),
-		opt(alt(
-			word("type").callGlobal((g,x)=>(DB.types.forEach((x)=>g.results.push(x)))),
-			word("tag").callGlobal((g,x)=>(DB.tags.forEach((_,k)=>g.results.push(k)))),
-			word("security").callGlobal((g,x)=>(DB.secs.forEach((x)=>g.results.push(x)))),
-			word("threadsafety").callGlobal((g,x)=>(DB.safes.forEach((x)=>g.results.push(x)))),
-			word("typecat").callGlobal((g,x)=>(DB.cats.forEach((x)=>g.results.push(x)))),
-		)).call((a,x)=>{
-			if (!x) {
-				throw `unknown selector`;
-			};
-			return null;
-		}),
 	))
 
 	// Selectors denoted by a prefix.
