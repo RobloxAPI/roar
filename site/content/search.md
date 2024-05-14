@@ -17,7 +17,8 @@ Search results will be filtered by the current visibility settings.
 The name selectors are the most simple, comparing against the names of entities.
 
 <dl>
-{{%selector id="name-fuzzy" text="foo"%}}
+{{%selector id="name-fuzzy" text="foo" /%}}
+{{%selector id="name-fuzzy-delimited" text="~foo~"%}}
 
 Selects entities whose name matches *foo*. Selection is case-insensitive, and
 based on a fuzzy matching algorithm.
@@ -522,7 +523,8 @@ selectors.
 Compares against string-like values.
 
 <dl>
-{{%selector id="string-fuzzy" text="text"%}}
+{{%selector id="string-fuzzy" text="text" /%}}
+{{%selector id="string-fuzzy-delimited" text="~text~"%}}
 
 Matches *text* against strings using a fuzzy-matching algorithm.
 Case-insensitive.

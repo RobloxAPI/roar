@@ -21,6 +21,7 @@ const GE            = ">=";
 const COMPOUND      = ".";
 const SUB_STRING    = "'";
 const EXACT_STRING  = '"';
+const FUZZY_STRING  = '~';
 const ESCAPE        = "\\";
 const REGEXP        = "/";
 const REGEXP_FLAGS  = /^[imsuv]*/;
@@ -553,6 +554,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		ref("fuzzy"),
 		ref("sub_string"),
 		ref("exact_string"),
+		ref("fuzzy_string"),
 		ref("regexp"),
 	))
 	rule("all", lit(ALL).set({method: M.TRUE, args:[]}))
@@ -570,6 +572,13 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			init(()=>[]).rep(alt(ref("escapes"), except(EXACT_STRING).set()).append()).set(),
 			lit(EXACT_STRING),
 		).call((a, x) => ({method: M.EQ, args:[x==="" ? x : x.join("")]})),
+	)
+	rule("fuzzy_string",
+		seq(
+			lit(FUZZY_STRING),
+			init(()=>[]).rep(alt(ref("escapes"), except(FUZZY_STRING).set()).append()).set(),
+			lit(FUZZY_STRING),
+		).call((a, x) => ({method: M.FUZZY, args:[x==="" ? x : x.join("")]})),
 	)
 	rule("regexp",
 		seq(
@@ -590,6 +599,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		lit(ESCAPE).set(ESCAPE),
 		lit(EXACT_STRING).set(EXACT_STRING),
 		lit(SUB_STRING).set(SUB_STRING),
+		lit(FUZZY_STRING).set(FUZZY_STRING),
 		lit(REGEXP).set(REGEXP),
 		lit("t").set("\t"),
 		lit("n").set("\n"),
