@@ -42,7 +42,26 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 	function word(w) {
 		return name(w).lit(new RegExp(`^${w}\\b`, "i"));
 	}
-	// Generates a prefix selector.
+	// Generates a field selector. name is the name of the prefix portion. value
+	// is the rule of the suffix portion. The value is made optional. If the
+	// value is empty, then a list selector is emitted, and the rule returns
+	// null. Otherwise, call is invoked.
+	function field(name, value, call) {
+		return seq(word(name), lit(PREFIX), opt(value).set().callGlobal((g,x)=>{
+			if (x !== "") {
+				return;
+			};
+			const expr = DB.F.get(name);
+			if (expr) {
+				g.list.push(expr);
+			};
+		})).call((a,x) => {
+			if (x === "") {
+				return null;
+			};
+			return call(a, x);
+		});
+	}
 	function prefix(name, value) {
 		return seq(word(name), lit(PREFIX), value);
 	}
@@ -166,7 +185,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 
 	// Selectors denoted by a prefix.
 	rule("prefixes", alt(
-		prefix(`is`, ref("word").set()).call((a,x)=>{
+		field(`is`, ref("word"), (a,x)=>{
 			switch (x.toLowerCase()) {
 			case "class":
 				return {expr:"any",types:[DB.T.CLASS]};
@@ -203,14 +222,14 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 				g.list.push(expr);
 			};
 		})).call(()=>null),
-		prefix(`tag`, opt(ref("word")).set()).call((a,x)=>{
+		field(`tag`, ref("word"), (a,x)=>{
 			return {expr: "flag",
 				types: DB.T.ALL,
 				field: F.FLAGS,
 				flag: x.toLowerCase(),
 			};
 		}),
-		prefix(`removed`, opt(ref("bool").set())).call((a,x)=>{
+		field(`removed`, ref("bool"), (a,x)=>{
 			let v = {expr: "op",
 				types: DB.T.ALL,
 				field: F.FLAGS,
@@ -221,42 +240,42 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			};
 			return v;
 		}),
-		prefix(`superclasses`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`superclasses`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],
 				field: F.SUPERCLASSES,
 				...x,
 			};
 		}),
-		prefix(`subclasses`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`subclasses`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],
 				field: F.SUBCLASSES,
 				...x,
 			};
 		}),
-		prefix(`members`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`members`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],
 				field: F.MEMBERS,
 				...x,
 			};
 		}),
-		prefix(`superclass`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`superclass`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],
 				field: F.SUPERCLASS,
 				...x,
 			};
 		}),
-		prefix(`subclass`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`subclass`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],
 				field: F.SUBCLASS,
 				...x,
 			};
 		}),
-		prefix(`memcat`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`memcat`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],
 				field: F.MEM_CAT,
@@ -266,14 +285,14 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		prefix(`memecat`, ref("opt_string_expr").set().callGlobal((g,x)=>{
 			g.results.push(`˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚˖⁺‧₊˚ᓚ₍ ˆ•⩊•ˆ₎`+((x&&x.args[0])?` ⦟⟮ ${x.args[0]} ⟯`:``));
 		})).call(()=>null),
-		prefix(`threadsafety`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`threadsafety`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: DB.T.MEMBERS,
 				field: F.THREAD_SAFETY,
 				...x,
 			};
 		}),
-		prefix(`security`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`security`, ref("string_expr"), (a,x)=>{
 			return {expr:"or", operands:[
 				{expr:"op",
 					types: DB.T.MEMBERS,
@@ -287,161 +306,161 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 				},
 			]};
 		}),
-		prefix(`cansave`, opt(ref("bool")).set()).call((a,x)=>{
+		field(`cansave`, ref("bool"), (a,x)=>{
 			return {expr:"op",
 				types: DB.T.MEMBERS,
 				field: F.CAN_SAVE,
 				method: M.EQ, args:[!!x],
 			};
 		}),
-		prefix(`canload`, opt(ref("bool")).set()).call((a,x)=>{
+		field(`canload`, ref("bool"), (a,x)=>{
 			return {expr:"op",
 				types: DB.T.MEMBERS,
 				field: F.CAN_LOAD,
 				method: M.EQ, args:[!!x],
 			};
 		}),
-		prefix(`readsecurity`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`readsecurity`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.PROPERTY],
 				field: F.READ_SECURITY,
 				...x,
 			};
 		}),
-		prefix(`writesecurity`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`writesecurity`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.PROPERTY],
 				field: F.WRITE_SECURITY,
 				...x,
 			};
 		}),
-		prefix(`valuetypecat`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`valuetypecat`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.PROPERTY],
 				field: F.VALUE_TYPE_CAT,
 				...x,
 			};
 		}),
-		prefix(`valuetypename`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`valuetypename`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.PROPERTY],
 				field: F.VALUE_TYPE_NAME,
 				...x,
 			};
 		}),
-		prefix(`category`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`category`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.PROPERTY],
 				field: F.CATEGORY,
 				...x,
 			};
 		}),
-		prefix(`default`, opt(ref("default"))).call((a,x)=>{
+		field(`default`, ref("default"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.PROPERTY],
 				field: F.DEFAULT,
 				...x,
 			};
 		}),
-		prefix(`returns`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`returns`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.CALLBACK],
 				field: F.RETURNS,
 				...x,
 			};
 		}),
-		prefix(`parameters`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`parameters`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.PARAMETERS,
 				...x,
 			};
 		}),
-		prefix(`returntypecat`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`returntypecat`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.CALLBACK],
 				field: F.RETURN_TYPE_CAT,
 				...x,
 			};
 		}),
-		prefix(`returntypename`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`returntypename`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.CALLBACK],
 				field: F.RETURN_TYPE_NAME,
 				...x,
 			};
 		}),
-		prefix(`returntypeopt`, opt(ref("bool")).set()).call((a,x)=>{
+		field(`returntypeopt`, ref("bool"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.RETURN_TYPE_OPT,
 				method: M.EQ, args:[!!x],
 			};
 		}),
-		prefix(`paramtypecat`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`paramtypecat`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.PARAM_TYPE_CAT,
 				...x,
 			};
 		}),
-		prefix(`paramtypename`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`paramtypename`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.PARAM_TYPE_NAME,
 				...x,
 			};
 		}),
-		prefix(`paramtypeopt`, opt(ref("bool")).set()).call((a,x)=>{
+		field(`paramtypeopt`, ref("bool"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.PARAM_TYPE_OPT,
 				method: M.EQ, args:[!!x],
 			};
 		}),
-		prefix(`paramname`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`paramname`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.PARAM_NAME,
 				...x,
 			};
 		}),
-		prefix(`paramdefault`, opt(ref("default"))).call((a,x)=>{
+		field(`paramdefault`, ref("default"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.CALLBACK],
 				field: F.PARAM_DEFAULT,
 				...x,
 			};
 		}),
-		prefix(`enumitems`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`enumitems`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.ENUM],
 				field: F.ENUM_ITEMS,
 				...x,
 			};
 		}),
-		prefix(`itemvalue`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`itemvalue`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.ENUMITEM],
 				field: F.ITEM_VALUE,
 				...x,
 			};
 		}),
-		prefix(`legacynames`, ref("opt_number_expr").set()).call((a,x)=>{
+		field(`legacynames`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.ENUMITEM],
 				field: F.LEGACY_NAMES,
 				...x,
 			};
 		}),
-		prefix(`legacyname`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`legacyname`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.ENUMITEM],
 				field: F.LEGACY_NAME,
 				...x,
 			};
 		}),
-		prefix(`typecat`, ref("opt_string_expr").set()).call((a,x)=>{
+		field(`typecat`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.TYPE],
 				field: F.TYPE_CAT,
