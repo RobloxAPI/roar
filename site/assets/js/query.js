@@ -13,6 +13,7 @@ const AND_OP        = "&&";
 const AND_OP_ALT    = /^\s+/;
 const NOT_OP        = "!";
 const PREFIX        = ":";
+const RESULT        = "/";
 const LT            = "<";
 const LE            = "<=";
 const GT            = ">";
@@ -157,8 +158,8 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 
 	// All types of selector.
 	rule("selector", alt(
-		ref("prefixes"),
 		ref("results"),
+		ref("prefixes"),
 		ref("compound"),
 		ref("name"),
 	))
@@ -449,15 +450,15 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		}),
 	).newline())
 
-	// Prefixes related to search results.
-	rule("results", alt(
+	// Selectors related to search results.
+	rule("results", seq(lit(RESULT), alt(
 		prefix(`limit`, ref("number").global("limit")),
 		prefix(`sort`, seq(
 			opt(alt(lit(LT), lit(GT))).field("direction"),
 			ref("word").field("column"),
 		)).global("sort"),
 		prefix(`go`, ref("word").set()).global("go"),
-	).call(()=>null))
+	)).call(()=>null))
 
 	// Selector for dot-separated names.
 	rule("compound", alt(
