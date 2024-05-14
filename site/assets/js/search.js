@@ -111,7 +111,7 @@ class Database {
 		this.T.SECONDARY = this.T.MEMBERS.concat(["EnumItem"]);
 
 		this.F = new Map([
-			["primary"        , {field: F.PRIMARY          , types: this.T.PRIMARY}],
+			["primary"        , {field: F.PRIMARY          , types: this.T.ALL}],
 			["secondary"      , {field: F.SECONDARY        , types: this.T.SECONDARY}],
 			["classname"      , {field: F.CLASS_NAME       , types: [this.T.CLASS]}],
 			["superclasses"   , {field: F.SUPERCLASSES     , types: [this.T.CLASS]}],
@@ -120,9 +120,9 @@ class Database {
 			["superclass"     , {field: F.SUPERCLASS       , types: [this.T.CLASS]}],
 			["subclass"       , {field: F.SUBCLASS         , types: [this.T.CLASS]}],
 			["memcat"         , {field: F.MEM_CAT          , types: [this.T.CLASS]}],
-			["membername"     , {field: F.MEMBER_NAME      , types: this.T.MEMBER}],
-			["threadsafety"   , {field: F.THREAD_SAFETY    , types: this.T.MEMBER}],
-			["security"       , {field: F.SECURITY         , types: this.T.MEMBER}],
+			["membername"     , {field: F.MEMBER_NAME      , types: this.T.MEMBERS}],
+			["threadsafety"   , {field: F.THREAD_SAFETY    , types: this.T.MEMBERS}],
+			["security"       , {field: F.SECURITY         , types: this.T.MEMBERS}],
 			["cansave"        , {field: F.CAN_SAVE         , types: [this.T.PROPERTY]}],
 			["canload"        , {field: F.CAN_LOAD         , types: [this.T.PROPERTY]}],
 			["readsecurity"   , {field: F.READ_SECURITY    , types: [this.T.PROPERTY]}],
@@ -150,6 +150,17 @@ class Database {
 			["typename"       , {field: F.TYPE_NAME        , types: [this.T.TYPE]}],
 			["typecat"        , {field: F.TYPE_CAT         , types: [this.T.TYPE]}],
 		]);
+		this.TF = new Map();
+		for (let [field, expr] of this.F) {
+			for (let type of expr.types) {
+				let set = this.TF.get(type);
+				if (!set) {
+					set = new Set();
+					this.TF.set(type, set);
+				};
+				set.add(field);
+			};
+		};
 	};
 	length(type) {
 		return this.tables.get(type).length;
@@ -478,65 +489,106 @@ function search(db, expr) {
 			searchResults.push({row: x, score: 1000});
 		};
 	};
-	// Select only types relevant to the query.
-	if (expr.global.list) {
-		for (let capture of expr.global.list) {
-			let resultsSet = new Set();
-			if (capture.field === null) {
-				for (let [field] of db.F) {
-					resultsSet.add(field);
-				};
-			} else {
-				for (let type of capture.types) {
-					const length = db.tables.get(type).length;
-					for (let i = 0; i < length; i++) {
-						const row = new Row(db, type, i);
-						const fvalue = row.field(capture.field);
-						if (fvalue === undefined) {
-							continue;
-						};
-						resultsSet.add(fvalue);
-					};
-				};
-			};
-			for (let value of resultsSet) {
-				searchResults.push({value: value, score: 1000});
-			};
-		};
-	};
 	if (expr.capture) {
 		// Select only types relevant to the query.
 		let types = [];
 		exprTypes(types, expr.capture);
 		types = [... new Set(types)];
-		let results = [];
-		for (let type of types) {
-			const length = db.tables.get(type).length;
-			for (let i = 0; i < length; i++) {
-				const row = new Row(db, type, i);
-				const score = rowMatches(row, expr.capture);
-				if (score > 0) {
-					results.push({row: row, score: score});
+
+		if (expr.global.list.length > 0) {
+			// List given fields of each matching row.
+			let results = [];
+			for (let capture of expr.global.list) {
+				if (capture.field === null) {
+					// List all possible fields for matching rows.
+					for (let type of types) {
+						const length = db.tables.get(type).length;
+						for (let i = 0; i < length; i++) {
+							const row = new Row(db, type, i);
+							const score = rowMatches(row, expr.capture);
+							if (score > 0) {
+								for (let field of db.TF.get(type)) {
+									results.push({value: field, row: row, score: score});
+								};
+							};
+						};
+					};
+				} else {
+					// List values of fields of matching rows.
+					for (let type of capture.types) {
+						const length = db.tables.get(type).length;
+						for (let i = 0; i < length; i++) {
+							const row = new Row(db, type, i);
+							const score = rowMatches(row, expr.capture);
+							if (score > 0) {
+								const fvalue = row.field(capture.field);
+								if (fvalue === undefined) {
+									continue;
+								};
+								results.push({value: fvalue, row: row, score: score});
+							};
+						};
+					};
 				};
+			};
+
+			// Group results by identifier. JS does not have tuples, so an identifier is
+			// built as a null-separated string.
+			let ids = new Map();
+			let final = [];
+			for (let result of results) {
+				const id = result.value;
+				ids.set(id, (ids.get(id)||0)+result.score);
+			};
+			for (let [value, score] of ids) {
+				final.push({value: value, score: score});
+			};
+			// Sort results descending by score.
+			final.sort((a, b) => b.score - a.score);
+			searchResults.push(...final);
+		} else {
+			// List each matching row.
+			let results = [];
+			for (let type of types) {
+				const length = db.tables.get(type).length;
+				for (let i = 0; i < length; i++) {
+					const row = new Row(db, type, i);
+					const score = rowMatches(row, expr.capture);
+					if (score > 0) {
+						results.push({row: row, score: score});
+					};
+				};
+			};
+
+			// Group results by identifier. JS does not have tuples, so an identifier is
+			// built as a null-separated string.
+			let ids = new Set();
+			let final = [];
+			for (let result of results) {
+				const row = result.row;
+				const id = row.type + "\0" + row.primary + (row.secondary ? ("\0"+row.secondary) : "");
+				if (ids.has(id)) {
+					continue;
+				};
+				ids.add(id);
+				final.push(result);
+			};
+			// Sort results descending by score.
+			final.sort((a, b) => b.score - a.score);
+			searchResults.push(...final);
+		};
+
+	} else if (expr.global.list.length > 0) {
+		// List all possible fields.
+		for (let capture of expr.global.list) {
+			if (capture.field === null) {
+				for (let [field] of db.F) {
+					searchResults.push({value: field, score: 1000});
+				};
+				break;
 			};
 		};
 
-		// Group results by identifier. JS does not have tuples, so an identifier is
-		// built as a null-separated string.
-		let ids = new Set();
-		let final = [];
-		for (let result of results) {
-			const row = result.row;
-			const id = row.type + "\0" + row.primary + (row.secondary ? ("\0"+row.secondary) : "");
-			if (ids.has(id)) {
-				continue;
-			};
-			ids.add(id);
-			final.push(result);
-		};
-		// Sort results descending by score.
-		final.sort((a, b) => b.score - a.score);
-		searchResults.push(...final);
 	};
 	return new SearchResults(db, searchResults, expr.global.limit);
 };
