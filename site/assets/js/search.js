@@ -1156,7 +1156,7 @@ function initSearchInput() {
 					if (!expr || (expr instanceof grammar.Error)) {
 						// Fallback to fuzzy search.
 						expr = {
-							global: {},
+							global: {results: [], list: []},
 							capture: {expr: "or", operands: [
 								{expr: "op",
 									types: DB.T.PRIMARY,
