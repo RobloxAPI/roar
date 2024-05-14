@@ -474,8 +474,8 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 	rule("results", seq(lit(RESULT), alt(
 		prefix(`limit`, ref("number").global("limit")),
 		prefix(`sort`, seq(
-			opt(alt(lit(LT), lit(GT))).field("direction"),
 			ref("word").field("column"),
+			opt(alt(lit(LT), lit(GT))).field("direction"),
 		)).global("sort"),
 		prefix(`go`, ref("word").set()).global("go"),
 	)).call(()=>null))
