@@ -36,7 +36,7 @@ const DIGITS        = /^\d+/;
 export const all = Symbol("all");
 
 export function forDatabase(DB, F, M) {
-const globalValue = () => ({results: []});
+const globalValue = () => ({results: [], list: []});
 const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase, debug}) => {
 	// Generates a lit that matches w and only w. Case-insensitive.
 	function word(w) {
@@ -211,6 +211,16 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			};
 			throw `unknown selector 'is:${x}'`;
 		}),
+		prefix(`list`, opt(ref("word")).set().callGlobal((g,x)=>{
+			if (x === "") {
+				g.list.push({field: null});
+				return;
+			};
+			const expr = DB.F.get(x.toLowerCase());
+			if (expr) {
+				g.list.push(expr);
+			};
+		})).call(()=>null),
 		prefix(`tag`, opt(ref("word")).set()).call((a,x)=>{
 			return {expr: "flag",
 				types: DB.T.ALL,

@@ -109,6 +109,47 @@ class Database {
 		this.T.PRIMARY = ["Class", "Enum", "Type"];
 		this.T.MEMBERS = this.types.filter(x => !(["Class", "Enum", "EnumItem", "Type"].includes(x)));
 		this.T.SECONDARY = this.T.MEMBERS.concat(["EnumItem"]);
+
+		this.F = new Map([
+			["primary"        , {field: F.PRIMARY          , types: this.T.PRIMARY}],
+			["secondary"      , {field: F.SECONDARY        , types: this.T.SECONDARY}],
+			["classname"      , {field: F.CLASS_NAME       , types: [this.T.CLASS]}],
+			["superclasses"   , {field: F.SUPERCLASSES     , types: [this.T.CLASS]}],
+			["subclasses"     , {field: F.SUBCLASSES       , types: [this.T.CLASS]}],
+			["members"        , {field: F.MEMBERS          , types: [this.T.CLASS]}],
+			["superclass"     , {field: F.SUPERCLASS       , types: [this.T.CLASS]}],
+			["subclass"       , {field: F.SUBCLASS         , types: [this.T.CLASS]}],
+			["memcat"         , {field: F.MEM_CAT          , types: [this.T.CLASS]}],
+			["membername"     , {field: F.MEMBER_NAME      , types: this.T.MEMBER}],
+			["threadsafety"   , {field: F.THREAD_SAFETY    , types: this.T.MEMBER}],
+			["security"       , {field: F.SECURITY         , types: this.T.MEMBER}],
+			["cansave"        , {field: F.CAN_SAVE         , types: [this.T.PROPERTY]}],
+			["canload"        , {field: F.CAN_LOAD         , types: [this.T.PROPERTY]}],
+			["readsecurity"   , {field: F.READ_SECURITY    , types: [this.T.PROPERTY]}],
+			["writesecurity"  , {field: F.WRITE_SECURITY   , types: [this.T.PROPERTY]}],
+			["valuetypecat"   , {field: F.VALUE_TYPE_CAT   , types: [this.T.PROPERTY]}],
+			["valuetypename"  , {field: F.VALUE_TYPE_NAME  , types: [this.T.PROPERTY]}],
+			["category"       , {field: F.CATEGORY         , types: [this.T.PROPERTY]}],
+			["default"        , {field: F.DEFAULT          , types: [this.T.PROPERTY]}],
+			["returns"        , {field: F.RETURNS          , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["parameters"     , {field: F.PARAMETERS       , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramtypeopt"   , {field: F.PARAM_TYPE_OPT   , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["returntypeopt"  , {field: F.RETURN_TYPE_OPT  , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramtypecat"   , {field: F.PARAM_TYPE_CAT   , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["returntypecat"  , {field: F.RETURN_TYPE_CAT  , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["returntypename" , {field: F.RETURN_TYPE_NAME , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramtypename"  , {field: F.PARAM_TYPE_NAME  , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramname"      , {field: F.PARAM_NAME       , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramdefault"   , {field: F.PARAM_DEFAULT    , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["enumname"       , {field: F.ENUM_NAME        , types: [this.T.ENUM]}],
+			["enumitems"      , {field: F.ENUM_ITEMS       , types: [this.T.ENUM]}],
+			["itemname"       , {field: F.ITEM_NAME        , types: [this.T.ENUMITEM]}],
+			["legacynames"    , {field: F.LEGACY_NAMES     , types: [this.T.ENUMITEM]}],
+			["itemvalue"      , {field: F.ITEM_VALUE       , types: [this.T.ENUMITEM]}],
+			["legacyname"     , {field: F.LEGACY_NAME      , types: [this.T.ENUMITEM]}],
+			["typename"       , {field: F.TYPE_NAME        , types: [this.T.TYPE]}],
+			["typecat"        , {field: F.TYPE_CAT         , types: [this.T.TYPE]}],
+		]);
 	};
 	length(type) {
 		return this.tables.get(type).length;
@@ -437,12 +478,37 @@ function search(db, expr) {
 			searchResults.push({row: x, score: 1000});
 		};
 	};
+	// Select only types relevant to the query.
+	if (expr.global.list) {
+		for (let capture of expr.global.list) {
+			let resultsSet = new Set();
+			if (capture.field === null) {
+				for (let [field] of db.F) {
+					resultsSet.add(field);
+				};
+			} else {
+				for (let type of capture.types) {
+					const length = db.tables.get(type).length;
+					for (let i = 0; i < length; i++) {
+						const row = new Row(db, type, i);
+						const fvalue = row.field(capture.field);
+						if (fvalue === undefined) {
+							continue;
+						};
+						resultsSet.add(fvalue);
+					};
+				};
+			};
+			for (let value of resultsSet) {
+				searchResults.push({value: value, score: 1000});
+			};
+		};
+	};
 	if (expr.capture) {
 		// Select only types relevant to the query.
 		let types = [];
 		exprTypes(types, expr.capture);
 		types = [... new Set(types)];
-
 		let results = [];
 		for (let type of types) {
 			const length = db.tables.get(type).length;
@@ -507,10 +573,17 @@ class SearchResults {
 		n = Math.max(0, Math.min(n, this.rows.length));
 		for (let i = 0; i < n; i++) {
 			const result = this.rows[i];
-			const row = result.row;
 			const score = result.score;
+			if (result.value !== undefined) {
+				const item = document.createElement("li");
+				item.title = `score: ${score}`;
+				item.textContent = result.value;
+				parent.appendChild(item);
+				continue;
+			};
+			const row = result.row;
 			const item = document.createElement("li");
-			item.title = `score: ${score}`
+			item.title = `score: ${score}`;
 			if (typeof row === "string") {
 				item.textContent = row;
 				parent.appendChild(item);
