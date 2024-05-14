@@ -12,6 +12,14 @@ ul ul, ul ol, ol ul, ol ol, td ul, td ol {
 dd + dt {
 	margin-top: var(--baseline);
 }
-dd, dd > p {
+dd {
 	margin: 0;
+}
+dd {
+	> :first-child {
+		margin-top: 0;
+	}
+	> :last-child {
+		margin-bottom: 0;
+	}
 }
