@@ -503,10 +503,10 @@ Force *field* to sort descending.
 
 {{%selector id="go" text="go:location" notimplemented="1"%}}
 
-If included, the page will immediately redirect to the page at *location*
-corresponding to the first search result. Locations are case-insensitive. The
-following locations are valid:
-- `here`: Redirects to the page on this website.
+If included, when the search is submitted (when the enter key is pressed) the
+page will redirect to the page at *location* corresponding to the first search
+result. Locations are case-insensitive. The following locations are valid:
+- `here`: Redirects to the page on this website (default).
 - `hub`: Redirects to the corresponding Creator Hub page.
 - `docs`: Redirects to the corresponding file in the creator-docs repository.
 
