@@ -310,14 +310,14 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			return {expr:"op",
 				types: DB.T.MEMBERS,
 				field: F.CAN_SAVE,
-				method: M.EQ, args:[!!x],
+				...x,
 			};
 		}),
 		field(`canload`, ref("bool"), (a,x)=>{
 			return {expr:"op",
 				types: DB.T.MEMBERS,
 				field: F.CAN_LOAD,
-				method: M.EQ, args:[!!x],
+				...x,
 			};
 		}),
 		field(`readsecurity`, ref("string_expr"), (a,x)=>{
@@ -394,7 +394,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.RETURN_TYPE_OPT,
-				method: M.EQ, args:[!!x],
+				...x,
 			};
 		}),
 		field(`paramtypecat`, ref("string_expr"), (a,x)=>{
@@ -415,7 +415,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			return {expr:"op",
 				types: [DB.T.FUNCTION, DB.T.EVENT, DB.T.CALLBACK],
 				field: F.PARAM_TYPE_OPT,
-				method: M.EQ, args:[!!x],
+				...x,
 			};
 		}),
 		field(`paramname`, ref("string_expr"), (a,x)=>{
@@ -559,7 +559,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		ref("string"),
 		ref("regexp"),
 	))
-	rule("all", lit(ALL).call((a,x) => ({method: M.TRUE, args:[]})))
+	rule("all", lit(ALL).set({method: M.TRUE, args:[]}))
 	rule("string", alt(ref("string_sq"), ref("string_dq")))
 	rule("fuzzy", ref("word").call((a,x) => ({method: M.FUZZY, args:[x]})))
 	rule("string_sq",
@@ -617,20 +617,21 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 
 	// Words that translate to a boolean.
 	rule("bool", alt(
+		ref("all"),
 		alt(
 			word(`0`),
 			word(`no`),
 			word(`false`),
 			word(`n`),
 			word(`f`),
-		).set(false),
+		).set({method: M.EQ, args:[false]}),
 		alt(
 			word(`1`),
 			word(`yes`),
 			word(`true`),
 			word(`y`),
 			word(`t`),
-		).set(true),
+		).set({method: M.EQ, args:[true]}),
 	))
 
 	// Optional number expression defaulting to matching all rows.
@@ -642,7 +643,11 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 	}))
 
 	// Selectors for numbers.
-	rule("number_expr", init(()=>({method:M.N_EQ,args:[]})).seq(
+	rule("number_expr", alt(
+		ref("all"),
+		ref("number_operation"),
+	))
+	rule("number_operation", init(()=>({method:M.N_EQ,args:[]})).seq(
 		//TODO:range: `lower-upper`
 		opt(ref("number_op").field("method")),
 		ref("number").appendField("args"),
