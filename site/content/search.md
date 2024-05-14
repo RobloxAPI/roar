@@ -53,8 +53,8 @@ The name selectors are implemented as [string components](#string) that match
 against entity names.
 
 ## Compound selector
-The compound selector divides entity types into two categories. **Primary**
-entities include classes, enums, and types. **Secondary** entities include
+The compound selector divides entity kinds into two categories. **Primary**
+entities include classes, enums, and kinds. **Secondary** entities include
 properties, functions, events, callbacks, and enum items.
 
 <dl>
@@ -128,9 +128,9 @@ Field selectors match against particular fields of an entity. They have the form
 the field, but will usually be a [string](#string), [number](#number), or
 [bool](#bool) component.
 
-### Type
-The `is:` selector can be used to narrow down a search to certain entity types.
-Types are case-insensitive.
+### Kind
+The `is:` selector can be used to narrow down a search to certain entity kinds.
+Kinds are case-insensitive.
 
 <dl>
 {{%selector id="is-class" text="is:class"%}}
