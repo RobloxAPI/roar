@@ -116,15 +116,21 @@ Parentheses can be used to logically group selectors together.
 {{%/selector%}}
 </dl>
 
-## Prefix selectors
-Prefix selectors have the form `prefix:value`. The *prefix* part is
-case-insensitive. The *value* part depends on the prefix, but will usually be a
-[string](#string), [number](#number), or [boolean](#bool) selector.
+### Precedence
+Logical operators have the following precedence:
+1. NOT
+2. AND
+3. OR
 
-### Type selector
+## Field selectors
+Field selectors match against particular fields of an entity. They have the form
+`field:value`. The *field* part is case-insensitive. The *value* part depends on
+the field, but will usually be a [string](#string), [number](#number), or
+[bool](#bool) component.
+
+### Type
 The `is:` selector can be used to narrow down a search to certain entity types.
-Types are case-insensitive. The [`$type`](#selector-meta-type) selector can be
-used to list possible types.
+Types are case-insensitive.
 
 <dl>
 {{%selector id="is-class" text="is:class"%}}
@@ -194,18 +200,12 @@ Selects only property, function, event, and callback entities.
 {{%/selector%}}
 </dl>
 
-### Field selectors
-A field selector matches against a particular field of an entity.
-
-For most selectors, if the *value* is empty (e.g. `prefix:`), then the selector
-will match all entities having the related field.
-
+### Fields
 <dl>
 {{%selector id="tag" text="tag:foo"%}}
 
 Selects entities that have tag *foo*. The tag is case-insensitive, but must
-otherwise match exactly. The [`$tag`](#selector-meta-tag) selector can be used
-to list possible tags.
+otherwise match exactly.
 
 {{%/selector%}}
 
@@ -261,8 +261,7 @@ Selects class entities where the memory category matches *foo*
 {{%selector id="threadsafety" text="threadsafety:foo"%}}
 
 Selects member entities where the thread safety matches *foo*
-([string](#string)). The [`$threadsafety`](#selector-meta-threadsafety) selector
-can be used to list possible values.
+([string](#string)).
 
 {{%/selector%}}
 
@@ -270,8 +269,6 @@ can be used to list possible values.
 
 Selects function, event, and callback entities where the security matches *foo*,
 or property entities where the read security matches *foo* ([string](#string)).
-The [`$security`](#selector-meta-security) selector can be used to list possible
-values.
 
 {{%/selector%}}
 
@@ -290,24 +287,21 @@ Matches property entities that can be deserialized ([bool](#bool)).
 {{%selector id="readsecurity" text="readsecurity:foo"%}}
 
 Selects property entities where the read security matches *foo*
-([string](#string)). The [`$security`](#selector-meta-security) selector can be
-used to list possible values.
+([string](#string)).
 
 {{%/selector%}}
 
 {{%selector id="writesecurity" text="writesecurity:foo"%}}
 
 Selects property entities where the write security matches *foo*
-([string](#string)). The [`$security`](#selector-meta-security) selector can be
-used to list possible values.
+([string](#string)).
 
 {{%/selector%}}
 
 {{%selector id="valuetypecat" text="valuetypecat:foo"%}}
 
 Selects property entities where the category of the value type matches *foo*
-([string](#string)). The [`$typecat`](#selector-meta-typecat) selector can be
-used to list possible values.
+([string](#string)).
 
 {{%/selector%}}
 
@@ -348,8 +342,7 @@ matches *N* ([number](#number)).
 {{%selector id="returntypecat" text="returntypecat:foo"%}}
 
 Selects function and callback entities where the category of a return type
-matches *foo* ([string](#string)). The [`$typecat`](#selector-meta-typecat)
-selector can be used to list possible values.
+matches *foo* ([string](#string)).
 
 {{%/selector%}}
 
@@ -370,8 +363,7 @@ Selects function and callback entities where a return type is optional
 {{%selector id="paramtypecat" text="paramtypecat:foo"%}}
 
 Selects function, event, and callback entities where the category of a parameter
-type matches *foo* ([string](#string)). The [`$typecat`](#selector-meta-typecat)
-selector can be used to list possible values.
+type matches *foo* ([string](#string)).
 
 {{%/selector%}}
 
@@ -432,78 +424,84 @@ Selects enum item entities where a legacy name matches *foo*
 
 {{%selector id="typecat" text="typecat:foo"%}}
 
-Selects type entities where the category matches *foo* ([string](#string)). The
-[`$typecat`](#selector-meta-typecat) selector can be used to list possible
-values.
+Selects type entities where the category matches *foo* ([string](#string)).
 
 {{%/selector%}}
 </dl>
 
 ### List selector
-When at least one `list:` selector is included, the search results are altered
-to display the values of entity fields instead of the entities themselves.
+List selectors cause the values of entity fields to be selected instead of the
+entities themselves.
 
-The score of each value is the sum of scores of the aggregated entity results
-for that value.
-
-If the remaining query is empty (that is, the entire query is just list
-selectors), then all entities are selected.
+List selectors are excluded from the logic of the expression. They do not
+determine whether entities match or do not match, but instead alter how the
+search results are displayed.
 
 <dl>
-{{%selector id="list" text="list:"%}}
+{{%selector id="list-field" text="foo:"%}}
 
-Lists all available fields for entities matching the rest of the query. Each
-result can be used as a value of the list selector.
+Lists aggregated values corresponding to field *foo* for entities matching the
+rest of the query. That is, while the field selector `foo:value` will select
+entities where field *foo* matches *value*, the list selector `foo:` will select
+all possible values of field *foo*.
 
 {{%/selector%}}
 
-{{%selector id="list-field" text="list:foo"%}}
+{{%selector id="list" text="*:"%}}
 
-Lists aggregated values corresponding to field *foo* for entities matching the
-rest of the query.
-
-Generally, *foo* will correspond to a [field selector](#field-selectors). So
-`list:foo` will list possible values for query `foo:value`.
+Lists all possible fields for entities matching the rest of the query. Each
+result can be used as the *field* part of a field selector. That is, if `*:`
+returns `foo`, then `foo:` will return all values of field *foo*, and
+`foo:value` will match specific values.
 
 {{%/selector%}}
 </dl>
 
+The score of each value result is the sum of scores of the aggregated entity
+results for that value.
+
+If the remaining query is empty (that is, the entire query is just list
+selectors), then all entities are selected.
+
 ### Result selectors
-Result selectors are used to control search results. These selectors are not
-included in the logic of the query expression. The prefix part of the selector
-is case-insensitive.
+Result selectors are used to control search results. They have the form
+`/name:value`. The entire selector is case-insensitive.
+
+Result selectors are excluded from the logic of the expression. They do not
+determine whether entities match or do not match, but instead alter how the
+search results are displayed.
 
 <dl>
-{{%selector id="limit" text="limit:N"%}}
+{{%selector id="limit" text="/limit:N"%}}
 
 Sets the maximum number of results that will be displayed to *N*, which must be
 a positive integer. Defaults to 50.
 
 {{%/selector%}}
 
-{{%selector id="sort" text="sort:field" notimplemented="1"%}}
+{{%selector id="sort" text="/sort:field" notimplemented="1"%}}
 
 : Sorts search results according to value *field*. Values are case-insensitive.
-    Defaults to `sort:score`. The following values are valid:
+    Defaults to `/sort:score`. The following values are valid:
   - `score`: Sort by score. Defaults to descending.
   - `name`: Sort by entity name. Defaults to ascending.
   - `random`: Shuffle the results randomly.
 
 {{%/selector%}}
 
-{{%selector id="sort-asc" text="sort:<field" notimplemented="1"%}}
+{{%selector id="sort-asc" text="/sort:field<" notimplemented="1"%}}
 
 Force *field* to sort ascending.
 
 {{%/selector%}}
 
-{{%selector id="sort-desc" text="sort:>field" notimplemented="1"%}}
+{{%selector id="sort-desc" text="/sort:field>" notimplemented="1"%}}
 
 Force *field* to sort descending.
 
 {{%/selector%}}
 
-{{%selector id="go" text="go:location" notimplemented="1"%}}
+{{%selector id="go" text="/go:location" notimplemented="1"%}}
 
 If included, when the search is submitted (when the enter key is pressed) the
 page will redirect to the page at *location* corresponding to the first search
@@ -552,13 +550,9 @@ a selector, it must be escaped as `/[^\/]/`. The `i`, `m`, `s`, `u`, and `v`
 flags are allowed.
 
 {{%/selector%}}
-
-{{%selector id="string-any" text="*"%}}
-
-Matches anything.
-
-{{%/selector%}}
 </dl>
+
+Also includes the [anything](#selector-any) component.
 
 The sub-string and exact-string selectors use `\` for escaping certain
 characters. The following escape sequences are transformed:
@@ -611,6 +605,8 @@ Matches numbers that are greater than or equal to *N*.
 {{%/selector%}}
 </dl>
 
+Also includes the [anything](#selector-any) component.
+
 ### Bool
 Compares against boolean values.
 
@@ -635,6 +631,19 @@ Matches values that are true.
 
 {{%/selector%}}
 </dl>
+
+Also includes the [anything](#selector-any) component.
+
+### Anything
+<dl>
+{{%selector id="any" text="*"%}}
+
+Matches anything. Included by the [string](#string), [number](#number), and
+[bool](#bool) components.
+
+{{%/selector%}}
+</dl>
+
 
 ## Whitespace
 Whitespace between selectors can contain any unicode space characters, including

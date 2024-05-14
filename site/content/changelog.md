@@ -7,6 +7,21 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Search: Prefix selectors have been rebranded as [field][field] selectors. All
+  selectors of the form `field:value` now concern only entity fields.
+- Search: The syntax of result selectors now has the form `/name:value` to
+  distinguish them from field selectors.
+- Search: The syntax of list selectors has been revised. For example, instead of
+  `list:parameters`, it is now just `parameters:` (that is, a field selector
+  without a value).
+	- The `list:` selector is now `*:`.
+	- To select all entities with a specific field, `field:*` can be used.
+
+[field]: {{<relref "search#field-selectors">}}
+
+<!---->
+
 ## 2024-05-14
 - **Implement advanced search engine parser.**
 - The basic search query syntax is the same as before: words will perform a
