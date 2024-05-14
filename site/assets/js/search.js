@@ -1141,10 +1141,14 @@ function initSearchInput() {
 						console.log(printQuery());
 						printQuery = undefined;
 					};
-					expr = parseQuery(query, "main", "debug");
+					expr = parseQuery(query, "main");
 					console.log("EXPR", expr);
-					if (!expr || (expr instanceof grammar.Error)) {
+					if (!expr) {
+						render(`Error parsing query.`);
+						return;
+					} else if (expr instanceof grammar.Error) {
 						render(`Error parsing query: line ${expr.line}, column ${expr.column}: ${expr.error}`);
+						return;
 					};
 					render(statusFilter(search(DB, expr)));
 				} else {
