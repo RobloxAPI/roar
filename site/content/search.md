@@ -268,7 +268,8 @@ Selects member entities where the thread safety matches *foo*
 {{%selector id="security" text="security:foo"%}}
 
 Selects function, event, and callback entities where the security matches *foo*,
-or property entities where the read security matches *foo* ([string](#string)).
+or property entities where the read or write security matches *foo*
+([string](#string)).
 
 {{%/selector%}}
 
