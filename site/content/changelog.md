@@ -7,7 +7,7 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
-## Pending
+## 2024-05-14
 - **Implement advanced search engine parser.**
 - The basic search query syntax is the same as before: words will perform a
   fuzzy search over names.
@@ -19,6 +19,7 @@ This page lists changes to the website itself.
 - Reorganize member sections to display principle data (parameters, types) more
   prominently.
 - Use index card to display property type and default value.
+<!---->
 
 ## 2024-05-09
 - Improve appearance of settings panel.
