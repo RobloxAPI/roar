@@ -12,7 +12,6 @@ const OR_OP_ALT     = ",";
 const AND_OP        = "&&";
 const AND_OP_ALT    = /^\s+/;
 const NOT_OP        = "!";
-const META          = "$";
 const PREFIX        = ":";
 const LT            = "<";
 const LE            = "<=";
