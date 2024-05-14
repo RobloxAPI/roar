@@ -10,15 +10,29 @@ This page lists changes to the website itself.
 ## Pending
 - Search: Prefix selectors have been rebranded as [field][field] selectors. All
   selectors of the form `field:value` now concern only entity fields.
-- Search: The syntax of result selectors now has the form `/name:value` to
-  distinguish them from field selectors.
-- Search: The syntax of list selectors has been revised. For example, instead of
-  `list:parameters`, it is now just `parameters:` (that is, a field selector
-  without a value).
+- Search: The syntax of [result][result] selectors now has the form
+  `/name:value` to distinguish them from field selectors.
+- Search: The syntax of [list][list] selectors has been revised. For example,
+  instead of `list:parameters`, it is now just `parameters:` (that is, a field
+  selector without a value).
 	- The `list:` selector is now `*:`.
 	- To select all entities with a specific field, `field:*` can be used.
+- Search: Add [`N..M`][range] selector for numeric ranges. For example,
+  `members:50..100` selects classes with between 50 and 100 members.
+- Search: Add [`~text~`][fuzzy] selector for explicitly specifying a fuzzy
+  search.
+- Search: Fix numeric values less than or equal to 0 failing to match (e.g.
+  `superclasses:0`).
+- Search: Fix empty strings failing to match (e.g. `threadsafety:""`).
+- Search: Fix [primary compound selector][compound] incorrectly selecting
+  secondary entities.
 
 [field]: {{<relref "search#field-selectors">}}
+[result]: {{<relref "search#result-selectors">}}
+[list]: {{<relref "search#list-selector">}}
+[range]: {{<relref "search#selector-number-range">}}
+[fuzzy]: {{<relref "search#selector-string-fuzzy-delimited">}}
+[compound]: {{<relref "search#selector-compound-primary">}}
 
 <!---->
 
