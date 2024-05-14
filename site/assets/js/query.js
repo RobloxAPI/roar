@@ -562,14 +562,14 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			lit(SUB_STRING),
 			init(()=>[]).rep(alt(ref("escapes"), except(SUB_STRING).set()).append()).set(),
 			lit(SUB_STRING),
-		).call((a, x) => ({method: M.SUB, args:[x.join("")]})),
+		).call((a, x) => ({method: M.SUB, args:[x==="" ? x : x.join("")]})),
 	)
 	rule("string_dq",
 		seq(
 			lit(EXACT_STRING),
 			init(()=>[]).rep(alt(ref("escapes"), except(EXACT_STRING).set()).append()).set(),
 			lit(EXACT_STRING),
-		).call((a, x) => ({method: M.EQ, args:[x.join("")]})),
+		).call((a, x) => ({method: M.EQ, args:[x==="" ? x : x.join("")]})),
 	)
 	rule("regexp",
 		seq(
