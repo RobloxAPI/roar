@@ -443,15 +443,17 @@ values.
 When at least one `list:` selector is included, the search results are altered
 to display the values of entity fields instead of the entities themselves.
 
+The score of each value is the sum of scores of the aggregated entity results
+for that value.
+
 If the remaining query is empty (that is, the entire query is just list
 selectors), then all entities are selected.
 
 <dl>
 {{%selector id="list" text="list:"%}}
 
-Lists all available fields for entities matching the rest of the query. The
-score is the number of entities having the field. Each result can be used as a
-value of the list selector.
+Lists all available fields for entities matching the rest of the query. Each
+result can be used as a value of the list selector.
 
 {{%/selector%}}
 
@@ -460,7 +462,7 @@ value of the list selector.
 Lists aggregated values corresponding to field *foo* for entities matching the
 rest of the query.
 
-In general, *foo* will correspond to a [field selector](#field-selectors). So
+Generally, *foo* will correspond to a [field selector](#field-selectors). So
 `list:foo` will list possible values for query `foo:value`.
 
 {{%/selector%}}
