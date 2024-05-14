@@ -551,20 +551,20 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 	rule("string_expr", alt(
 		ref("all"),
 		ref("fuzzy"),
-		ref("string"),
+		ref("sub_string"),
+		ref("exact_string"),
 		ref("regexp"),
 	))
 	rule("all", lit(ALL).set({method: M.TRUE, args:[]}))
-	rule("string", alt(ref("string_sq"), ref("string_dq")))
 	rule("fuzzy", ref("word").call((a,x) => ({method: M.FUZZY, args:[x]})))
-	rule("string_sq",
+	rule("sub_string",
 		seq(
 			lit(SUB_STRING),
 			init(()=>[]).rep(alt(ref("escapes"), except(SUB_STRING).set()).append()).set(),
 			lit(SUB_STRING),
 		).call((a, x) => ({method: M.SUB, args:[x==="" ? x : x.join("")]})),
 	)
-	rule("string_dq",
+	rule("exact_string",
 		seq(
 			lit(EXACT_STRING),
 			init(()=>[]).rep(alt(ref("escapes"), except(EXACT_STRING).set()).append()).set(),
