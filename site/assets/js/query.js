@@ -186,6 +186,10 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 
 	// Selectors denoted by a prefix.
 	rule("prefixes", alt(
+		seq(lit(ALL), lit(PREFIX)).callGlobal((g,x)=>{
+			g.list.push({field: null});
+			return;
+		}).call(()=>null),
 		field(`is`, ref("word"), (a,x)=>{
 			switch (x.toLowerCase()) {
 			case "class":
@@ -213,16 +217,6 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			};
 			throw `unknown selector 'is:${x}'`;
 		}),
-		prefix(`list`, opt(ref("word")).set().callGlobal((g,x)=>{
-			if (x === "") {
-				g.list.push({field: null});
-				return;
-			};
-			const expr = DB.F.get(x.toLowerCase());
-			if (expr) {
-				g.list.push(expr);
-			};
-		})).call(()=>null),
 		field(`tag`, ref("word"), (a,x)=>{
 			return {expr: "flag",
 				types: DB.T.ALL,
