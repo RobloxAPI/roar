@@ -381,12 +381,12 @@ export const M = {
 	GT: (field, value) => ((field >   value) ? 1 : -1),
 	GE: (field, value) => ((field >=  value) ? 1 : -1),
 	// Variants that return field as score (assuming number).
-	N_EQ: (field, value) => ((field === value) ? field : -1),
-	N_NE: (field, value) => ((field !== value) ? field : -1),
-	N_LT: (field, value) => ((field <   value) ? field : -1),
-	N_LE: (field, value) => ((field <=  value) ? field : -1),
-	N_GT: (field, value) => ((field >   value) ? field : -1),
-	N_GE: (field, value) => ((field >=  value) ? field : -1),
+	N_EQ: (field, value) => ((field === value) ? Math.max(1, field) : -1),
+	N_NE: (field, value) => ((field !== value) ? Math.max(1, field) : -1),
+	N_LT: (field, value) => ((field <   value) ? Math.max(1, field) : -1),
+	N_LE: (field, value) => ((field <=  value) ? Math.max(1, field) : -1),
+	N_GT: (field, value) => ((field >   value) ? Math.max(1, field) : -1),
+	N_GE: (field, value) => ((field >=  value) ? Math.max(1, field) : -1),
 };
 
 // Recursively checks if row matches expr.
