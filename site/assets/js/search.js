@@ -111,54 +111,57 @@ class Database {
 		this.T.SECONDARY = this.T.MEMBERS.concat(["EnumItem"]);
 
 		this.F = new Map([
-			["primary"        , {field: F.PRIMARY          , types: this.T.ALL}],
-			["secondary"      , {field: F.SECONDARY        , types: this.T.SECONDARY}],
-			["classname"      , {field: F.CLASS_NAME       , types: [this.T.CLASS]}],
-			["superclasses"   , {field: F.SUPERCLASSES     , types: [this.T.CLASS]}],
-			["subclasses"     , {field: F.SUBCLASSES       , types: [this.T.CLASS]}],
-			["members"        , {field: F.MEMBERS          , types: [this.T.CLASS]}],
-			["superclass"     , {field: F.SUPERCLASS       , types: [this.T.CLASS]}],
-			["subclass"       , {field: F.SUBCLASS         , types: [this.T.CLASS]}],
-			["memcat"         , {field: F.MEM_CAT          , types: [this.T.CLASS]}],
-			["membername"     , {field: F.MEMBER_NAME      , types: this.T.MEMBERS}],
-			["threadsafety"   , {field: F.THREAD_SAFETY    , types: this.T.MEMBERS}],
-			["security"       , {field: F.SECURITY         , types: this.T.MEMBERS}],
-			["cansave"        , {field: F.CAN_SAVE         , types: [this.T.PROPERTY]}],
-			["canload"        , {field: F.CAN_LOAD         , types: [this.T.PROPERTY]}],
-			["readsecurity"   , {field: F.READ_SECURITY    , types: [this.T.PROPERTY]}],
-			["writesecurity"  , {field: F.WRITE_SECURITY   , types: [this.T.PROPERTY]}],
-			["valuetypecat"   , {field: F.VALUE_TYPE_CAT   , types: [this.T.PROPERTY]}],
-			["valuetypename"  , {field: F.VALUE_TYPE_NAME  , types: [this.T.PROPERTY]}],
-			["category"       , {field: F.CATEGORY         , types: [this.T.PROPERTY]}],
-			["default"        , {field: F.DEFAULT          , types: [this.T.PROPERTY]}],
-			["returns"        , {field: F.RETURNS          , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["parameters"     , {field: F.PARAMETERS       , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["paramtypeopt"   , {field: F.PARAM_TYPE_OPT   , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["returntypeopt"  , {field: F.RETURN_TYPE_OPT  , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["paramtypecat"   , {field: F.PARAM_TYPE_CAT   , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["returntypecat"  , {field: F.RETURN_TYPE_CAT  , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["returntypename" , {field: F.RETURN_TYPE_NAME , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["paramtypename"  , {field: F.PARAM_TYPE_NAME  , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["paramname"      , {field: F.PARAM_NAME       , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["paramdefault"   , {field: F.PARAM_DEFAULT    , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
-			["enumname"       , {field: F.ENUM_NAME        , types: [this.T.ENUM]}],
-			["enumitems"      , {field: F.ENUM_ITEMS       , types: [this.T.ENUM]}],
-			["itemname"       , {field: F.ITEM_NAME        , types: [this.T.ENUMITEM]}],
-			["legacynames"    , {field: F.LEGACY_NAMES     , types: [this.T.ENUMITEM]}],
-			["itemvalue"      , {field: F.ITEM_VALUE       , types: [this.T.ENUMITEM]}],
-			["legacyname"     , {field: F.LEGACY_NAME      , types: [this.T.ENUMITEM]}],
-			["typename"       , {field: F.TYPE_NAME        , types: [this.T.TYPE]}],
-			["typecat"        , {field: F.TYPE_CAT         , types: [this.T.TYPE]}],
+			["is"             , {op: "is"                    , types: this.T.ALL}],
+			["tag"            , {op: "tag"                   , types: this.T.ALL}],
+			["removed"        , {op: "removed"               , types: this.T.ALL}],
+			["primary"        , {field: F.PRIMARY            , types: this.T.ALL}],
+			["secondary"      , {field: F.SECONDARY          , types: this.T.SECONDARY}],
+			["classname"      , {field: F.CLASS_NAME         , types: [this.T.CLASS]}],
+			["superclasses"   , {field: F.SUPERCLASSES       , types: [this.T.CLASS]}],
+			["subclasses"     , {field: F.SUBCLASSES         , types: [this.T.CLASS]}],
+			["members"        , {field: F.MEMBERS            , types: [this.T.CLASS]}],
+			["superclass"     , {field: F.SUPERCLASS         , types: [this.T.CLASS]}],
+			["subclass"       , {field: F.SUBCLASS           , types: [this.T.CLASS]}],
+			["memcat"         , {field: F.MEM_CAT            , types: [this.T.CLASS]}],
+			["membername"     , {field: F.MEMBER_NAME        , types: this.T.MEMBERS}],
+			["threadsafety"   , {field: F.THREAD_SAFETY      , types: this.T.MEMBERS}],
+			["security"       , {field: F.SECURITY           , types: this.T.MEMBERS}],
+			["cansave"        , {field: F.CAN_SAVE           , types: [this.T.PROPERTY]}],
+			["canload"        , {field: F.CAN_LOAD           , types: [this.T.PROPERTY]}],
+			["readsecurity"   , {field: F.READ_SECURITY      , types: [this.T.PROPERTY]}],
+			["writesecurity"  , {field: F.WRITE_SECURITY     , types: [this.T.PROPERTY]}],
+			["valuetypecat"   , {field: F.VALUE_TYPE_CAT     , types: [this.T.PROPERTY]}],
+			["valuetypename"  , {field: F.VALUE_TYPE_NAME    , types: [this.T.PROPERTY]}],
+			["category"       , {field: F.CATEGORY           , types: [this.T.PROPERTY]}],
+			["default"        , {field: F.DEFAULT            , types: [this.T.PROPERTY]}],
+			["returns"        , {field: F.RETURNS            , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["parameters"     , {field: F.PARAMETERS         , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramtypeopt"   , {field: F.PARAM_TYPE_OPT     , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["returntypeopt"  , {field: F.RETURN_TYPE_OPT    , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramtypecat"   , {field: F.PARAM_TYPE_CAT     , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["returntypecat"  , {field: F.RETURN_TYPE_CAT    , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["returntypename" , {field: F.RETURN_TYPE_NAME   , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramtypename"  , {field: F.PARAM_TYPE_NAME    , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramname"      , {field: F.PARAM_NAME         , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["paramdefault"   , {field: F.PARAM_DEFAULT      , types: [this.T.FUNCTION, this.T.EVENT, this.T.CALLBACK]}],
+			["enumname"       , {field: F.ENUM_NAME          , types: [this.T.ENUM]}],
+			["enumitems"      , {field: F.ENUM_ITEMS         , types: [this.T.ENUM]}],
+			["itemname"       , {field: F.ITEM_NAME          , types: [this.T.ENUMITEM]}],
+			["legacynames"    , {field: F.LEGACY_NAMES       , types: [this.T.ENUMITEM]}],
+			["itemvalue"      , {field: F.ITEM_VALUE         , types: [this.T.ENUMITEM]}],
+			["legacyname"     , {field: F.LEGACY_NAME        , types: [this.T.ENUMITEM]}],
+			["typename"       , {field: F.TYPE_NAME          , types: [this.T.TYPE]}],
+			["typecat"        , {field: F.TYPE_CAT           , types: [this.T.TYPE]}],
 		]);
 		this.TF = new Map();
-		for (let [field, expr] of this.F) {
+		for (let [name, expr] of this.F) {
 			for (let type of expr.types) {
 				let set = this.TF.get(type);
 				if (!set) {
 					set = new Set();
 					this.TF.set(type, set);
 				};
-				set.add(field);
+				set.add(name);
 			};
 		};
 	};
@@ -489,23 +492,54 @@ function search(db, expr) {
 			searchResults.push({row: x, score: 1000});
 		};
 	};
-	if (expr.capture) {
+	let capture = expr.capture;
+	if (!capture && expr.global.list.length > 0) {
+		// With no query, select all rows.
+		capture = {expr: "true", types: db.T.ALL};
+	}
+	if (capture) {
 		// Select only types relevant to the query.
 		let types = [];
-		exprTypes(types, expr.capture);
+		exprTypes(types, capture);
 		types = [... new Set(types)];
 
 		if (expr.global.list.length > 0) {
 			// List given fields of each matching row.
 			let results = [];
-			for (let capture of expr.global.list) {
-				if (capture.field === null) {
+			for (let list of expr.global.list) {
+				if (list.op === "is") {
+					// List types.
+					for (let type of types.length > 0 ? types : list.types) {
+						results.push({value: type, score: 1});
+					};
+				} else if (list.op === "tag") {
+					// List all tags.
+					for (let [tag] of db.tags) {
+						results.push({value: tag, score: 1});
+					};
+				} else if (list.op === "removed") {
+					// List values of removed field of matching rows.
+					for (let type of list.types) {
+						const length = db.tables.get(type).length;
+						for (let i = 0; i < length; i++) {
+							const row = new Row(db, type, i);
+							const score = rowMatches(row, capture);
+							if (score > 0) {
+								const fvalue = row.removed;
+								if (fvalue === undefined) {
+									continue;
+								};
+								results.push({value: fvalue, row: row, score: score});
+							};
+						};
+					};
+				} else if (list.field === null) {
 					// List all possible fields for matching rows.
 					for (let type of types) {
 						const length = db.tables.get(type).length;
 						for (let i = 0; i < length; i++) {
 							const row = new Row(db, type, i);
-							const score = rowMatches(row, expr.capture);
+							const score = rowMatches(row, capture);
 							if (score > 0) {
 								for (let field of db.TF.get(type)) {
 									results.push({value: field, row: row, score: score});
@@ -515,13 +549,13 @@ function search(db, expr) {
 					};
 				} else {
 					// List values of fields of matching rows.
-					for (let type of capture.types) {
+					for (let type of list.types) {
 						const length = db.tables.get(type).length;
 						for (let i = 0; i < length; i++) {
 							const row = new Row(db, type, i);
-							const score = rowMatches(row, expr.capture);
+							const score = rowMatches(row, capture);
 							if (score > 0) {
-								const fvalue = row.field(capture.field);
+								const fvalue = row.field(list.field);
 								if (fvalue === undefined) {
 									continue;
 								};
@@ -553,7 +587,7 @@ function search(db, expr) {
 				const length = db.tables.get(type).length;
 				for (let i = 0; i < length; i++) {
 					const row = new Row(db, type, i);
-					const score = rowMatches(row, expr.capture);
+					const score = rowMatches(row, capture);
 					if (score > 0) {
 						results.push({row: row, score: score});
 					};
@@ -577,18 +611,6 @@ function search(db, expr) {
 			final.sort((a, b) => b.score - a.score);
 			searchResults.push(...final);
 		};
-
-	} else if (expr.global.list.length > 0) {
-		// List all possible fields.
-		for (let capture of expr.global.list) {
-			if (capture.field === null) {
-				for (let [field] of db.F) {
-					searchResults.push({value: field, score: 1000});
-				};
-				break;
-			};
-		};
-
 	};
 	return new SearchResults(db, searchResults, expr.global.limit);
 };
