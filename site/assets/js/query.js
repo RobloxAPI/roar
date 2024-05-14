@@ -479,7 +479,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 		init(()=>[]).seq(
 			ref("string_expr").call((a,x) => {
 				a.push({expr:"op",
-					types: DB.T.ALL,
+					types: DB.T.SECONDARY,
 					field: F.PRIMARY,
 					...x,
 				});
@@ -488,7 +488,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			lit(COMPOUND),
 			ref("string_expr").call((a,x) => {
 				a.push({expr:"op",
-					types: DB.T.ALL,
+					types: DB.T.SECONDARY,
 					field: F.SECONDARY,
 					...x,
 				});
@@ -510,7 +510,7 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			lit(COMPOUND),
 			ref("string_expr").call((a,x) => {
 				a.push({expr:"op",
-					types: DB.T.ALL,
+					types: DB.T.SECONDARY,
 					field: F.SECONDARY,
 					...x,
 				});

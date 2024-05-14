@@ -60,7 +60,7 @@ properties, functions, events, callbacks, and enum items.
 <dl>
 {{%selector id="compound" text="foo.bar"%}}
 
-Selects entities whose corresponding primary name matches *foo* and secondary
+Selects only secondary entities whose primary name matches *foo* and secondary
 name matches *bar*.
 
 {{%/selector%}}
