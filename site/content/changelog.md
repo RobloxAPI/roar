@@ -7,6 +7,15 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Search: Fix [removed][removed] and [is][is] field selectors not returning
+  correct results in some cases.
+
+[removed]: {{<relref "search#selector-removed">}}
+[is]: {{<relref "search#kind">}}
+
+<!---->
+
 ## 2024-05-15
 - Search: Prefix selectors have been rebranded as [field][field] selectors. All
   selectors of the form `field:value` now concern only entity fields.
