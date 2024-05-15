@@ -463,6 +463,20 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 				...x,
 			};
 		}),
+		field(`primary`, ref("string_expr"), (a,x)=>{
+			return {expr:"op",
+				types: DB.T.ALL,
+				field: F.PRIMARY,
+				...x,
+			};
+		}),
+		field(`secondary`, ref("string_expr"), (a,x)=>{
+			return {expr:"op",
+				types: DB.T.SECONDARY,
+				field: F.SECONDARY,
+				...x,
+			};
+		}),
 	).newline())
 
 	// Selectors related to search results.

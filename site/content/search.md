@@ -429,6 +429,19 @@ Selects enum item entities where a legacy name matches *foo*
 Selects type entities where the category matches *foo* ([string](#string)).
 
 {{%/selector%}}
+
+{{%selector id="primary" text="primary:foo"%}}
+
+Selects entities where the primary name matches *foo* ([string](#string)).
+
+{{%/selector%}}
+
+{{%selector id="secondary" text="secondary:foo"%}}
+
+Selects secondary entities where the secondary name matches *foo*
+([string](#string)).
+
+{{%/selector%}}
 </dl>
 
 ### List selector
