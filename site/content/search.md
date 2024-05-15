@@ -55,7 +55,7 @@ against entity names.
 
 ## Compound selector
 The compound selector divides entity kinds into two categories. **Primary**
-entities include classes, enums, and kinds. **Secondary** entities include
+entities include classes, enums, and types. **Secondary** entities include
 properties, functions, events, callbacks, and enum items.
 
 <dl>
