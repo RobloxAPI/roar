@@ -7,7 +7,7 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
-## Pending
+## 2024-05-15
 - Search: Prefix selectors have been rebranded as [field][field] selectors. All
   selectors of the form `field:value` now concern only entity fields.
 - Search: The syntax of [result][result] selectors now has the form
