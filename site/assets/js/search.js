@@ -113,9 +113,9 @@ class Database {
 		this.F = new Map([
 			["is"             , {op: "is"                    , types: this.T.ALL}],
 			["tag"            , {op: "tag"                   , types: this.T.ALL}],
-			["removed"        , {op: "removed"               , types: this.T.ALL}],
 			["primary"        , {field: F.PRIMARY            , types: this.T.ALL}],
 			["secondary"      , {field: F.SECONDARY          , types: this.T.SECONDARY}],
+			["removed"        , {field: F.REMOVED            , types: this.T.ALL}],
 			["superclasses"   , {field: F.SUPERCLASSES       , types: [this.T.CLASS]}],
 			["subclasses"     , {field: F.SUBCLASSES         , types: [this.T.CLASS]}],
 			["members"        , {field: F.MEMBERS            , types: [this.T.CLASS]}],
@@ -208,13 +208,22 @@ function s2(table, data, i) {
 	return table.strings[v];
 }
 
-// Flags. Value is a bit field.Bit representation is determined by header.
+// Flags. Value is a bit field. Bit representation is determined by header.
 function f4(table, data, i) {
 	const v = u32(data, i);
 	if (v == 0xFFFFFFFF) {
 		return undefined;
 	};
 	return v;
+}
+
+// 32-bit bit field. Returns nth flag.
+function f1(table, data, i, n) {
+	const v = u32(data, i);
+	if (v == 0xFFFFFFFF) {
+		return undefined;
+	};
+	return (v&(1<<n)) !== 0;
 }
 
 // uint8.
@@ -267,6 +276,7 @@ export const F = {
 	PRIMARY      : [s2, 0],
 	SECONDARY    : [s2, 2],
 	FLAGS        : [f4, 4],
+	REMOVED      : [f1, 4, 0],
 
 	// Class
 
@@ -357,10 +367,6 @@ export const M = {
 	// otherwise.
 	SUB: function(field, value) {
 		return (field.indexOf(value)) >= 0 ? 1 : -1;
-	},
-	// Returns the removed bit.
-	REMOVED: function(flags) {
-		return ((flags&(1<<0)) !== 0) ? 1 : -1;
 	},
 	TRUE: function(field, score) {
 		return score ? score : 1;
@@ -479,6 +485,19 @@ function exprTypes(types, expr) {
 	};
 };
 
+function visitRows(db, results, types, capture, visit) {
+	for (let type of types) {
+		const length = db.tables.get(type).length;
+		for (let i = 0; i < length; i++) {
+			const row = new Row(db, type, i);
+			const score = rowMatches(row, capture);
+			if (score > 0) {
+				visit(row, score, type);
+			};
+		};
+	};
+}
+
 // Performs a search of db using expr as the query.
 function search(db, expr) {
 	let searchResults = [];
@@ -504,60 +523,33 @@ function search(db, expr) {
 			for (let list of expr.global.list) {
 				if (list.op === "is") {
 					// List types.
-					for (let type of types.length > 0 ? types : list.types) {
+					const t = types.length > 0 ? types : list.types;
+					visitRows(db, results, t, capture, (row, score, type) => {
 						results.push({value: type, score: 1});
-					};
+					});
 				} else if (list.op === "tag") {
-					// List all tags.
+					// Every entity is considered as having every tag, so
+					// unconditionally list all tags. Technically, this would be
+					// incorrect if the query returned no results.
 					for (let [tag] of db.tags) {
 						results.push({value: tag, score: 1});
 					};
-				} else if (list.op === "removed") {
-					// List values of removed field of matching rows.
-					for (let type of list.types) {
-						const length = db.tables.get(type).length;
-						for (let i = 0; i < length; i++) {
-							const row = new Row(db, type, i);
-							const score = rowMatches(row, capture);
-							if (score > 0) {
-								const fvalue = row.removed;
-								if (fvalue === undefined) {
-									continue;
-								};
-								results.push({value: fvalue, row: row, score: score});
-							};
-						};
-					};
 				} else if (list.field === null) {
 					// List all possible fields for matching rows.
-					for (let type of types) {
-						const length = db.tables.get(type).length;
-						for (let i = 0; i < length; i++) {
-							const row = new Row(db, type, i);
-							const score = rowMatches(row, capture);
-							if (score > 0) {
-								for (let field of db.TF.get(type)) {
-									results.push({value: field, row: row, score: score});
-								};
-							};
+					visitRows(db, results, types, capture, (row, score, type) => {
+						for (let field of db.TF.get(type)) {
+							results.push({value: field, row: row, score: score});
 						};
-					};
+					});
 				} else {
 					// List values of fields of matching rows.
-					for (let type of list.types) {
-						const length = db.tables.get(type).length;
-						for (let i = 0; i < length; i++) {
-							const row = new Row(db, type, i);
-							const score = rowMatches(row, capture);
-							if (score > 0) {
-								const fvalue = row.field(list.field);
-								if (fvalue === undefined) {
-									continue;
-								};
-								results.push({value: fvalue, row: row, score: score});
-							};
+					visitRows(db, results, list.types, capture, (row, score, type) => {
+						const fvalue = row.field(list.field);
+						if (fvalue === undefined) {
+							return;
 						};
-					};
+						results.push({value: fvalue, row: row, score: score});
+					});
 				};
 			};
 

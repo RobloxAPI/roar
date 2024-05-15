@@ -226,15 +226,11 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			};
 		}),
 		field(`removed`, ref("bool"), (a,x)=>{
-			let v = {expr: "op",
+			return {expr: "op",
 				types: DB.T.ALL,
-				field: F.FLAGS,
-				method: M.REMOVED, args: [],
+				field: F.REMOVED,
+				...x,
 			};
-			if (!x) {
-				v = {expr: "not", operand: v};
-			};
-			return v;
 		}),
 		field(`superclasses`, ref("number_expr"), (a,x)=>{
 			return {expr:"op",
