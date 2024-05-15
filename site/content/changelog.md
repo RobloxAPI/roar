@@ -16,7 +16,7 @@ This page lists changes to the website itself.
   instead of `list:parameters`, it is now just `parameters:` (that is, a field
   selector without a value).
 	- The `list:` selector is now `*:`.
-	- To select all entities with a specific field, `field:*` can be used.
+	- `foo:*` can be used to select all entities that have field *foo*.
 - Search: Add [`N..M`][range] selector for numeric ranges. For example,
   `members:50..100` selects classes with between 50 and 100 members.
 - Search: Add [`~text~`][fuzzy] selector for explicitly specifying a fuzzy
