@@ -347,6 +347,24 @@
 			<td>{{partial "entity/list.html" $items}}</td>
 		</tr>
 		<tr>
+			<td>longest enum item name</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.EnumItem }}
+				{{- range . }}
+					{{- $length := len .Name }}
+					{{- if gt $length $max }}
+						{{- $max = $length }}
+						{{- $items = slice (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- else if eq $length $max }}
+						{{- $items = $items | append (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
 			<td>longest type name</td>
 			{{- $items := slice }}
 			{{- $max := 0 }}

@@ -13,9 +13,11 @@ This page lists changes to the website itself.
   will only select classes where the parent superclass is "GuiObject".
 - Search: Remove `n`, `f`, `y`, and `t` as options to [boolean][bool] selectors,
   for being too ambiguous.
+- Add longest enum item name to [statistics][stats].
 
 [ancestor]: {{<relref "search#selector-ancestor">}}
 [bool]: {{<relref "search#bool">}}
+[stats]: {{<relref "stats">}}
 
 <!---->
 
