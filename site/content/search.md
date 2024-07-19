@@ -644,9 +644,7 @@ Compares against boolean values.
 <dl>
 {{%selector id="false-0" text="0" /%}}
 {{%selector id="false-no" text="no" /%}}
-{{%selector id="false" text="false" /%}}
-{{%selector id="false-n" text="n" /%}}
-{{%selector id="false-f" text="f"%}}
+{{%selector id="false" text="false"%}}
 
 Matches values that are false.
 
@@ -654,9 +652,7 @@ Matches values that are false.
 
 {{%selector id="true-1" text="1" /%}}
 {{%selector id="true-yes" text="yes" /%}}
-{{%selector id="true" text="true" /%}}
-{{%selector id="true-y" text="y" /%}}
-{{%selector id="true-t" text="t"%}}
+{{%selector id="true" text="true"%}}
 
 Matches values that are true.
 

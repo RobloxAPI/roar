@@ -644,15 +644,11 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 			word(`0`),
 			word(`no`),
 			word(`false`),
-			word(`n`),
-			word(`f`),
 		).set({method: M.EQ, args:[false]}),
 		alt(
 			word(`1`),
 			word(`yes`),
 			word(`true`),
-			word(`y`),
-			word(`t`),
 		).set({method: M.EQ, args:[true]}),
 	))
 

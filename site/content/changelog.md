@@ -11,8 +11,11 @@ This page lists changes to the website itself.
 - Search: Add [ancestor][ancestor] selector to select classes according to the
   order of their superclasses. For example, `superclass:GuiObject ancestor:0`
   will only select classes where the parent superclass is "GuiObject".
+- Search: Remove `n`, `f`, `y`, and `t` as options to [boolean][bool] selectors,
+  for being too ambiguous.
 
 [ancestor]: {{<relref "search#selector-ancestor">}}
+[bool]: {{<relref "search#bool">}}
 
 <!---->
 
