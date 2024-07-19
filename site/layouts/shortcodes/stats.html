@@ -380,6 +380,35 @@
 			<td class="r">{{$max}}</td>
 			<td>{{partial "entity/list.html" $items}}</td>
 		</tr>
+		<tr>
+			<td>longest full name</td>
+			{{- $items := slice }}
+			{{- $max := 0 }}
+			{{- range $index.Member }}
+				{{- range . }}
+					{{- $length := add (len .Class) (len .Name) }}
+					{{- if gt $length $max }}
+						{{- $max = $length }}
+						{{- $items = slice (dict "type" "member" "primary" .Class "secondary" .Name) }}
+					{{- else if eq $length $max }}
+						{{- $items = $items | append (dict "type" "member" "primary" .Class "secondary" .Name) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			{{- range $index.EnumItem }}
+				{{- range . }}
+					{{- $length := add (len .Enum) (len .Name) }}
+					{{- if gt $length $max }}
+						{{- $max = $length }}
+						{{- $items = slice (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- else if eq $length $max }}
+						{{- $items = $items | append (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$max}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
 	</tbody>
 </table>
 

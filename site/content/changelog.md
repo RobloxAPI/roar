@@ -14,6 +14,7 @@ This page lists changes to the website itself.
 - Search: Remove `n`, `f`, `y`, and `t` as options to [boolean][bool] selectors,
   for being too ambiguous.
 - Add longest enum item name to [statistics][stats].
+- Add longest full name to [statistics][stats] (primary + secondary name).
 
 [ancestor]: {{<relref "search#selector-ancestor">}}
 [bool]: {{<relref "search#bool">}}
