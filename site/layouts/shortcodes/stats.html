@@ -409,6 +409,152 @@
 			<td class="r">{{$max}}</td>
 			<td>{{partial "entity/list.html" $items}}</td>
 		</tr>
+		<tr>
+			<td>shortest class name</td>
+			{{- $items := slice }}
+			{{- $min := 1000000 }}
+			{{- range $index.Class }}
+				{{- $length := len .Name }}
+				{{- if lt $length $min }}
+					{{- $min = $length }}
+					{{- $items = slice (dict "type" "class" "primary" .Name) }}
+				{{- else if eq $length $min }}
+					{{- $items = $items | append (dict "type" "class" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$min}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		{{- range $type := $index.MemberTypes }}
+			<tr>
+				<td>shortest {{$type | lower}} name</td>
+				{{- $items := slice }}
+				{{- $min := 1000000 }}
+				{{- range $index.Member }}
+					{{- range . }}
+						{{- if ne $type .MemberType }}
+							{{- continue }}
+						{{- end }}
+						{{- $length := len .Name }}
+						{{- if lt $length $min }}
+							{{- $min = $length }}
+							{{- $items = slice (dict "type" "member" "primary" .Class "secondary" .Name) }}
+						{{- else if eq $length $min }}
+							{{- $items = $items | append (dict "type" "member" "primary" .Class "secondary" .Name) }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+				<td class="r">{{$min}}</td>
+				<td>{{partial "entity/list.html" $items}}</td>
+			</tr>
+		{{- end }}
+		<tr>
+			<td>shortest parameter name</td>
+			{{- $items := slice }}
+			{{- $min := 1000000 }}
+			{{- range $className, $class := $dump.Classes }}
+				{{- range $memberName, $member := $class.Members }}
+					{{- if ne $member.MemberType "Function" "Event" "Callback"}}
+						{{- continue }}
+					{{- end }}
+					{{- range $member.Parameters }}
+						{{- if lt (len .Name) $min }}
+							{{- $min = (len .Name) }}
+							{{- $items = slice (dict "type" "member" "primary" $className "secondary" $memberName "parameter" .Name) }}
+						{{- else if eq (len .Name) $min }}
+							{{- $items = $items | append (dict "type" "member" "primary" $className "secondary" $memberName "parameter" .Name) }}
+						{{- end }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$min}}</td>
+			<td>
+				<ul class="entity-list truncated-list">
+					{{- range $items }}
+						<li class="set {{partial `entity/status-class.html` . }}">{{partial "entity/link.html" .}} ({{.parameter}})</li>
+					{{- end }}
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>shortest enum name</td>
+			{{- $items := slice }}
+			{{- $min := 1000000 }}
+			{{- range $index.Enum }}
+				{{- $length := len .Name }}
+				{{- if lt $length $min }}
+					{{- $min = $length }}
+					{{- $items = slice (dict "type" "enum" "primary" .Name) }}
+				{{- else if eq $length $min }}
+					{{- $items = $items | append (dict "type" "enum" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$min}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>shortest enum item name</td>
+			{{- $items := slice }}
+			{{- $min := 1000000 }}
+			{{- range $index.EnumItem }}
+				{{- range . }}
+					{{- $length := len .Name }}
+					{{- if lt $length $min }}
+						{{- $min = $length }}
+						{{- $items = slice (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- else if eq $length $min }}
+						{{- $items = $items | append (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$min}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>shortest type name</td>
+			{{- $items := slice }}
+			{{- $min := 1000000 }}
+			{{- range $index.Type }}
+				{{- $length := len .Name }}
+				{{- if lt $length $min }}
+					{{- $min = $length }}
+					{{- $items = slice (dict "type" "type" "primary" .Name) }}
+				{{- else if eq $length $min }}
+					{{- $items = $items | append (dict "type" "type" "primary" .Name) }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$min}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
+		<tr>
+			<td>shortest full name</td>
+			{{- $items := slice }}
+			{{- $min := 1000000 }}
+			{{- range $index.Member }}
+				{{- range . }}
+					{{- $length := add (len .Class) (len .Name) }}
+					{{- if lt $length $min }}
+						{{- $min = $length }}
+						{{- $items = slice (dict "type" "member" "primary" .Class "secondary" .Name) }}
+					{{- else if eq $length $min }}
+						{{- $items = $items | append (dict "type" "member" "primary" .Class "secondary" .Name) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			{{- range $index.EnumItem }}
+				{{- range . }}
+					{{- $length := add (len .Enum) (len .Name) }}
+					{{- if lt $length $min }}
+						{{- $min = $length }}
+						{{- $items = slice (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- else if eq $length $min }}
+						{{- $items = $items | append (dict "type" "enumitem" "primary" .Enum "secondary" .Name) }}
+					{{- end }}
+				{{- end }}
+			{{- end }}
+			<td class="r">{{$min}}</td>
+			<td>{{partial "entity/list.html" $items}}</td>
+		</tr>
 	</tbody>
 </table>
 
