@@ -16,6 +16,7 @@ This page lists changes to the website itself.
 - Add longest enum item name to [statistics][stats].
 - Add longest full name to [statistics][stats] (primary + secondary name).
 - Add shortest names to [statistics][stats].
+- API updates RSS now has links for each listed change.
 
 [ancestor]: {{<relref "search#selector-ancestor">}}
 [bool]: {{<relref "search#bool">}}
