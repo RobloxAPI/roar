@@ -7,7 +7,7 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
-## Pending
+## 2024-05-16
 - Search: Fix [removed][removed] and [is][is] field selectors not returning
   correct results in some cases.
 
