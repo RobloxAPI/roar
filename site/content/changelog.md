@@ -7,6 +7,15 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Search: Add [ancestor][ancestor] selector to select classes according to the
+  order of their superclasses. For example, `superclass:GuiObject ancestor:0`
+  will only select classes where the parent superclass is "GuiObject".
+
+[ancestor]: {{<relref "search#selector-ancestor">}}
+
+<!---->
+
 ## 2024-05-16
 - Search: Fix [removed][removed] and [is][is] field selectors not returning
   correct results in some cases.

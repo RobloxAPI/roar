@@ -253,6 +253,13 @@ const rules = ({rule, ref, lit, seq, alt, opt, rep, exc, init, name, ignoreCase,
 				...x,
 			};
 		}),
+		field(`ancestor`, ref("number_expr"), (a,x)=>{
+			return {expr:"op",
+				types: [DB.T.CLASS],
+				field: F.ANCESTOR,
+				...x,
+			};
+		}),
 		field(`superclass`, ref("string_expr"), (a,x)=>{
 			return {expr:"op",
 				types: [DB.T.CLASS],

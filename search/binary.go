@@ -48,6 +48,7 @@ var (
 	_SUPERCLASSES = field{n1, 8}  // Number of superclasses of class
 	_SUBCLASSES   = field{n2, 9}  // Number of subclasses of class
 	_MEMBERS      = field{n2, 11} // len(class.Members)
+	_ANCESTOR     = field{n1, 13} // Order index of superclass
 	_SUPERCLASS   = field{s2, 15} // Specific superclass of class
 	_SUBCLASS     = field{s2, 17} // Specific subclass of class
 	_MEM_CAT      = field{s2, 19} // class.MemoryCategory
@@ -369,9 +370,10 @@ func WriteDB(path string, idx *index.Root, dump *rbxdump.Root) error {
 			cell{_MEMBERS, len(idx.Member[k])},
 			cell{_MEM_CAT, b.Index(d.MemoryCategory)},
 		)
-		for _, sup := range i.Superclasses {
+		for i, sup := range i.Superclasses {
 			typeTables["Class"].row(
 				cell{_CLASS_NAME, b.Index(k)},
+				cell{_ANCESTOR, i},
 				cell{_SUPERCLASS, b.Index(sup)},
 			)
 		}

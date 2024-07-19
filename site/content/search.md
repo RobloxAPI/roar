@@ -245,6 +245,14 @@ Selects class entities with a superclass whose name matches *foo*
 
 {{%/selector%}}
 
+{{%selector id="ancestor" text="ancestor:N"%}}
+
+Selects class entities that match the *N*th ([number](#number)) superclass,
+starting at 0 from the parent superclass. For example, `superclass:GuiObject
+ancestor:0` will only match classes where the parent superclass is "GuiObject".
+
+{{%/selector%}}
+
 {{%selector id="subclass" text="subclass:foo"%}}
 
 Selects class entities with a subclass whose name matches *foo*
