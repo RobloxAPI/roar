@@ -2,26 +2,13 @@
 package docs
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/robloxapi/roar/script"
 )
-
-type script [][]string
-
-func (s script) Run() error {
-	for _, c := range s {
-		cmd := exec.Command(c[0], c[1:]...)
-		var buf bytes.Buffer
-		cmd.Stderr = &buf
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("run %v: %w\n%s", c, err, &buf)
-		}
-	}
-	return nil
-}
 
 // Checkout pulls data from a Git repository. dir is the directory to which the
 // repository will be cloned. remote is the URL of the repository. refspec
@@ -58,7 +45,7 @@ func Checkout(dir, remote, refspec string, content []string) error {
 	}
 
 	// Run git commands.
-	if err := (script{
+	if err := (script.Script{
 		{"git", "-C", dir, "init"},
 		{"git", "-C", dir, "remote", "add", "-f", "origin", remote},
 		{"git", "-C", dir, "config", "core.sparseCheckout", "true"},
