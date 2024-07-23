@@ -15,6 +15,7 @@ import (
 	"github.com/robloxapi/rbxdump"
 	"github.com/robloxapi/rbxdump/diff"
 	"github.com/robloxapi/roar/archive"
+	"github.com/robloxapi/roar/docs"
 	"github.com/robloxapi/roar/history"
 	"github.com/robloxapi/roar/icons"
 	"github.com/robloxapi/roar/index"
@@ -67,6 +68,7 @@ type Disable struct {
 	Reflect bool // Don't generate reflection metadata.
 	Pages   bool // Don't generate website pages.
 	Icons   bool // Don't generate icon resources.
+	Docs    bool // Don't generate documentation data.
 }
 
 func (c *Command) SetFlags(flagset snek.FlagSet) {
@@ -197,6 +199,13 @@ func (c *Command) Run(opt snek.Options) error {
 	}
 	if !c.Disable.Index {
 		if err := WriteFile(c.Site, indexData, indexRoot); err != nil {
+			return err
+		}
+	}
+
+	// Generate documentation.
+	if !c.Disable.Docs && c.Docs != "" {
+		if err := docs.Write(filepath.Join(c.Site, siteData, docsData), c.Docs); err != nil {
 			return err
 		}
 	}

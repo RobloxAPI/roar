@@ -8,6 +8,7 @@ require (
 	github.com/robloxapi/rbxdump v0.10.3
 	github.com/robloxapi/rbxfile v0.6.5
 	github.com/robloxapi/rbxver v0.3.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

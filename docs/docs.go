@@ -2,60 +2,122 @@
 package docs
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/fs"
+	"net/url"
 	"os"
-	"os/exec"
-	"path/filepath"
+	"path"
 
-	"github.com/robloxapi/roar/script"
+	"github.com/robloxapi/roar/git"
+	"gopkg.in/yaml.v3"
 )
 
-// Checkout pulls data from a Git repository. dir is the directory to which the
-// repository will be cloned. remote is the URL of the repository. refspec
-// indicates the ref to pull. Sparse checkout is used to pull only the desired
-// files: content indicates which files to pull.
-//
-// The caller must ensure that the given directory is empty or otherwise
-// prepared to receive data.
-//
-// Attempts to remove the .git directory, leaving only the requested data.
-//
-// Requires git to be available in PATH.
-func Checkout(dir, remote, refspec string, content []string) error {
-	// Early sanity check for git.
-	if err := exec.Command("git", "version").Run(); err != nil {
-		return fmt.Errorf("check for git: %w", err)
+// Write JSON file to output from source. source may be a creator-docs-formatted
+// directory, or an HTTP URL to a git repository.
+func Write(output, source string) error {
+	var repo fs.FS
+	sourceURL, _ := url.Parse(source)
+	if sourceURL.Scheme == "http" || sourceURL.Scheme == "https" {
+		tmp, err := os.MkdirTemp(".", "session-")
+		if err != nil {
+			return err
+		}
+		defer func() {
+			os.RemoveAll(tmp)
+		}()
+		const basePath = "content/en-us/reference/engine"
+		err = git.Checkout(tmp, source, "main", []string{
+			path.Join(basePath, "classes"),
+			path.Join(basePath, "datatypes"),
+			path.Join(basePath, "enums"),
+		})
+		if err != nil {
+			return err
+		}
+		repo = os.DirFS(path.Join(tmp, basePath))
+		fmt.Println("DOCS TEMP", tmp)
+	} else {
+		repo = os.DirFS(source)
 	}
+	return generate(output, repo)
+}
 
-	// Generate sparse-checkout file.
-	sparsePath := filepath.Join(dir, ".git", "info", "sparse-checkout")
-	if err := os.MkdirAll(filepath.Dir(sparsePath), 0755); err != nil {
-		return fmt.Errorf("create sparse-checkout directory: %w", err)
-	}
-	f, err := os.Create(sparsePath)
+type yml map[string]any
+
+type files map[string]yml
+
+type data struct {
+	Class files
+	Enum  files
+	Type  files
+}
+
+// source is expected to be the "engine" directory of the creator-docs repo.
+func generate(output string, source fs.FS) error {
+	var d data
+
+	j, err := os.Create(output)
 	if err != nil {
-		return fmt.Errorf("create sparse-checkout file: %w", err)
+		return err
 	}
-	for _, path := range content {
-		f.WriteString(path)
-		f.WriteString("\n")
+	defer j.Close()
+
+	if d.Class, err = generateFiles(source, "classes"); err != nil {
+		return err
 	}
-	if err := f.Close(); err != nil {
-		return fmt.Errorf("write sparse-checkout file: %w", err)
+	if d.Enum, err = generateFiles(source, "enums"); err != nil {
+		return err
+	}
+	if d.Type, err = generateFiles(source, "datatypes"); err != nil {
+		return err
 	}
 
-	// Run git commands.
-	if err := (script.Script{
-		{"git", "-C", dir, "init"},
-		{"git", "-C", dir, "remote", "add", "-f", "origin", remote},
-		{"git", "-C", dir, "config", "core.sparseCheckout", "true"},
-		{"git", "-C", dir, "pull", "origin", refspec},
-	}.Run()); err != nil {
-		return fmt.Errorf("run script: %w", err)
+	je := json.NewEncoder(j)
+	je.SetEscapeHTML(false)
+	je.SetIndent("", "\t")
+	return je.Encode(d)
+}
+
+func generateFiles(source fs.FS, root string) (files, error) {
+	f := files{}
+	errs := 0
+	err := fs.WalkDir(source, root, func(p string, d fs.DirEntry, err error) error {
+		if errs > 10 {
+			return fmt.Errorf("too many errors")
+		}
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		ext := path.Ext(p)
+		if ext != ".yaml" {
+			return nil
+		}
+		key := path.Base(p)
+		key = key[:len(key)-len(ext)]
+
+		file, err := source.Open(p)
+		if err != nil {
+			errs++
+			fmt.Println(err)
+			return nil
+		}
+		defer file.Close()
+		yd := yaml.NewDecoder(file)
+		var y yml
+		if err := yd.Decode(&y); err != nil {
+			errs++
+			fmt.Printf("decode %s: %s\n", p, err)
+			return nil
+		}
+		f[key] = y
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
-
-	// Atempt to remove .git.
-	os.RemoveAll(filepath.Join(dir, ".git"))
-
-	return nil
+	return f, nil
 }
