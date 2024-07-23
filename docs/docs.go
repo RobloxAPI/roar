@@ -2,12 +2,14 @@
 package docs
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/fs"
 	"net/url"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/robloxapi/roar/git"
 	"gopkg.in/yaml.v3"
@@ -43,10 +45,199 @@ func Write(output, source string) error {
 	return generate(output, repo)
 }
 
+type XFM func(outer any, key string) error
+
+type Transformer struct {
+	Method XFM
+	Path   []string
+}
+
+func xfmRemove(outer any, key string) error {
+	switch outer := outer.(type) {
+	case map[string]any:
+		delete(outer, key)
+	}
+	return nil
+}
+
+func xfmFixName(sep string) XFM {
+	return func(outer any, key string) error {
+		o, ok := outer.(map[string]any)
+		if !ok {
+			return nil
+		}
+		v, ok := o[key].(string)
+		if !ok {
+			return nil
+		}
+		if _, name, ok := strings.Cut(v, sep); ok {
+			v = name
+		}
+		o[key] = v
+		return nil
+	}
+}
+
+var transformers = []Transformer{
+	{xfmRemove, []string{"Class", "", "name"}},
+	{xfmRemove, []string{"Class", "", "inherits"}},
+	{xfmRemove, []string{"Class", "", "memory_category"}},
+	{xfmRemove, []string{"Class", "", "tags"}},
+	{xfmRemove, []string{"Class", "", "type"}},
+	{xfmRemove, []string{"Class", "", "properties", "", "category"}},
+	{xfmRemove, []string{"Class", "", "properties", "", "security"}},
+	{xfmRemove, []string{"Class", "", "properties", "", "serialization"}},
+	{xfmRemove, []string{"Class", "", "properties", "", "tags"}},
+	{xfmRemove, []string{"Class", "", "properties", "", "thread_safety"}},
+	{xfmRemove, []string{"Class", "", "properties", "", "type"}},
+	{xfmRemove, []string{"Class", "", "methods", "", "parameters"}},
+	{xfmRemove, []string{"Class", "", "methods", "", "returns"}},
+	{xfmRemove, []string{"Class", "", "methods", "", "security"}},
+	{xfmRemove, []string{"Class", "", "methods", "", "tags"}},
+	{xfmRemove, []string{"Class", "", "methods", "", "thread_safety"}},
+	{xfmRemove, []string{"Class", "", "events", "", "parameters"}},
+	{xfmRemove, []string{"Class", "", "events", "", "security"}},
+	{xfmRemove, []string{"Class", "", "events", "", "tags"}},
+	{xfmRemove, []string{"Class", "", "events", "", "thread_safety"}},
+	{xfmRemove, []string{"Class", "", "callbacks", "", "parameters"}},
+	{xfmRemove, []string{"Class", "", "callbacks", "", "returns"}},
+	{xfmRemove, []string{"Class", "", "callbacks", "", "security"}},
+	{xfmRemove, []string{"Class", "", "callbacks", "", "tags"}},
+	{xfmRemove, []string{"Class", "", "callbacks", "", "thread_safety"}},
+	{xfmRemove, []string{"Enum", "", "name"}},
+	{xfmRemove, []string{"Enum", "", "tags"}},
+	{xfmRemove, []string{"Enum", "", "type"}},
+	{xfmRemove, []string{"Enum", "", "items", "", "tags"}},
+	{xfmRemove, []string{"Enum", "", "items", "", "value"}},
+	{xfmRemove, []string{"Type", "", "name"}},
+	{xfmRemove, []string{"Type", "", "type"}},
+	{xfmFixName("."), []string{"Class", "", "properties", "", "name"}},
+	{xfmFixName(":"), []string{"Class", "", "methods", "", "name"}},
+	{xfmFixName("."), []string{"Class", "", "events", "", "name"}},
+	{xfmFixName("."), []string{"Class", "", "callbacks", "", "name"}},
+	{xfmFixName("."), []string{"Type", "", "constants", "", "name"}},
+	{xfmFixName("."), []string{"Type", "", "constructors", "", "name"}},
+	{xfmFixName("."), []string{"Type", "", "functions", "", "name"}},
+	{xfmFixName(":"), []string{"Type", "", "methods", "", "name"}},
+	{xfmFixName("."), []string{"Type", "", "properties", "", "name"}},
+}
+
+func transformData(d any, transformers []Transformer) {
+	for _, t := range transformers {
+		transformStruct(d, t.Method, t.Path...)
+	}
+}
+
+func transformStruct(d any, xfm XFM, path ...string) {
+	if len(path) == 0 {
+		return
+	}
+	key := path[0]
+	if len(path) == 1 {
+		xfm(d, key)
+		return
+	}
+	switch d := d.(type) {
+	case map[string]any:
+		if key == "" {
+			for _, v := range d {
+				transformStruct(v, xfm, path[1:]...)
+			}
+		} else {
+			transformStruct(d[key], xfm, path[1:]...)
+		}
+	case []any:
+		if key == "" {
+			for _, v := range d {
+				transformStruct(v, xfm, path[1:]...)
+			}
+		}
+	}
+}
+
+func rearrangeMembers(members, outer map[string]any, field string) {
+	m, _ := outer[field].([]any)
+	for _, member := range m {
+		member := member.(map[string]any)
+		members[member["name"].(string)] = member
+		delete(member, "name")
+	}
+	delete(outer, field)
+}
+
+func rearrangeStructure(d map[string]any) {
+	members := map[string]map[string]any{}
+	d["Member"] = members
+	for className, class := range d["Class"].(map[string]any) {
+		class := class.(map[string]any)
+		classMembers := map[string]any{}
+		members[className] = classMembers
+		rearrangeMembers(classMembers, class, "properties")
+		rearrangeMembers(classMembers, class, "methods")
+		rearrangeMembers(classMembers, class, "events")
+		rearrangeMembers(classMembers, class, "callbacks")
+	}
+
+	items := map[string]map[string]any{}
+	d["EnumItem"] = items
+	for enumName, enum := range d["Enum"].(map[string]any) {
+		enum := enum.(map[string]any)
+		enumItems := map[string]any{}
+		items[enumName] = enumItems
+		rearrangeMembers(enumItems, enum, "items")
+	}
+}
+
+func toUpperCamelCase(d any) {
+	switch d := d.(type) {
+	case map[string]any:
+		var keys []string
+		for k := range d {
+			keys = append(keys, k)
+		}
+		for _, k := range keys {
+			words := strings.Split(k, "_")
+			for i, word := range words {
+				if len(word) > 0 {
+					words[i] = strings.ToUpper(word[:1]) + word[1:]
+				}
+			}
+			v := d[k]
+			delete(d, k)
+			d[strings.Join(words, "")] = v
+			toUpperCamelCase(v)
+		}
+	case []any:
+		for _, v := range d {
+			toUpperCamelCase(v)
+		}
+	}
+}
+
+func fixCase(d map[string]any) {
+	for _, class := range d["Class"].(map[string]any) {
+		toUpperCamelCase(class)
+	}
+	for _, enum := range d["Enum"].(map[string]any) {
+		toUpperCamelCase(enum)
+	}
+	for _, class := range d["Member"].(map[string]map[string]any) {
+		for _, member := range class {
+			toUpperCamelCase(member)
+		}
+	}
+	for _, enum := range d["EnumItem"].(map[string]map[string]any) {
+		for _, item := range enum {
+			toUpperCamelCase(item)
+		}
+	}
+	for _, typ := range d["Type"].(map[string]any) {
+		toUpperCamelCase(typ)
+	}
+}
+
 type yml map[string]any
-
 type files map[string]yml
-
 type data struct {
 	Class files
 	Enum  files
@@ -54,14 +245,8 @@ type data struct {
 }
 
 // source is expected to be the "engine" directory of the creator-docs repo.
-func generate(output string, source fs.FS) error {
+func generate(output string, source fs.FS) (err error) {
 	var d data
-
-	j, err := os.Create(output)
-	if err != nil {
-		return err
-	}
-	defer j.Close()
 
 	if d.Class, err = generateFiles(source, "classes"); err != nil {
 		return err
@@ -73,10 +258,53 @@ func generate(output string, source fs.FS) error {
 		return err
 	}
 
-	je := json.NewEncoder(j)
+	var buf bytes.Buffer
+
+	// Write full content.
+	je := json.NewEncoder(&buf)
+	if err := je.Encode(d); err != nil {
+		return err
+	}
+
+	// Decode as json, which has known structure for empty interface type.
+	var dd map[string]any
+	jd := json.NewDecoder(&buf)
+	if err := jd.Decode(&dd); err != nil {
+		return err
+	}
+
+	transformData(dd, transformers)
+	rearrangeStructure(dd)
+	fixCase(dd)
+
+	// Encode transformed structure.
+	buf.Reset()
+	je = json.NewEncoder(&buf)
+	if err := je.Encode(dd); err != nil {
+		return err
+	}
+
+	// Decode according to root handle optional fields.
+	var root Root
+	jd = json.NewDecoder(&buf)
+	if err := jd.Decode(&root); err != nil {
+		return err
+	}
+
+	j, err := os.Create(output)
+	if err != nil {
+		return err
+	}
+	defer j.Close()
+
+	je = json.NewEncoder(j)
 	je.SetEscapeHTML(false)
 	je.SetIndent("", "\t")
-	return je.Encode(d)
+	if err := je.Encode(root); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func generateFiles(source fs.FS, root string) (files, error) {
