@@ -33,9 +33,9 @@ type Type struct {
 	Constants      []Constant    `json:",omitempty"`
 	Constructors   []Constructor `json:",omitempty"`
 	Functions      []Function    `json:",omitempty"`
-	MathOperations []Operation   `json:",omitempty"`
-	Methods        []Method      `json:",omitempty"`
 	Properties     []Property    `json:",omitempty"`
+	Methods        []Method      `json:",omitempty"`
+	MathOperations []Operation   `json:",omitempty"`
 	Tags           []string      `json:",omitempty"`
 	Doc
 }
@@ -59,12 +59,10 @@ type Function struct {
 	Tags       []string `json:",omitempty"`
 	Doc
 }
-type Operation struct {
-	Operation  string
-	TypeA      string
-	TypeB      string
-	ReturnType string
-	Tags       []string `json:",omitempty"`
+type Property struct {
+	Name string
+	Type string
+	Tags []string `json:",omitempty"`
 	Doc
 }
 type Method struct {
@@ -74,10 +72,12 @@ type Method struct {
 	Tags       []string `json:",omitempty"`
 	Doc
 }
-type Property struct {
-	Name string
-	Type string
-	Tags []string `json:",omitempty"`
+type Operation struct {
+	Operation  string
+	TypeA      string
+	TypeB      string
+	ReturnType string
+	Tags       []string `json:",omitempty"`
 	Doc
 }
 

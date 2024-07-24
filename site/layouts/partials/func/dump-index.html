@@ -1,4 +1,5 @@
-{{/* Returns the dump and index object associated with the given entity.
+{{/* Returns the dump and index object associated with the given entity. For
+"type" type, Docs will be used if available.
 
 type: string // Type of entity (class|member|enum|enumitem|type).
 primary: string // Primary entity index.
@@ -23,6 +24,9 @@ return {Dump: Dump?, Index: Index?}
 	{{$dump = index site.Data.Dump.Enums .primary "Items" .secondary}}
 	{{$index = index site.Data.Index.EnumItem .primary .secondary}}
 {{else if eq $type "type"}}
+	{{if site.Data.Docs}}
+		{{$dump = index site.Data.Docs.Type .primary}}
+	{{end}}
 	{{$index = index site.Data.Index.Type .primary}}
 {{end}}
 {{return (dict "Dump" $dump "Index" $index)}}

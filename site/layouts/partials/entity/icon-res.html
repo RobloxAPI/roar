@@ -1,7 +1,10 @@
 {{/* Returns the icon location for the given inputs.
 
-kind: string // Kind of icon (hub|entity)
-type: string // Type of entity (kind=entity) (class|property|function|event|callback|enum|enumitem|type)
+kind: string // Kind of icon (hub|entity|typemember)
+// Type of entity
+// (kind=entity) (class|property|function|event|callback|enum|enumitem|type)
+// (kind=typemember) (constant|constructor|function|property|method|operator)
+type: string
 name: string // Name of class (type=class)
 category: string // Category of type (type=type)
 protected: bool // Whether member is protected
@@ -55,6 +58,28 @@ protected: bool // Whether member is protected
 			{{$light = resources.Get "icons/light/Value.png"}}
 			{{$dark = resources.Get "icons/dark/Value.png"}}
 		{{end}}
+	{{end}}
+	{{if not $light}}{{$light = resources.Get (print "icons/light/Placeholder.png")}}{{end}}
+	{{if not $dark}}{{$dark = resources.Get (print "icons/dark/Placeholder.png")}}{{end}}
+{{else if eq $kind "typemember"}}
+	{{if eq $type "constant"}}
+		{{$light = resources.Get "icons/light/Constant.png"}}
+		{{$dark = resources.Get "icons/dark/Constant.png"}}
+	{{else if eq $type "constructor"}}
+		{{$light = resources.Get "icons/light/Constructor.png"}}
+		{{$dark = resources.Get "icons/dark/Constructor.png"}}
+	{{else if eq $type "function"}}
+		{{$light = resources.Get "icons/light/Function.png"}}
+		{{$dark = resources.Get "icons/dark/Function.png"}}
+	{{else if eq $type "property"}}
+		{{$light = resources.Get "icons/light/ACProperty.png"}}
+		{{$dark = resources.Get "icons/dark/ACProperty.png"}}
+	{{else if eq $type "method"}}
+		{{$light = resources.Get "icons/light/ACFunction.png"}}
+		{{$dark = resources.Get "icons/dark/ACFunction.png"}}
+	{{else if eq $type "operator"}}
+		{{$light = resources.Get "icons/light/Operator.png"}}
+		{{$dark = resources.Get "icons/dark/Operator.png"}}
 	{{end}}
 	{{if not $light}}{{$light = resources.Get (print "icons/light/Placeholder.png")}}{{end}}
 	{{if not $dark}}{{$dark = resources.Get (print "icons/dark/Placeholder.png")}}{{end}}

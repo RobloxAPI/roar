@@ -1,6 +1,6 @@
 {{/* Returns icon data for the given entity.
 
-type: string // The type of entity (hub|class|member|enum|enumitem|type)
+type: string // The type of entity (hub|class|member|enum|enumitem|type|typemember)
 primary: string // The primary identifier.
 secondary: string // The secondary identifier.
 
@@ -11,6 +11,9 @@ secondary: string // The secondary identifier.
 {{$title := false}}
 {{if eq $type "hub"}}
 	{{$res = partial "entity/icon-res.html" (dict "kind" "hub")}}
+{{else if eq $type "typemember"}}
+	{{$title = title .primary}}
+	{{$res = partial "entity/icon-res.html" (dict "kind" "typemember" "type" (lower .primary))}}
 {{else}}
 	{{if eq $type "class"}}
 		{{$entityType = "Class"}}

@@ -1,4 +1,434 @@
-{{- define "main" }}
+{{- /* Render a link to a data type entity.
+
+type: string // The type to render.
+simple: bool? // If true, include only the name of the referred entity (no primary or icon).
+
+*/ -}}
+{{- define "type" }}
+{{- .type -}}
+{{- end }}
+
+{{/* Render parameters as function type definition.
+
+[]Parameter
+
+*/}}
+{{- define "parameters" }}
+{{- $params := . -}}
+{{- if not $params -}}
+	{{- $params = slice -}}
+{{- end -}}
+{{- $n := sub (len $params) 1 -}}
+<span class="parameters open">(</span>
+{{- range $i, $param := $params -}}
+	<span class="parameters parameter">
+		{{- $param.Name -}}: {{template "type" (dict "type" $param.Type "simple" true) -}}
+		{{- if ne $param.Default nil }} = {{$param.Default}}{{- end -}}
+		{{- if lt $i $n -}}
+			<span class="parameters sep">, </span>
+		{{- end -}}
+	</span>
+{{- end -}}
+<span class="parameters close">)</span>
+{{- end }}
+
+{{/* Render member return types as function type definition.
+
+[]Type
+
+*/}}
+{{- define "returns" }}
+{{- $returns := . -}}
+{{- if not $returns -}}
+	{{- $returns = slice -}}
+{{- end -}}
+{{- $n := sub (len $returns) 1 -}}
+{{- if eq $n 0 -}}
+	<span class="returns return">{{template "type" (dict "type" (index $returns 0).Type "simple" true)}}</span>
+{{- else -}}
+	<span class="returns open">(</span>
+	{{- range $i, $type := $returns -}}
+		<span class="returns return">{{template "type" (dict "type" $type.Type "simple" true)}}</span>
+		{{- if lt $i $n -}}
+			<span class="returns sep">, </span>
+		{{- end -}}
+	{{- end -}}
+	<span class="returns close">)</span>
+{{- end -}}
+{{- end }}
+
+{{/* Render entire member index table.
+
+type: string
+
+*/}}
+{{- define "member-index" }}
+{{- $typeName := .type }}
+{{- $typeIndex := index site.Data.Index.Type $typeName }}
+{{- $typeDocs := index site.Data.Docs.Type $typeName }}
+<table class="index-card members">
+	<thead>
+		<tr>
+			<th class="col-icon"></th>
+			<th class="col-member">Member</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{- range $typeDocs.Constants }}
+			{{- $status := "" }}
+			<tr class="set {{$status}}">
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "typemember" "primary" "constant")}}</td>
+				<td class="col-member">
+					<span class="member-text deco {{$status}}">{{- /**/ -}}
+						<span class="name">{{.Name}}</span>{{- /**/ -}}
+						<span class="bind">: </span><span class="type">{{template "type" (dict "type" .Type "simple" true)}}</span>
+					</span>
+				</td>
+			</tr>
+		{{- end }}
+		{{- range $typeDocs.Constructors }}
+			{{- $status := "" }}
+			<tr class="set {{$status}}">
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "typemember" "primary" "constructor")}}</td>
+				<td class="col-member">
+					<span class="member-text deco {{$status}}">{{- /**/ -}}
+						<span class="name">{{.Name}}</span>{{- /**/ -}}
+						{{template "parameters" .Parameters}}<span class="bind">: </span>{{- $typeName -}}
+					</span>
+				</td>
+			</tr>
+		{{- end }}
+		{{- range $typeDocs.Functions }}
+			{{- $status := "" }}
+			<tr class="set {{$status}}">
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "typemember" "primary" "function")}}</td>
+				<td class="col-member">
+					<span class="member-text deco {{$status}}">{{- /**/ -}}
+						<span class="name">{{.Name}}</span>{{- /**/ -}}
+						{{template "parameters" .Parameters}}<span class="bind">: </span>{{template "returns" .Returns}}
+					</span>
+				</td>
+			</tr>
+		{{- end }}
+		{{- range $typeDocs.Properties }}
+			{{- $status := "" }}
+			<tr class="set {{$status}}">
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "typemember" "primary" "property")}}</td>
+				<td class="col-member">
+					<span class="member-text deco {{$status}}">{{- /**/ -}}
+						<span class="name">{{.Name}}</span>{{- /**/ -}}
+						<span class="bind">: </span><span class="type">{{template "type" (dict "type" .Type "simple" true)}}</span>
+					</span>
+				</td>
+			</tr>
+		{{- end }}
+		{{- range $typeDocs.Methods }}
+			{{- $status := "" }}
+			<tr class="set {{$status}}">
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "typemember" "primary" "method")}}</td>
+				<td class="col-member">
+					<span class="member-text deco {{$status}}">{{- /**/ -}}
+						<span class="name">{{.Name}}</span>{{- /**/ -}}
+						{{template "parameters" .Parameters}}<span class="bind">: </span>{{template "returns" .Returns}}
+					</span>
+				</td>
+			</tr>
+		{{- end }}
+		{{- range $typeDocs.MathOperations }}
+			{{- $status := "" }}
+			<tr class="set {{$status}}">
+				<td class="col-icon">{{partial "entity/icon.html" (dict "type" "typemember" "primary" "operator")}}</td>
+				<td class="col-member">
+					<span class="member-text deco {{$status}}">{{- /**/ -}}
+						<span class="operand">{{template "type" (dict "type" .TypeA "simple" true)}}</span>{{- /**/ -}}
+						<span class="operator"> {{.Operation}} </span>{{- /**/ -}}
+						<span class="operand">{{template "type" (dict "type" .TypeB "simple" true)}}</span>{{- /**/ -}}
+						<span class="bind">: </span>{{template "type" (dict "type" .ReturnType "simple" true)}}{{- /**/ -}}
+					</span>
+				</td>
+			</tr>
+		{{- end }}
+	</tbody>
+</table>
+{{- end }}
+
+{{/* Render member documentation.
+
+MemberIndex
+
+*/}}
+{{- define "member-docs" }}
+	<div class="docs">
+		{{- $desc := markdownify .Description }}
+		{{- if $desc }}
+			{{- $desc }}
+		{{- else }}
+			<span class="no-desc"></span>
+		{{- end }}
+	</div>
+{{- end }}
+
+{{/* Render full detail using data from docs. */}}
+{{- define "detailed" }}
+{{- $typeName := .Title }}
+{{- $typeIndex := index site.Data.Index.Type $typeName }}
+{{- $typeDocs := index site.Data.Docs.Type $typeName }}
+{{- $removed := $typeIndex.Removed }}
+
+{{- $relatedMembers := slice }}
+{{- range $typeIndex.Related}}
+	{{- if eq .Removed $removed }}
+		{{- $relatedMembers = $relatedMembers | append . }}
+	{{- end }}
+{{- end }}
+
+{{- partial "singleton/nav-panel.html" . }}
+	<section id="toc">
+		<header><h2>Contents</h2></header>
+		<ol class="toc">
+			<li id="toc-summary"><a href="#summary">Summary</a></li>
+			<li id="toc-members-index"><a href="#members-index">Member index</a></li>
+			<li id="toc-description"><a href="#description">Description</a></li>
+			{{- if $typeDocs.Constants }}
+				<li id="toc-constants"><a href="#constants">Constants</a>
+					<ol>
+						{{- range $typeDocs.Constants}}
+							<li>{{.Name}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $typeDocs.Constructors }}
+				<li id="toc-constructors"><a href="#constructors">Constructors</a>
+					<ol>
+						{{- range $typeDocs.Constructors}}
+							<li>{{.Name}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $typeDocs.Functions }}
+				<li id="toc-functions"><a href="#functions">Functions</a>
+					<ol>
+						{{- range $typeDocs.Functions}}
+							<li>{{.Name}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $typeDocs.Properties }}
+				<li id="toc-properties"><a href="#properties">Properties</a>
+					<ol>
+						{{- range $typeDocs.Properties}}
+							<li>{{.Name}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $typeDocs.Methods }}
+				<li id="toc-methods"><a href="#methods">Methods</a>
+					<ol>
+						{{- range $typeDocs.Methods}}
+							<li>{{.Name}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $typeDocs.MathOperations }}
+				<li id="toc-operators"><a href="#operators">Operators</a>
+					<ol>
+						{{- range $typeDocs.MathOperations}}
+							<li>{{.TypeA}} {{.Operation}} {{.TypeB}}</li>
+						{{- end }}
+					</ol>
+				</li>
+			{{- end }}
+			{{- if $relatedMembers }}
+				<li id="toc-references">References
+					<ol>
+						<li id="toc-related-members"><a href="#related-members">Related members</a></li>
+					</ol>
+				</li>
+			{{- end }}
+		</ol>
+	</section>
+{{- partial "singleton/nav-panel-end.html" . }}
+<article id="content">
+	<header><h1>{{partial "entity/icon.html" (dict "type" "type" "primary" $typeName)}}{{$typeName}}<aside>{{partial "entity/link.html" (dict "type" "type" "primary" $typeName "hub" true)}}</aside></h1></header>
+	<section id="summary">
+		{{- partial "status/list.html" (dict "type" "type" "primary" $typeName) }}
+		<div class="docs">
+			{{- $summary := markdownify $typeDocs.Summary }}
+			{{- if $summary }}
+				{{- $summary }}
+			{{- else }}
+				<span class="no-desc"></span>
+			{{- end }}
+		</div>
+		{{- if $typeDocs.Tags }}
+			<div class="tags">Tags: [{{delimit $typeDocs.Tags ", "}}]</div>
+		{{- end }}
+	</section>
+
+	<section id="members-index">
+		{{- $total := 0 }}
+		{{- $total = $total | add (len (default slice $typeDocs.Constants)) }}
+		{{- $total = $total | add (len (default slice $typeDocs.Constructors)) }}
+		{{- $total = $total | add (len (default slice $typeDocs.Functions)) }}
+		{{- $total = $total | add (len (default slice $typeDocs.Properties)) }}
+		{{- $total = $total | add (len (default slice $typeDocs.Methods)) }}
+		{{- $total = $total | add (len (default slice $typeDocs.MathOperations)) }}
+		<header><h2>Member index {{partial "component/element-count.html" $total}}</h2></header>
+		{{- template "member-index" (dict "type" $typeName) }}
+	</section>
+
+	<section id="description">
+		<header><h2>Description</h2></header>
+		<div class="docs">
+			{{- $desc := markdownify $typeDocs.Description }}
+			{{- if $desc }}
+				{{- $desc }}
+			{{- else }}
+				<span class="no-desc"></span>
+			{{- end }}
+		</div>
+	</section>
+
+	{{- if $typeDocs.Constants }}
+		<section id="constants">
+			<header><h2>Constants {{partial "component/element-count.html" (len $typeDocs.Constants)}}</h2></header>
+			<div class="constants-sections">
+				{{- range $typeDocs.Constants }}
+					<section id="static-{{.Name}}">
+						<header><h3>{{partial "entity/icon.html" (dict "type" "typemember" "primary" "constant")}}{{.Name}}</h3></header>
+						<p>{{- .ValueType }}</p>
+						{{- template "member-docs" . }}
+						{{- if .Tags }}
+							<div class="tags">Tags: [{{delimit .Tags ", "}}]</div>
+						{{- end }}
+					</section>
+				{{- end }}
+			</div>
+		</section>
+	{{- end }}
+
+	{{- if $typeDocs.Constructors }}
+		<section id="constructors">
+			<header><h2>Constructors {{partial "component/element-count.html" (len $typeDocs.Constructors)}}</h2></header>
+			<div class="constructors-sections">
+				{{- range $typeDocs.Constructors }}
+					<section id="static-{{.Name}}-TODO">
+						<header><h3>{{partial "entity/icon.html" (dict "type" "typemember" "primary" "constructor")}}{{.Name}}</h3></header>
+						<p>TODO:PARAMETERS</p>
+						{{- template "member-docs" . }}
+						{{- if .Tags }}
+							<div class="tags">Tags: [{{delimit .Tags ", "}}]</div>
+						{{- end }}
+					</section>
+				{{- end }}
+			</div>
+		</section>
+	{{- end }}
+
+	{{- if $typeDocs.Functions }}
+		<section id="functions">
+			<header><h2>Functions {{partial "component/element-count.html" (len $typeDocs.Functions)}}</h2></header>
+			<div class="functions-sections">
+				{{- range $typeDocs.Functions }}
+					<section id="static-{{.Name}}-TODO">
+						<header><h3>{{partial "entity/icon.html" (dict "type" "typemember" "primary" "function")}}{{.Name}}</h3></header>
+						<p>TODO:PARAMETERS</p>
+						<p>TODO:RETURNS</p>
+						{{- template "member-docs" . }}
+						{{- if .Tags }}
+							<div class="tags">Tags: [{{delimit .Tags ", "}}]</div>
+						{{- end }}
+					</section>
+				{{- end }}
+			</div>
+		</section>
+	{{- end }}
+
+	{{- if $typeDocs.Properties }}
+		<section id="properties">
+			<header><h2>Properties {{partial "component/element-count.html" (len $typeDocs.Properties)}}</h2></header>
+			<div class="properties-sections">
+				{{- range $typeDocs.Properties }}
+					<section id="member-{{.Name}}">
+						<header><h3>{{partial "entity/icon.html" (dict "type" "typemember" "primary" "property")}}{{.Name}}</h3></header>
+						<p>{{- .Type }}</p>
+						{{- template "member-docs" . }}
+						{{- if .Tags }}
+							<div class="tags">Tags: [{{delimit .Tags ", "}}]</div>
+						{{- end }}
+					</section>
+				{{- end }}
+			</div>
+		</section>
+	{{- end }}
+
+	{{- if $typeDocs.Methods }}
+		<section id="methods">
+			<header><h2>Methods {{partial "component/element-count.html" (len $typeDocs.Methods)}}</h2></header>
+			<div class="methods-sections">
+				{{- range $typeDocs.Methods }}
+					<section id="member-{{.Name}}">
+						<header><h3>{{partial "entity/icon.html" (dict "type" "typemember" "primary" "method")}}{{.Name}}</h3></header>
+						<p>TODO:PARAMETERS</p>
+						<p>TODO:RETURNS</p>
+						{{- template "member-docs" . }}
+						{{- if .Tags }}
+							<div class="tags">Tags: [{{delimit .Tags ", "}}]</div>
+						{{- end }}
+					</section>
+				{{- end }}
+			</div>
+		</section>
+	{{- end }}
+
+	{{- if $typeDocs.MathOperations }}
+		<section id="operators">
+			<header><h2>Operators {{partial "component/element-count.html" (len $typeDocs.MathOperations)}}</h2></header>
+			<div class="operators-sections">
+				{{- range $typeDocs.MathOperations }}
+					<section id="operator-{{.Name}}">
+						<header><h3>{{partial "entity/icon.html" (dict "type" "typemember" "primary" "operator")}}{{.TypeA}} {{.Operation}} {{.TypeB}} : {{.ReturnType}}</h3></header>
+						{{- template "member-docs" . }}
+						{{- if .Tags }}
+							<div class="tags">Tags: [{{delimit .Tags ", "}}]</div>
+						{{- end }}
+					</section>
+				{{- end }}
+			</div>
+		</section>
+	{{- end }}
+
+	{{- if $relatedMembers }}
+		<section id="related-members">
+			<header><h2>Related members {{partial "component/element-count.html" (len $relatedMembers)}}</h2></header>
+			<ul class="entity-list truncated-list">
+				{{- range $relatedMembers }}
+					{{- $type := "class" }}
+					{{- if .Member }}
+						{{- $type = "member" }}
+					{{- end }}
+					<li class="set {{partial `entity/status-class.html` (dict `type` $type `primary` .Class `secondary` .Member)}}">
+						<span>
+							{{- partial "entity/link.html" (dict "type" $type "primary" .Class "secondary" .Member) }}
+							{{- if eq .Kind "Parameter" }} (
+								{{- index site.Data.Dump.Classes .Class "Members" .Member "Parameters" (int .Index) "Name" }})
+							{{- end -}}
+						</span>
+					</li>
+				{{- end }}
+			</ul>
+		</section>
+	{{- end }}
+</article>
+{{- end }}
+
+{{/* Render only related members. */}}
+{{- define "basic" }}
 {{- $typeName := .Title }}
 {{- $typeIndex := index site.Data.Index.Type $typeName }}
 {{- $removed := $typeIndex.Removed }}
@@ -12,7 +442,6 @@
 
 <article id="content">
 	<header><h1>{{partial "entity/icon.html" (dict "type" "type" "primary" $typeName)}}{{$typeName}}<aside>{{partial "entity/link.html" (dict "type" "type" "primary" $typeName "hub" true)}}</aside></h1></header>
-
 	{{- if $relatedMembers }}
 		<section id="related-members">
 			<header><h2>Related members {{partial "component/element-count.html" (len $relatedMembers)}}</h2></header>
@@ -35,4 +464,12 @@
 		</section>
 	{{- end }}
 </article>
+{{- end }}
+
+{{- define "main" }}
+{{- if and (site.Data.Docs) (index site.Data.Docs.Type .Title) }}
+	{{- template "detailed" . }}
+{{- else }}
+	{{- template "basic" . }}
+{{- end }}
 {{- end }}
