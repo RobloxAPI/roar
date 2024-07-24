@@ -1,0 +1,6 @@
+.no-desc {
+	&::before {
+		opacity: 0.6;
+		content: "No description."
+	}
+}

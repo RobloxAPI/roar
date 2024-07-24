@@ -32,6 +32,7 @@ $theme: {{site.Params.theme}};
 @import "component/code";
 @import "component/collapsing-title";
 @import "component/diff-values";
+@import "component/docs";
 @import "component/element-count";
 @import "component/entity-link";
 @import "component/entity-list";

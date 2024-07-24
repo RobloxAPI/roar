@@ -88,6 +88,29 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	</table>
 {{- end }}
 
+{{/* Render member documentation.
+
+MemberIndex
+
+*/}}
+{{- define "member-docs" }}
+	{{- if site.Data.Docs }}
+		<div class="docs">
+			{{- $docs := index site.Data.Docs.Member .Class .Name }}
+			{{- if $docs }}
+				{{- $desc := markdownify $docs.Description }}
+				{{- if $desc }}
+					{{- $desc }}
+				{{- else }}
+					<span class="no-desc"></span>
+				{{- end }}
+			{{- else }}
+				<span class="no-desc"></span>
+			{{- end }}
+		</div>
+	{{- end }}
+{{- end }}
+
 {{/* Render section for each member.
 
 []MemberIndex
@@ -102,7 +125,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- if eq $dump.MemberType "Property"}}
 					{{- partial "member/parameters-table.html" (dict "type" $dump.ValueType "default" $dump.Default) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
-					{{- /* TODO: Documentation */ -}}
+					{{- template "member-docs" . }}
 					<table class="metadata-pairs">
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
@@ -132,7 +155,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- else if eq $dump.MemberType "Function"}}
 					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters "returns" $dump.ReturnType) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
-					{{- /* TODO: Documentation */ -}}
+					{{- template "member-docs" . }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -145,7 +168,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- else if eq $dump.MemberType "Event"}}
 					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
-					{{- /* TODO: Documentation */ -}}
+					{{- template "member-docs" . }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -158,7 +181,7 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 				{{- else if eq $dump.MemberType "Callback"}}
 					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters "returns" $dump.ReturnType) }}
 					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
-					{{- /* TODO: Documentation */ -}}
+					{{- template "member-docs" . }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -217,6 +240,8 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 		{{- $removedMembers = $removedMembers | append . }}
 	{{- end }}
 {{- end }}
+
+{{- $classDocs := index site.Data.Docs.Class $className }}
 
 {{- $changes := slice | append (index site.Data.History.Object.Class $className) }}
 {{- range index site.Data.History.Object.Member $className }}
@@ -313,6 +338,9 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 			{{- if $removedMembers }}
 				<li id="toc-removed-members-index" class="set removed"><a href="#removed-members-index">Removed member index</a></li>
 			{{- end }}
+			{{- if site.Data.Docs }}
+				<li id="toc-description"><a href="#description">Description</a></li>
+			{{- end }}
 			{{- if $changes }}
 				<li id="toc-history"><a href="#history">History</a></li>
 			{{- end }}
@@ -360,6 +388,20 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 	<section id="summary">
 		<header><h2>Summary</h2></header>
 		{{- partial "status/list.html" (dict "type" "class" "primary" $className) }}
+		{{- if site.Data.Docs }}
+			<div class="docs">
+				{{- if $classDocs }}
+					{{- $summary := markdownify $classDocs.Summary }}
+					{{- if $summary }}
+						{{- $summary }}
+					{{- else }}
+						<span class="no-desc"></span>
+					{{- end }}
+				{{- else }}
+					<span class="no-desc"></span>
+				{{- end }}
+			</div>
+		{{- end }}
 		<table class="metadata-pairs">
 			<tr class="pair"><th class="name">Memory category</th><td class="value">{{$classDump.MemoryCategory}}</td></tr>
 		</table>
@@ -377,6 +419,24 @@ inherited: bool? // Whether members are inherited from an ancestor class.
 		<section id="removed-members-index" class="set removed">
 			<header><h2>Removed member index {{partial "component/element-count.html" (len $removedMembers)}}</h2></header>
 			{{- template "member-index" (dict "class" $className "members" $removedMembers "inherited" false) }}
+		</section>
+	{{- end }}
+
+	{{- if site.Data.Docs }}
+		<section id="description">
+			<header><h2>Description</h2></header>
+			<div class="docs">
+				{{- if $classDocs }}
+					{{- $desc := markdownify $classDocs.Description }}
+					{{- if $desc }}
+						{{- $desc }}
+					{{- else }}
+						<span class="no-desc"></span>
+					{{- end }}
+				{{- else }}
+					<span class="no-desc"></span>
+				{{- end }}
+			</div>
 		</section>
 	{{- end }}
 

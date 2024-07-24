@@ -21,6 +21,16 @@ items: []EnumItemIndex
 		{{- break }}
 	{{- end }}
 {{- end }}
+{{- $hasDesc := false }}
+{{- if site.Data.Docs }}
+	{{- range .items }}
+		{{- $itemDocs := index site.Data.Docs.EnumItem .Enum .Name }}
+		{{- if and $itemDocs (strings.ContainsNonSpace $itemDocs.Summary) }}
+			{{- $hasDesc = true }}
+			{{- break }}
+		{{- end }}
+	{{- end }}
+{{- end }}
 <table class="index-card enumitems">
 	<thead>
 		<tr>
@@ -30,10 +40,13 @@ items: []EnumItemIndex
 			<th class="col-value">Value</th>
 			{{- if $hasLegacyNames }}
 				<th class="col-legacy-names">Legacy Names</th>
-			{{- end}}
+			{{- end }}
 			{{- if $hasTags }}
 				<th class="col-tags">Tags</th>
-			{{- end}}
+			{{- end }}
+			{{- if $hasDesc }}
+				<th class="col-desc">Description</th>
+			{{- end }}
 		</tr>
 	</thead>
 	<tbody>
@@ -57,6 +70,19 @@ items: []EnumItemIndex
 					{{- $tags := $itemDump.Tags | complement (slice "Deprecated" "NotBrowsable" "Hidden" ) }}
 					<td class="col-tags">{{if $tags}}<span>{{delimit $tags ", "}}</span>{{end}}</td>
 				{{- end}}
+				{{- if $hasDesc }}
+					{{- $itemDocs := index site.Data.Docs.EnumItem .Enum .Name }}
+					{{- if $itemDocs }}
+						{{- $desc := markdownify $itemDocs.Summary }}
+						{{- if $desc }}
+							<td class="col-desc">{{$desc}}</td>
+						{{- else }}
+							<td class="col-desc"><span class="no-desc"></span></td>
+						{{- end }}
+					{{- else }}
+						<td class="col-desc"><span class="no-desc"></span></td>
+					{{- end }}
+				{{- end }}
 			</tr>
 		{{- else }}
 			<tr class="empty">
@@ -87,6 +113,8 @@ items: []EnumItemIndex
 	{{- end }}
 {{- end }}
 
+{{- $enumDocs := index site.Data.Docs.Enum $enumName }}
+
 {{- $changes := slice | append (index site.Data.History.Object.Enum $enumName) }}
 {{- range index site.Data.History.Object.EnumItem $enumName }}
 	{{- $changes = $changes | append . }}
@@ -104,12 +132,15 @@ items: []EnumItemIndex
 	<section id="toc">
 		<header><h2>Contents</h2></header>
 		<ol class="toc">
-			{{- if $enumDump.Tags }}
+			{{- if or site.Data.Docs $enumDump.Tags }}
 				<li id="toc-summary"><a href="#summary">Summary</a></li>
 			{{- end }}
 			<li id="toc-members-index"><a href="#members-index">Items</a></li>
 			{{- if $removedItems }}
 				<li id="toc-removed-members-index" class="set removed"><a href="#removed-members-index">Removed item index</a></li>
+			{{- end }}
+			{{- if site.Data.Docs }}
+				<li id="toc-description"><a href="#description">Description</a></li>
 			{{- end }}
 			{{- if $changes }}
 				<li id="toc-history"><a href="#history">History</a></li>
@@ -124,11 +155,27 @@ items: []EnumItemIndex
 <article id="content">
 	<header><h1>{{partial "entity/icon.html" (dict "type" "enum")}}{{$enumName}}<aside>{{partial "entity/link.html" (dict "type" "enum" "primary" $enumName "hub" true)}}</aside></h1></header>
 
-	{{- if $enumDump.Tags }}
+	{{- if or site.Data.Docs $enumDump.Tags }}
 		<section id="summary">
 			<header><h2>Summary</h2></header>
 			{{- partial "status/list.html" (dict "type" "enum" "primary" $enumName) }}
-			<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
+			{{- if site.Data.Docs }}
+				<div class="docs">
+					{{- if $enumDocs }}
+						{{- $summary := markdownify $enumDocs.Summary }}
+						{{- if $summary }}
+							{{- $summary }}
+						{{- else }}
+							<span class="no-desc"></span>
+						{{- end }}
+					{{- else }}
+						<span class="no-desc"></span>
+					{{- end }}
+				</div>
+			{{- end }}
+			{{- if $enumDump.Tags }}
+				<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
+			{{- end }}
 		</section>
 	{{- end }}
 
@@ -141,6 +188,24 @@ items: []EnumItemIndex
 		<section id="removed-members-index" class="set removed">
 			<header><h2>Removed items {{partial "component/element-count.html" (len $removedItems)}}</h2></header>
 			{{- template "item-index" (dict "enum" $enumName "items" $removedItems) }}
+		</section>
+	{{- end }}
+
+	{{- if site.Data.Docs }}
+		<section id="description">
+			<header><h2>Description</h2></header>
+			<div class="docs">
+				{{- if $enumDocs }}
+					{{- $desc := markdownify $enumDocs.Description }}
+					{{- if $desc }}
+						{{- $desc }}
+					{{- else }}
+						<span class="no-desc"></span>
+					{{- end }}
+				{{- else }}
+					<span class="no-desc"></span>
+				{{- end }}
+			</div>
 		</section>
 	{{- end }}
 
