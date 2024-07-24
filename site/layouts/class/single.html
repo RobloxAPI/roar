@@ -386,7 +386,6 @@ MemberIndex
 <article id="content">
 	<header><h1>{{partial "entity/icon.html" (dict "type" "class" "primary" $className)}}{{$className}}<aside>{{partial "entity/link.html" (dict "type" "class" "primary" $className "hub" true)}}</aside></h1></header>
 	<section id="summary">
-		<header><h2>Summary</h2></header>
 		{{- partial "status/list.html" (dict "type" "class" "primary" $className) }}
 		{{- if site.Data.Docs }}
 			<div class="docs">
