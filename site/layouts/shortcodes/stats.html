@@ -961,8 +961,8 @@
 		<tr><td>go version</td><td>{{hugo.GoVersion}}</td></tr>
 		<tr><td>hugo version</td><td>{{hugo.Version}}</td></tr>
 		<tr><td>extended</td><td>{{hugo.IsExtended}}</td></tr>
-		<tr><td>build date</td><td>{{(time hugo.BuildDate).UTC.Format "2006-01-02 15:04:05"}}</td></tr>
-		<tr><td>commit hash</td><td>{{hugo.CommitHash}}</td></tr>
+		<tr><td>build date</td><td>{{if hugo.BuildDate}}{{(time hugo.BuildDate).UTC.Format "2006-01-02 15:04:05"}}{{else}}unknown{{end}}</td></tr>
+		<tr><td>commit hash</td><td>{{if hugo.CommitHash}}{{hugo.CommitHash}}{{else}}unknown{{end}}</td></tr>
 		<tr><td>environment</td><td>{{hugo.Environment}}</td></tr>
 		<tr><td>base path</td><td>{{relURL site.BaseURL}}</td></tr>
 		<tr><td>pages</td><td>{{len site.AllPages}}</td></tr>
