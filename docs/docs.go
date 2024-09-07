@@ -45,6 +45,7 @@ func Write(output, source string) error {
 	return generate(output, repo)
 }
 
+// Receives a JSON object and a key, and transforms its value.
 type XFM func(outer any, key string) error
 
 type Transformer struct {
@@ -52,6 +53,7 @@ type Transformer struct {
 	Path   []string
 }
 
+// If outer is an object, deletes key from it.
 func xfmRemove(outer any, key string) error {
 	switch outer := outer.(type) {
 	case map[string]any:
@@ -60,6 +62,8 @@ func xfmRemove(outer any, key string) error {
 	return nil
 }
 
+// Fixes a field value by cutting according to sep, and setting the field to the
+// portion after sep.
 func xfmFixName(sep string) XFM {
 	return func(outer any, key string) error {
 		o, ok := outer.(map[string]any)
@@ -78,6 +82,7 @@ func xfmFixName(sep string) XFM {
 	}
 }
 
+// List of transformations to apply to docs data.
 var transformers = []Transformer{
 	{xfmRemove, []string{"Class", "", "name"}},
 	{xfmRemove, []string{"Class", "", "inherits"}},
@@ -122,12 +127,14 @@ var transformers = []Transformer{
 	{xfmFixName("."), []string{"Type", "", "properties", "", "name"}},
 }
 
+// Applies a list of transformers to d.
 func transformData(d any, transformers []Transformer) {
 	for _, t := range transformers {
 		transformStruct(d, t.Method, t.Path...)
 	}
 }
 
+// Applies xfm to the target of path under d, if present.
 func transformStruct(d any, xfm XFM, path ...string) {
 	if len(path) == 0 {
 		return
@@ -155,11 +162,17 @@ func transformStruct(d any, xfm XFM, path ...string) {
 	}
 }
 
+// Rearranges outer[field] from a list of objects to a map of names to objects.
+// If an object does not have a "name" field, then it is discarded.
 func rearrangeMembers(members, outer map[string]any, field string) {
 	m, _ := outer[field].([]any)
 	for _, member := range m {
 		member := member.(map[string]any)
-		members[member["name"].(string)] = member
+		name, ok := member["name"].(string)
+		if !ok {
+			continue
+		}
+		members[name] = member
 		delete(member, "name")
 	}
 	delete(outer, field)
@@ -188,6 +201,7 @@ func rearrangeStructure(d map[string]any) {
 	}
 }
 
+// Converts field names from snake_case to UpperCamelCase.
 func toUpperCamelCase(d any) {
 	switch d := d.(type) {
 	case map[string]any:
@@ -214,6 +228,7 @@ func toUpperCamelCase(d any) {
 	}
 }
 
+// Normalizes the casing of field names.
 func fixCase(d map[string]any) {
 	for _, class := range d["Class"].(map[string]any) {
 		toUpperCamelCase(class)
@@ -236,15 +251,22 @@ func fixCase(d map[string]any) {
 	}
 }
 
+// Represents the YAML content of a file.
 type yml map[string]any
+
+// Maps file names to YAML content.
 type files map[string]yml
+
+// Represents the engine directory.
 type data struct {
 	Class files
 	Enum  files
 	Type  files
 }
 
-// source is expected to be the "engine" directory of the creator-docs repo.
+// Compiles documentation files from source to a single data file located at
+// output. source is expected to be the "engine" directory of the creator-docs
+// repo.
 func generate(output string, source fs.FS) (err error) {
 	var d data
 
@@ -307,6 +329,8 @@ func generate(output string, source fs.FS) (err error) {
 	return nil
 }
 
+// Compiles a directory of YAML files into a map of file stems to file content.
+// Ignores non-YAML files.
 func generateFiles(source fs.FS, root string) (files, error) {
 	f := files{}
 	errs := 0
