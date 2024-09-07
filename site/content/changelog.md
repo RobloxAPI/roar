@@ -7,6 +7,11 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Include number of tied entities in [statistics][stats].
+
+<!---->
+
 ## 2024-07-19
 - Search: Add [ancestor][ancestor] selector to select classes according to the
   order of their superclasses. For example, `superclass:GuiObject ancestor:0`
