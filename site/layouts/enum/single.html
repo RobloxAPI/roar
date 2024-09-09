@@ -73,7 +73,7 @@ items: []EnumItemIndex
 				{{- if $hasDesc }}
 					{{- $itemDocs := index site.Data.Docs.EnumItem .Enum .Name }}
 					{{- if $itemDocs }}
-						{{- $desc := markdownify $itemDocs.Summary }}
+						{{- $desc := safeHTML $itemDocs.Summary }}
 						{{- if $desc }}
 							<td class="col-desc">{{$desc}}</td>
 						{{- else }}
@@ -161,7 +161,7 @@ items: []EnumItemIndex
 			{{- if site.Data.Docs }}
 				<div class="docs">
 					{{- if $enumDocs }}
-						{{- $summary := markdownify $enumDocs.Summary }}
+						{{- $summary := safeHTML $enumDocs.Summary }}
 						{{- if $summary }}
 							{{- $summary }}
 						{{- else }}
@@ -195,7 +195,7 @@ items: []EnumItemIndex
 			<header><h2>Description</h2></header>
 			<div class="docs">
 				{{- if $enumDocs }}
-					{{- $desc := markdownify $enumDocs.Description }}
+					{{- $desc := safeHTML $enumDocs.Description }}
 					{{- if $desc }}
 						{{- $desc }}
 					{{- else }}

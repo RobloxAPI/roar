@@ -8,6 +8,8 @@ github.com/robloxapi/rbxfile v0.6.5 h1:rhj1duuFOnf2X0XVt6hrvOm10oZELfga7q3IksS8C
 github.com/robloxapi/rbxfile v0.6.5/go.mod h1:6JmvvzkWbpQq5uBsj66DUx8SxNANkCW0crZRciYpadw=
 github.com/robloxapi/rbxver v0.3.0 h1:ax3ndKtLiXNeYbGc56UEcPQYYMEr6heOfyRDfn+68lg=
 github.com/robloxapi/rbxver v0.3.0/go.mod h1:mpM7UdZ2YyLq4gSVtWToeRQLUHNBcOfRGRjINbOi5vM=
+github.com/yuin/goldmark v1.7.4 h1:BDXOHExt+A7gwPCJgPIIq7ENvceR7we7rOS9TNoLZeg=
+github.com/yuin/goldmark v1.7.4/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
 golang.org/x/crypto v0.21.0 h1:X31++rzVUdKhX5sWmSOFZxx8UW/ldWx55cbf08iNAMA=
 golang.org/x/crypto v0.21.0/go.mod h1:0BP7YvVV9gBbVKyeTG0Gyn+gZm94bibOW5BjDEYAOMs=
 golang.org/x/sys v0.18.0 h1:DBdB3niSjOA/O0blCZBqDefyWNYveAYMNF1Wum0DYQ4=

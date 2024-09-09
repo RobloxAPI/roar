@@ -306,13 +306,19 @@ func generate(output string, source fs.FS) (err error) {
 		return err
 	}
 
-	// Decode according to root handle optional fields.
+	// Decode according to root to handle optional fields.
 	var root Root
 	jd = json.NewDecoder(&buf)
 	if err := jd.Decode(&root); err != nil {
 		return err
 	}
 
+	// Render embedded markdown to HTML.
+	if err := root.RenderHTML(); err != nil {
+		return err
+	}
+
+	// Encode final output.
 	j, err := os.Create(output)
 	if err != nil {
 		return err

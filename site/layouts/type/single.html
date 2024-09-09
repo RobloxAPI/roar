@@ -159,7 +159,7 @@ MemberIndex
 */}}
 {{- define "member-docs" }}
 	<div class="docs">
-		{{- $desc := markdownify .Description }}
+		{{- $desc := safeHTML .Description }}
 		{{- if $desc }}
 			{{- $desc }}
 		{{- else }}
@@ -258,7 +258,7 @@ MemberIndex
 	<section id="summary">
 		{{- partial "status/list.html" (dict "type" "type" "primary" $typeName) }}
 		<div class="docs">
-			{{- $summary := markdownify $typeDocs.Summary }}
+			{{- $summary := safeHTML $typeDocs.Summary }}
 			{{- if $summary }}
 				{{- $summary }}
 			{{- else }}
@@ -285,7 +285,7 @@ MemberIndex
 	<section id="description">
 		<header><h2>Description</h2></header>
 		<div class="docs">
-			{{- $desc := markdownify $typeDocs.Description }}
+			{{- $desc := safeHTML $typeDocs.Description }}
 			{{- if $desc }}
 				{{- $desc }}
 			{{- else }}

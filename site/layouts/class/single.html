@@ -98,7 +98,7 @@ MemberIndex
 		<div class="docs">
 			{{- $docs := index site.Data.Docs.Member .Class .Name }}
 			{{- if $docs }}
-				{{- $desc := markdownify $docs.Description }}
+				{{- $desc := safeHTML $docs.Description }}
 				{{- if $desc }}
 					{{- $desc }}
 				{{- else }}
@@ -390,7 +390,7 @@ MemberIndex
 		{{- if site.Data.Docs }}
 			<div class="docs">
 				{{- if $classDocs }}
-					{{- $summary := markdownify $classDocs.Summary }}
+					{{- $summary := safeHTML $classDocs.Summary }}
 					{{- if $summary }}
 						{{- $summary }}
 					{{- else }}
@@ -426,7 +426,7 @@ MemberIndex
 			<header><h2>Description</h2></header>
 			<div class="docs">
 				{{- if $classDocs }}
-					{{- $desc := markdownify $classDocs.Description }}
+					{{- $desc := safeHTML $classDocs.Description }}
 					{{- if $desc }}
 						{{- $desc }}
 					{{- else }}

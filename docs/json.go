@@ -1,6 +1,17 @@
 package docs
 
-import "github.com/robloxapi/roar/id"
+import (
+	"errors"
+	"strings"
+
+	"github.com/robloxapi/roar/id"
+	"github.com/yuin/goldmark"
+)
+
+type Renderer interface {
+	// Recursively replace markdown fields with rendered HTML.
+	RenderHTML() error
+}
 
 type Root struct {
 	Class    map[id.Class]*Class
@@ -10,12 +21,56 @@ type Root struct {
 	Type     map[id.Type]*Type
 }
 
+func (r *Root) RenderHTML() error {
+	//TODO: Accumulates nils.
+	var errs []error
+	for _, v := range r.Class {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range r.Member {
+		for _, v := range v {
+			errs = append(errs, v.RenderHTML())
+		}
+	}
+	for _, v := range r.Enum {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range r.EnumItem {
+		for _, v := range v {
+			errs = append(errs, v.RenderHTML())
+		}
+	}
+	for _, v := range r.Type {
+		errs = append(errs, v.RenderHTML())
+	}
+	return errors.Join(errs[:1]...) //TODO
+}
+
 type Doc struct {
 	Summary            string   `json:",omitempty"`
 	Description        string   `json:",omitempty"`
 	DeprecationMessage string   `json:",omitempty"`
 	CodeSamples        []string `json:",omitempty"`
 }
+
+func renderHTML(source *string) error {
+	var buf strings.Builder
+	if err := goldmark.Convert([]byte(*source), &buf); err != nil {
+		return err
+	}
+	*source = buf.String()
+	return nil
+}
+
+func (d *Doc) RenderHTML() error {
+	//TODO: Accumulates nils.
+	var errs []error
+	errs = append(errs, renderHTML(&d.Summary))
+	errs = append(errs, renderHTML(&d.Description))
+	errs = append(errs, renderHTML(&d.DeprecationMessage))
+	return errors.Join(errs...)
+}
+
 type Class struct {
 	Category string `json:",omitempty"`
 	Doc
@@ -38,6 +93,31 @@ type Type struct {
 	MathOperations []Operation   `json:",omitempty"`
 	Tags           []string      `json:",omitempty"`
 	Doc
+}
+
+func (t *Type) RenderHTML() error {
+	//TODO: Accumulates nils.
+	var errs []error
+	errs = append(errs, t.Doc.RenderHTML())
+	for _, v := range t.Constants {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range t.Constructors {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range t.Functions {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range t.Properties {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range t.Methods {
+		errs = append(errs, v.RenderHTML())
+	}
+	for _, v := range t.MathOperations {
+		errs = append(errs, v.RenderHTML())
+	}
+	return errors.Join(errs...)
 }
 
 type Constant struct {
