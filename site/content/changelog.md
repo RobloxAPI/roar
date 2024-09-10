@@ -7,8 +7,10 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
-## Pending
+## 2024-07-26
 - Include number of tied entities in [statistics][stats].
+
+[stats]: {{<relref "stats">}}
 
 <!---->
 
