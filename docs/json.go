@@ -114,23 +114,29 @@ func (t *Type) RenderHTML() error {
 	//TODO: Accumulates nils.
 	var errs []error
 	errs = append(errs, t.Doc.RenderHTML())
-	for _, v := range t.Constants {
+	for i, v := range t.Constants {
 		errs = append(errs, v.RenderHTML())
+		t.Constants[i] = v
 	}
-	for _, v := range t.Constructors {
+	for i, v := range t.Constructors {
 		errs = append(errs, v.RenderHTML())
+		t.Constructors[i] = v
 	}
-	for _, v := range t.Functions {
+	for i, v := range t.Functions {
 		errs = append(errs, v.RenderHTML())
+		t.Functions[i] = v
 	}
-	for _, v := range t.Properties {
+	for i, v := range t.Properties {
 		errs = append(errs, v.RenderHTML())
+		t.Properties[i] = v
 	}
-	for _, v := range t.Methods {
+	for i, v := range t.Methods {
 		errs = append(errs, v.RenderHTML())
+		t.Methods[i] = v
 	}
-	for _, v := range t.MathOperations {
+	for i, v := range t.MathOperations {
 		errs = append(errs, v.RenderHTML())
+		t.MathOperations[i] = v
 	}
 	return errors.Join(errs...)
 }
