@@ -314,7 +314,11 @@ func generate(output string, source fs.FS) (err error) {
 	}
 
 	// Render embedded markdown to HTML.
-	if err := root.RenderHTML(); err != nil {
+	baseURL, _ := url.Parse("https://create.roblox.com/docs")
+	ctx := Context{
+		BaseURL: *baseURL,
+	}
+	if err := root.RenderHTML(ctx); err != nil {
 		return err
 	}
 

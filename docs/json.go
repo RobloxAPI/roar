@@ -2,6 +2,8 @@ package docs
 
 import (
 	"errors"
+	"net/url"
+	"path"
 	"strings"
 
 	"github.com/robloxapi/roar/id"
@@ -12,7 +14,21 @@ import (
 
 type Renderer interface {
 	// Recursively replace markdown fields with rendered HTML.
-	RenderHTML() error
+	RenderHTML(ctx Context) error
+}
+
+// Extra context for renderer.
+type Context struct {
+	// Base URL for external doc website.
+	BaseURL url.URL
+	// Path within base corresponding to renderer object.
+	Path string
+}
+
+// Returns ctx with s appended to the Path.
+func (ctx Context) AppendPath(s ...string) Context {
+	ctx.Path = path.Join(append([]string{ctx.Path}, s...)...)
+	return ctx
 }
 
 type Root struct {
@@ -23,27 +39,28 @@ type Root struct {
 	Type     map[id.Type]*Type
 }
 
-func (r *Root) RenderHTML() error {
+func (r *Root) RenderHTML(ctx Context) error {
 	//TODO: Accumulates nils.
 	var errs []error
-	for _, v := range r.Class {
-		errs = append(errs, v.RenderHTML())
+	ctx = ctx.AppendPath("reference", "engine")
+	for class, v := range r.Class {
+		errs = append(errs, v.RenderHTML(ctx.AppendPath("classes", class)))
 	}
-	for _, v := range r.Member {
+	for class, v := range r.Member {
 		for _, v := range v {
-			errs = append(errs, v.RenderHTML())
+			errs = append(errs, v.RenderHTML(ctx.AppendPath("classes", class)))
 		}
 	}
-	for _, v := range r.Enum {
-		errs = append(errs, v.RenderHTML())
+	for enum, v := range r.Enum {
+		errs = append(errs, v.RenderHTML(ctx.AppendPath("enums", enum)))
 	}
-	for _, v := range r.EnumItem {
+	for enum, v := range r.EnumItem {
 		for _, v := range v {
-			errs = append(errs, v.RenderHTML())
+			errs = append(errs, v.RenderHTML(ctx.AppendPath("enums", enum)))
 		}
 	}
-	for _, v := range r.Type {
-		errs = append(errs, v.RenderHTML())
+	for typ, v := range r.Type {
+		errs = append(errs, v.RenderHTML(ctx.AppendPath("datatypes", typ)))
 	}
 	return errors.Join(errs[:1]...)
 }
@@ -55,20 +72,23 @@ type Doc struct {
 	CodeSamples        []string `json:",omitempty"`
 }
 
-var codeSpanTransformer = docCodeSpanTransformer{
-	baseURL: "ref",
-}
+func renderHTML(ctx Context, source *string) error {
+	var markdown = goldmark.New(
+		goldmark.WithParser(parser.NewParser(
+			parser.WithBlockParsers(parser.DefaultBlockParsers()...),
+			parser.WithInlineParsers(parser.DefaultInlineParsers()...),
+			parser.WithParagraphTransformers(parser.DefaultParagraphTransformers()...),
+			parser.WithASTTransformers(
+				util.Prioritized(docLinkTransformer{
+					Context: ctx,
+				}, 1009),
+				util.Prioritized(docCodeSpanTransformer{
+					baseURL: "ref",
+				}, 1010),
+			),
+		)),
+	)
 
-var markdown = goldmark.New(
-	goldmark.WithParser(parser.NewParser(
-		parser.WithBlockParsers(parser.DefaultBlockParsers()...),
-		parser.WithInlineParsers(parser.DefaultInlineParsers()...),
-		parser.WithParagraphTransformers(parser.DefaultParagraphTransformers()...),
-		parser.WithASTTransformers(util.Prioritized(codeSpanTransformer, 1010)),
-	)),
-)
-
-func renderHTML(source *string) error {
 	var buf strings.Builder
 	if err := markdown.Convert([]byte(*source), &buf); err != nil {
 		return err
@@ -77,12 +97,12 @@ func renderHTML(source *string) error {
 	return nil
 }
 
-func (d *Doc) RenderHTML() error {
+func (d *Doc) RenderHTML(ctx Context) error {
 	//TODO: Accumulates nils.
 	var errs []error
-	errs = append(errs, renderHTML(&d.Summary))
-	errs = append(errs, renderHTML(&d.Description))
-	errs = append(errs, renderHTML(&d.DeprecationMessage))
+	errs = append(errs, renderHTML(ctx, &d.Summary))
+	errs = append(errs, renderHTML(ctx, &d.Description))
+	errs = append(errs, renderHTML(ctx, &d.DeprecationMessage))
 	return errors.Join(errs...)
 }
 
@@ -110,32 +130,32 @@ type Type struct {
 	Doc
 }
 
-func (t *Type) RenderHTML() error {
+func (t *Type) RenderHTML(ctx Context) error {
 	//TODO: Accumulates nils.
 	var errs []error
-	errs = append(errs, t.Doc.RenderHTML())
+	errs = append(errs, t.Doc.RenderHTML(ctx))
 	for i, v := range t.Constants {
-		errs = append(errs, v.RenderHTML())
+		errs = append(errs, v.RenderHTML(ctx))
 		t.Constants[i] = v
 	}
 	for i, v := range t.Constructors {
-		errs = append(errs, v.RenderHTML())
+		errs = append(errs, v.RenderHTML(ctx))
 		t.Constructors[i] = v
 	}
 	for i, v := range t.Functions {
-		errs = append(errs, v.RenderHTML())
+		errs = append(errs, v.RenderHTML(ctx))
 		t.Functions[i] = v
 	}
 	for i, v := range t.Properties {
-		errs = append(errs, v.RenderHTML())
+		errs = append(errs, v.RenderHTML(ctx))
 		t.Properties[i] = v
 	}
 	for i, v := range t.Methods {
-		errs = append(errs, v.RenderHTML())
+		errs = append(errs, v.RenderHTML(ctx))
 		t.Methods[i] = v
 	}
 	for i, v := range t.MathOperations {
-		errs = append(errs, v.RenderHTML())
+		errs = append(errs, v.RenderHTML(ctx))
 		t.MathOperations[i] = v
 	}
 	return errors.Join(errs...)
