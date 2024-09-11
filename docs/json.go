@@ -61,11 +61,11 @@ type Doc struct {
 
 var parseLinkSyntax = regexp.MustCompile(`^(\w+)\.((\w+)(?:[\.:](\w+))?.*?)(?:\|(.*))?$`)
 
-type docLinkTransformer struct {
+type docCodeSpanTransformer struct {
 	baseURL string
 }
 
-func (t docLinkTransformer) transformText(input []byte) (content, href []byte) {
+func (t docCodeSpanTransformer) transformText(input []byte) (content, href []byte) {
 	if len(input) == 0 {
 		return nil, nil
 	}
@@ -135,7 +135,7 @@ func (t docLinkTransformer) transformText(input []byte) (content, href []byte) {
 	return content, href
 }
 
-func (t docLinkTransformer) transformCodeSpan(n *ast.CodeSpan, reader text.Reader) ast.Node {
+func (t docCodeSpanTransformer) transformCodeSpan(n *ast.CodeSpan, reader text.Reader) ast.Node {
 	if n.ChildCount() != 1 {
 		return nil
 	}
@@ -161,7 +161,7 @@ func (t docLinkTransformer) transformCodeSpan(n *ast.CodeSpan, reader text.Reade
 	return linkNode
 }
 
-func (t docLinkTransformer) Transform(node *ast.Document, reader text.Reader, pc parser.Context) {
+func (t docCodeSpanTransformer) Transform(node *ast.Document, reader text.Reader, pc parser.Context) {
 	var replacements [][2]ast.Node
 	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if !entering {
@@ -184,7 +184,7 @@ func (t docLinkTransformer) Transform(node *ast.Document, reader text.Reader, pc
 	}
 }
 
-var linkTransformer = docLinkTransformer{
+var codeSpanTransformer = docCodeSpanTransformer{
 	baseURL: "ref",
 }
 
@@ -193,7 +193,7 @@ var markdown = goldmark.New(
 		parser.WithBlockParsers(parser.DefaultBlockParsers()...),
 		parser.WithInlineParsers(parser.DefaultInlineParsers()...),
 		parser.WithParagraphTransformers(parser.DefaultParagraphTransformers()...),
-		parser.WithASTTransformers(util.Prioritized(linkTransformer, 1010)),
+		parser.WithASTTransformers(util.Prioritized(codeSpanTransformer, 1010)),
 	)),
 )
 
