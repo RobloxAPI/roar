@@ -8,6 +8,7 @@ import (
 
 	"github.com/robloxapi/roar/id"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/util"
 )
@@ -110,6 +111,7 @@ func renderHTML(ctx Context, source *string) error {
 				}, 1011),
 			),
 		)),
+		goldmark.WithExtensions(extension.GFM),
 	)
 
 	var buf strings.Builder
