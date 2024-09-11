@@ -23,11 +23,31 @@ type Context struct {
 	BaseURL url.URL
 	// Path within base corresponding to renderer object.
 	Path string
+
+	// Heading level to use.
+	Level int
+	// Heading levels for summary section.
+	SummaryLevel int
+	// Heading levels for description section.
+	DescriptionLevel int
 }
 
 // Returns ctx with s appended to the Path.
 func (ctx Context) AppendPath(s ...string) Context {
 	ctx.Path = path.Join(append([]string{ctx.Path}, s...)...)
+	return ctx
+}
+
+// Returns ctx with heading levels set.
+func (ctx Context) SetLevels(summ, desc int) Context {
+	ctx.SummaryLevel = summ
+	ctx.DescriptionLevel = desc
+	return ctx
+}
+
+// Returns ctx with used heading level set.
+func (ctx Context) UseLevel(level int) Context {
+	ctx.Level = level
 	return ctx
 }
 
@@ -44,23 +64,23 @@ func (r *Root) RenderHTML(ctx Context) error {
 	var errs []error
 	ctx = ctx.AppendPath("reference", "engine")
 	for class, v := range r.Class {
-		errs = append(errs, v.RenderHTML(ctx.AppendPath("classes", class)))
+		errs = append(errs, v.RenderHTML(ctx.AppendPath("classes", class).SetLevels(1, 2)))
 	}
 	for class, v := range r.Member {
 		for _, v := range v {
-			errs = append(errs, v.RenderHTML(ctx.AppendPath("classes", class)))
+			errs = append(errs, v.RenderHTML(ctx.AppendPath("classes", class).SetLevels(3, 3)))
 		}
 	}
 	for enum, v := range r.Enum {
-		errs = append(errs, v.RenderHTML(ctx.AppendPath("enums", enum)))
+		errs = append(errs, v.RenderHTML(ctx.AppendPath("enums", enum).SetLevels(1, 2)))
 	}
 	for enum, v := range r.EnumItem {
 		for _, v := range v {
-			errs = append(errs, v.RenderHTML(ctx.AppendPath("enums", enum)))
+			errs = append(errs, v.RenderHTML(ctx.AppendPath("enums", enum).SetLevels(0, 0)))
 		}
 	}
 	for typ, v := range r.Type {
-		errs = append(errs, v.RenderHTML(ctx.AppendPath("datatypes", typ)))
+		errs = append(errs, v.RenderHTML(ctx.AppendPath("datatypes", typ).SetLevels(1, 2)))
 	}
 	return errors.Join(errs[:1]...)
 }
@@ -85,6 +105,9 @@ func renderHTML(ctx Context, source *string) error {
 				util.Prioritized(docCodeSpanTransformer{
 					baseURL: "ref",
 				}, 1010),
+				util.Prioritized(docHeadingTransformer{
+					SectionLevel: ctx.Level,
+				}, 1011),
 			),
 		)),
 	)
@@ -100,9 +123,9 @@ func renderHTML(ctx Context, source *string) error {
 func (d *Doc) RenderHTML(ctx Context) error {
 	//TODO: Accumulates nils.
 	var errs []error
-	errs = append(errs, renderHTML(ctx, &d.Summary))
-	errs = append(errs, renderHTML(ctx, &d.Description))
-	errs = append(errs, renderHTML(ctx, &d.DeprecationMessage))
+	errs = append(errs, renderHTML(ctx.UseLevel(ctx.SummaryLevel), &d.Summary))
+	errs = append(errs, renderHTML(ctx.UseLevel(ctx.DescriptionLevel), &d.Description))
+	errs = append(errs, renderHTML(ctx.UseLevel(0), &d.DeprecationMessage))
 	return errors.Join(errs...)
 }
 
@@ -135,27 +158,27 @@ func (t *Type) RenderHTML(ctx Context) error {
 	var errs []error
 	errs = append(errs, t.Doc.RenderHTML(ctx))
 	for i, v := range t.Constants {
-		errs = append(errs, v.RenderHTML(ctx))
+		errs = append(errs, v.RenderHTML(ctx.SetLevels(3, 3)))
 		t.Constants[i] = v
 	}
 	for i, v := range t.Constructors {
-		errs = append(errs, v.RenderHTML(ctx))
+		errs = append(errs, v.RenderHTML(ctx.SetLevels(3, 3)))
 		t.Constructors[i] = v
 	}
 	for i, v := range t.Functions {
-		errs = append(errs, v.RenderHTML(ctx))
+		errs = append(errs, v.RenderHTML(ctx.SetLevels(3, 3)))
 		t.Functions[i] = v
 	}
 	for i, v := range t.Properties {
-		errs = append(errs, v.RenderHTML(ctx))
+		errs = append(errs, v.RenderHTML(ctx.SetLevels(3, 3)))
 		t.Properties[i] = v
 	}
 	for i, v := range t.Methods {
-		errs = append(errs, v.RenderHTML(ctx))
+		errs = append(errs, v.RenderHTML(ctx.SetLevels(3, 3)))
 		t.Methods[i] = v
 	}
 	for i, v := range t.MathOperations {
-		errs = append(errs, v.RenderHTML(ctx))
+		errs = append(errs, v.RenderHTML(ctx.SetLevels(3, 3)))
 		t.MathOperations[i] = v
 	}
 	return errors.Join(errs...)
