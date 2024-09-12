@@ -21,6 +21,15 @@
 		}
 	}
 
+	blockquote {
+		> :first-child::before {
+			content: unset;
+		}
+		> :last-child::after {
+			content: unset;
+		}
+	}
+
 	pre {
 		margin: var(--baseline) 0;
 		overflow-x: auto;

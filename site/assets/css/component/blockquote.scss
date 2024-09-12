@@ -1,6 +1,8 @@
-blockquote > :first-child::before {
-	content: '“ ';
-}
-blockquote > :last-child::after {
-	content: ' ”';
+blockquote {
+	> :first-child::before {
+		content: '“ ';
+	}
+	> :last-child::after {
+		content: ' ”';
+	}
 }
