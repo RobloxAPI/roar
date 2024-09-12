@@ -2,6 +2,7 @@ package docs
 
 import (
 	"errors"
+	"fmt"
 	"net/url"
 	"path"
 	"strings"
@@ -124,7 +125,10 @@ func renderHTML(ctx Context, source *string) error {
 
 	var buf strings.Builder
 	if err := markdown.Convert([]byte(*source), &buf); err != nil {
-		return err
+		// Skip and warn.
+		*source = ""
+		fmt.Printf("WARN: markdown %s: %s\n", ctx.Path, err)
+		return nil
 	}
 	*source = buf.String()
 	return nil
