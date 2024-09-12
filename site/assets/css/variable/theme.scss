@@ -1,21 +1,37 @@
 @import "themes/light";
 @import "themes/dark";
+@import "highlight/light";
+@import "highlight/dark";
 
 :root {
 	@if $theme == "light" {
 		@include theme-light;
+		@include highlight-light;
 	} @else if $theme == "dark" {
 		@include theme-dark;
+		@include highlight-dark;
 	} @else {
 		@include theme-light;
 		@media (prefers-color-scheme: dark) {
 			@include theme-dark;
 		}
+		&:not(.Dark) {
+			@media (prefers-color-scheme: light) {
+				@include highlight-light;
+			}
+		}
+		&:not(.Light) {
+			@media (prefers-color-scheme: dark) {
+				@include highlight-dark;
+			}
+		}
 		&.Light {
 			@include theme-light;
+			@include highlight-light;
 		}
 		&.Dark {
 			@include theme-dark;
+			@include highlight-dark;
 		}
 	}
 }

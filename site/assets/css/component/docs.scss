@@ -4,3 +4,16 @@
 		content: "No description."
 	}
 }
+
+.docs {
+	pre {
+		margin: var(--baseline) 0;
+		overflow-x: auto;
+		max-height: 38.2vh;
+		@include scrolling;
+	}
+
+	._ln {
+		background-color: var(--theme-object);
+	}
+}

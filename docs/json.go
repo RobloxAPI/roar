@@ -8,6 +8,7 @@ import (
 
 	"github.com/robloxapi/roar/id"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/util"
@@ -113,7 +114,12 @@ func renderHTML(ctx Context, source *string) error {
 				}, 1011),
 			),
 		)),
-		goldmark.WithExtensions(extension.GFM),
+		goldmark.WithExtensions(
+			highlighting.NewHighlighting(
+				highlighting.WithFormatOptions(FormatterOptions...),
+			),
+			extension.GFM,
+		),
 	)
 
 	var buf strings.Builder

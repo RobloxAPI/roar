@@ -10,6 +10,7 @@ import (
 	"runtime/pprof"
 	"strings"
 
+	"github.com/alecthomas/chroma/v2"
 	"github.com/anaminus/snek"
 	"github.com/publysher/httpfs"
 	"github.com/robloxapi/rbxdump"
@@ -210,6 +211,15 @@ func (c *Command) Run(opt snek.Options) error {
 		}
 	}
 
+	// Generate syntax highlighting CSS files.
+	os.MkdirAll(filepath.Join(c.Site, siteAssets, "css/highlight"), 0755)
+	if err := writeSCSS(filepath.Join(c.Site, siteAssets, "css/highlight/light.scss"), "highlight-light", docs.Light); err != nil {
+		return err
+	}
+	if err := writeSCSS(filepath.Join(c.Site, siteAssets, "css/highlight/dark.scss"), "highlight-dark", docs.Dark); err != nil {
+		return err
+	}
+
 	// Generate pages.
 	if !c.Disable.Pages {
 		GeneratePages(indexRoot, filepath.Join(c.Site, siteContent))
@@ -232,6 +242,22 @@ func (c *Command) Run(opt snek.Options) error {
 		return err
 	}
 
+	return nil
+}
+
+func writeSCSS(path, name string, style *chroma.Style) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	fmt.Fprintf(file, "@mixin %s {\n", name)
+	if style != nil {
+		if err := docs.Formatter.WriteCSS(file, style); err != nil {
+			return err
+		}
+	}
+	fmt.Fprintln(file, "}")
 	return nil
 }
 

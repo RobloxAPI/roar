@@ -1,5 +1,6 @@
 *.lock
 /site/public/
+/site/assets/css/highlight/
 /site/assets/icons/
 /site/assets/search.db
 /site/content/class/
