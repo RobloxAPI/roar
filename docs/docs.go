@@ -315,8 +315,10 @@ func generate(output string, source fs.FS) (err error) {
 
 	// Render embedded markdown to HTML.
 	baseURL, _ := url.Parse("https://create.roblox.com/docs")
+	baseImageURL, _ := url.Parse("https://prod.docsiteassets.roblox.com")
 	ctx := Context{
-		BaseURL: *baseURL,
+		BaseURL:      *baseURL,
+		BaseImageURL: *baseImageURL,
 	}
 	if err := root.RenderHTML(ctx); err != nil {
 		return err

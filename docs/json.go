@@ -24,6 +24,8 @@ type Context struct {
 	BaseURL url.URL
 	// Path within base corresponding to renderer object.
 	Path string
+	// Base URL for external image CDN.
+	BaseImageURL url.URL
 
 	// Heading level to use.
 	Level int

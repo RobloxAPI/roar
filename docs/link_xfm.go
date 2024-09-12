@@ -43,6 +43,18 @@ func (t docLinkTransformer) Transform(node *ast.Document, reader text.Reader, pc
 				n.Destination = []byte(x.String())
 			}
 			return ast.WalkSkipChildren, nil
+		case *ast.Image:
+			u, err := url.Parse(string(n.Destination))
+			if err != nil {
+				return ast.WalkSkipChildren, nil
+			}
+			if u.Host == "" {
+				stem := u.Path
+				x := t.Context.BaseImageURL
+				x.Path = path.Join(x.Path, stem)
+				n.Destination = []byte(x.String())
+			}
+			return ast.WalkSkipChildren, nil
 		}
 		return ast.WalkContinue, nil
 	})
