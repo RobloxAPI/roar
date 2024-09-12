@@ -6,6 +6,21 @@
 }
 
 .docs {
+	overflow-wrap: normal;
+
+	table {
+		th {
+			background-color: var(--theme-object-header);
+		}
+		td {
+			background-color: var(--theme-object);
+		}
+		:is(th,td) {
+			padding: 0 0.5ch;
+			vertical-align: top;
+		}
+	}
+
 	pre {
 		margin: var(--baseline) 0;
 		overflow-x: auto;
