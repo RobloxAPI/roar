@@ -467,7 +467,7 @@ MemberIndex
 {{- end }}
 
 {{- define "main" }}
-{{- if and (site.Data.Docs) (index site.Data.Docs.Type .Title) }}
+{{- if and (site.Data.Docs) (index site.Data.Docs.Type .Title) false }}
 	{{- template "detailed" . }}
 {{- else }}
 	{{- template "basic" . }}
