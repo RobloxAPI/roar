@@ -157,7 +157,6 @@ items: []EnumItemIndex
 
 	{{- if or site.Data.Docs $enumDump.Tags }}
 		<section id="summary">
-			{{- partial "status/list.html" (dict "type" "enum" "primary" $enumName) }}
 			{{- if site.Data.Docs }}
 				<div class="docs">
 					{{- if $enumDocs }}
@@ -172,6 +171,7 @@ items: []EnumItemIndex
 					{{- end }}
 				</div>
 			{{- end }}
+			{{- partial "status/list.html" (dict "type" "enum" "primary" $enumName) }}
 			{{- if $enumDump.Tags }}
 				<p class="tags">Tags: [{{delimit $enumDump.Tags ", "}}]</p>
 			{{- end }}

@@ -7,6 +7,11 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Move status list to appear below description on class and enum pages.
+
+<!---->
+
 ## 2024-07-26
 - Include number of tied entities in [statistics][stats].
 

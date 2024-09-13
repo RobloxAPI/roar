@@ -124,8 +124,8 @@ MemberIndex
 				<header><h3>{{partial "entity/icon.html" (dict "type" "member" "primary" .Class "secondary" .Name)}}{{.Name}}<aside>{{partial "entity/link.html" (dict "type" "member" "primary" .Class "secondary" .Name "hub" true)}}</aside></h3></header>
 				{{- if eq $dump.MemberType "Property"}}
 					{{- partial "member/parameters-table.html" (dict "type" $dump.ValueType "default" $dump.Default) }}
-					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- template "member-docs" . }}
+					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					<table class="metadata-pairs">
 						{{- if eq $dump.ReadSecurity $dump.WriteSecurity }}
 							{{- if and $dump.ReadSecurity (ne $dump.ReadSecurity "None") }}
@@ -154,8 +154,8 @@ MemberIndex
 					</table>
 				{{- else if eq $dump.MemberType "Function"}}
 					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters "returns" $dump.ReturnType) }}
-					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- template "member-docs" . }}
+					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -167,8 +167,8 @@ MemberIndex
 					</table>
 				{{- else if eq $dump.MemberType "Event"}}
 					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters) }}
-					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- template "member-docs" . }}
+					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -180,8 +180,8 @@ MemberIndex
 					</table>
 				{{- else if eq $dump.MemberType "Callback"}}
 					{{- partial "member/parameters-table.html" (dict "params" $dump.Parameters "returns" $dump.ReturnType) }}
-					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					{{- template "member-docs" . }}
+					{{- partial "status/list.html" (dict "type" "member" "primary" .Class "secondary" .Name) }}
 					<table class="metadata-pairs">
 						{{- if and $dump.Security (ne $dump.Security "None") }}
 							<tr class="pair"><th class="name">Security</th><td class="value">{{$dump.Security}}</td></tr>
@@ -386,7 +386,6 @@ MemberIndex
 <article id="content">
 	<header><h1>{{partial "entity/icon.html" (dict "type" "class" "primary" $className)}}{{$className}}<aside>{{partial "entity/link.html" (dict "type" "class" "primary" $className "hub" true)}}</aside></h1></header>
 	<section id="summary">
-		{{- partial "status/list.html" (dict "type" "class" "primary" $className) }}
 		{{- if site.Data.Docs }}
 			<div class="docs">
 				{{- if $classDocs }}
@@ -401,6 +400,7 @@ MemberIndex
 				{{- end }}
 			</div>
 		{{- end }}
+		{{- partial "status/list.html" (dict "type" "class" "primary" $className) }}
 		<table class="metadata-pairs">
 			<tr class="pair"><th class="name">Memory category</th><td class="value">{{$classDump.MemoryCategory}}</td></tr>
 		</table>
