@@ -30,16 +30,16 @@
 		}
 	}
 
-	div._chroma {
+	div._chroma, > pre {
 		padding: var(--halfbase);
 		margin: var(--baseline) 0;
 		overflow-x: auto;
 		max-height: 38.2vh;
 		@include scrolling;
+	}
 
-		pre {
-			margin: 0;
-		}
+	div._chroma pre {
+		margin: 0;
 	}
 
 	img {
