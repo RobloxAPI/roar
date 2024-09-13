@@ -4,9 +4,8 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/yuin/goldmark/ast"
-	"github.com/yuin/goldmark/parser"
-	"github.com/yuin/goldmark/text"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/andybalholm/cascadia"
 )
 
 type docLinkTransformer struct {
@@ -23,7 +22,11 @@ func (t docLinkTransformer) transformLink(link string, image bool) (string, bool
 		var x url.URL
 		if image {
 			x = t.Context.BaseImageURL
-			x.Path = path.Join(x.Path, stem)
+			if path.IsAbs(stem) {
+				x.Path = path.Join(x.Path, stem)
+			} else {
+				x.Path = path.Join(x.Path, path.Dir(t.Context.Path), stem)
+			}
 		} else {
 			ext := path.Ext(stem)
 			if ext == ".md" {
@@ -45,23 +48,22 @@ func (t docLinkTransformer) transformLink(link string, image bool) (string, bool
 	return "", false
 }
 
-func (t docLinkTransformer) Transform(node *ast.Document, reader text.Reader, pc parser.Context) {
-	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
-		if !entering {
-			return ast.WalkContinue, nil
+var matchLink = cascadia.MustCompile("a[href]")
+var matchImage = cascadia.MustCompile("img[src]")
+
+func (t docLinkTransformer) Transform(s *goquery.Selection) {
+	s.FindMatcher(matchLink).Each(func(i int, s *goquery.Selection) {
+		href, ok := t.transformLink(s.AttrOr("href", ""), false)
+		if !ok {
+			return
 		}
-		switch n := n.(type) {
-		case *ast.Link:
-			if href, ok := t.transformLink(string(n.Destination), false); ok {
-				n.Destination = []byte(href)
-			}
-			return ast.WalkSkipChildren, nil
-		case *ast.Image:
-			if href, ok := t.transformLink(string(n.Destination), true); ok {
-				n.Destination = []byte(href)
-			}
-			return ast.WalkSkipChildren, nil
+		s.SetAttr("href", href)
+	})
+	s.FindMatcher(matchImage).Each(func(i int, s *goquery.Selection) {
+		src, ok := t.transformLink(s.AttrOr("src", ""), true)
+		if !ok {
+			return
 		}
-		return ast.WalkContinue, nil
+		s.SetAttr("src", src)
 	})
 }

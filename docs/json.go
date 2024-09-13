@@ -1,18 +1,16 @@
 package docs
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"net/url"
 	"path"
-	"strings"
 
+	"github.com/PuerkitoBio/goquery"
+	"github.com/andybalholm/cascadia"
 	"github.com/robloxapi/roar/id"
-	"github.com/yuin/goldmark"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
-	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/parser"
-	"github.com/yuin/goldmark/util"
+	"golang.org/x/net/html"
 )
 
 type Renderer interface {
@@ -97,39 +95,44 @@ type Doc struct {
 	CodeSamples        []string `json:",omitempty"`
 }
 
-func renderHTML(ctx Context, source *string) error {
-	var markdown = goldmark.New(
-		goldmark.WithParser(parser.NewParser(
-			parser.WithBlockParsers(parser.DefaultBlockParsers()...),
-			parser.WithInlineParsers(parser.DefaultInlineParsers()...),
-			parser.WithParagraphTransformers(parser.DefaultParagraphTransformers()...),
-			parser.WithASTTransformers(
-				util.Prioritized(docLinkTransformer{
-					Context: ctx,
-				}, 1009),
-				util.Prioritized(docCodeSpanTransformer{
-					baseURL: "ref",
-				}, 1010),
-				util.Prioritized(docHeadingTransformer{
-					SectionLevel: ctx.Level,
-				}, 1011),
-			),
-		)),
-		goldmark.WithExtensions(
-			highlighting.NewHighlighting(
-				highlighting.WithFormatOptions(FormatterOptions...),
-			),
-			extension.GFM,
-		),
-	)
+var matchBody = cascadia.MustCompile("body")
 
-	var buf strings.Builder
-	if err := markdown.Convert([]byte(*source), &buf); err != nil {
+func renderHTML(ctx Context, source *string) error {
+	// Render markdown to HTML.
+	var buf bytes.Buffer
+	if err := Markdown.Convert([]byte(*source), &buf); err != nil {
 		// Skip and warn.
 		*source = ""
-		fmt.Printf("WARN: markdown %s: %s\n", ctx.Path, err)
+		fmt.Printf("WARN: %s: markdown: %s\n", ctx.Path, err)
 		return nil
 	}
+
+	// Transform HTML.
+	q, err := goquery.NewDocumentFromReader(&buf)
+	if err != nil {
+		// Skip and warn.
+		*source = ""
+		fmt.Printf("WARN: %s: goquery: %s\n", ctx.Path, err)
+		return nil
+	}
+
+	docLinkTransformer{Context: ctx}.Transform(q.Selection)
+	docCodeSpanTransformer{baseURL: "ref"}.Transform(q.Selection)
+	docHeadingTransformer{SectionLevel: ctx.Level}.Transform(q.Selection)
+
+	buf.Reset()
+	q.Selection.FindMatcher(matchBody).Each(func(i int, s *goquery.Selection) {
+		body := s.Nodes[0]
+		for c := body.FirstChild; c != nil; c = c.NextSibling {
+			if err := html.Render(&buf, c); err != nil {
+				// Skip and warn.
+				buf.Reset()
+				fmt.Printf("WARN: %s: goquery render: %s\n", ctx.Path, err)
+				return
+			}
+		}
+	})
+
 	*source = buf.String()
 	return nil
 }

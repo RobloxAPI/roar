@@ -1,13 +1,12 @@
 package docs
 
 import (
-	"bytes"
 	"regexp"
 	"strings"
 
-	"github.com/yuin/goldmark/ast"
-	"github.com/yuin/goldmark/parser"
-	"github.com/yuin/goldmark/text"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/andybalholm/cascadia"
+	"golang.org/x/net/html"
 )
 
 var parseLinkSyntax = regexp.MustCompile(`^(\w+)\.((\w+)(?:[\.:](\w+))?.*?)(?:\|(.*))?$`)
@@ -16,13 +15,13 @@ type docCodeSpanTransformer struct {
 	baseURL string
 }
 
-func (t docCodeSpanTransformer) transformText(input []byte) (content, href []byte) {
+func (t docCodeSpanTransformer) transformText(input string) (content, href string) {
 	if len(input) == 0 {
-		return nil, nil
+		return "", ""
 	}
-	cap := parseLinkSyntax.FindSubmatch(input)
+	cap := parseLinkSyntax.FindStringSubmatch(input)
 	if cap == nil {
-		return nil, nil
+		return "", ""
 	}
 	kind := cap[1] // Kind of link.
 	text := cap[2] // Text portion of link.
@@ -30,8 +29,8 @@ func (t docCodeSpanTransformer) transformText(input []byte) (content, href []byt
 	sec := cap[4]  // Optional secondary ID.
 	sub := cap[5]  // Optional substitution.
 
-	if string(sub) == "no-link" {
-		before, _, _ := bytes.Cut(input, []byte("|"))
+	if sub == "no-link" {
+		before, _, _ := strings.Cut(input, "|")
 		return before, sub
 	}
 
@@ -40,97 +39,79 @@ func (t docCodeSpanTransformer) transformText(input []byte) (content, href []byt
 		baseURL += "/"
 	}
 	baseURL = "/" + baseURL
-	switch string(kind) {
+
+	var h []byte
+	switch kind {
 	case "Class":
 		content = text
-		href = append(href, baseURL...)
-		href = append(href, "class/"...)
-		href = append(href, prim...)
-		href = append(href, ".html"...)
+		h = append(h, baseURL...)
+		h = append(h, "class/"...)
+		h = append(h, prim...)
+		h = append(h, ".html"...)
 		if len(sec) > 0 {
-			href = append(href, "#member-"...)
-			href = append(href, sec...)
+			h = append(h, "#member-"...)
+			h = append(h, sec...)
 		}
 	case "Datatype":
 		content = text
-		href = append(href, baseURL...)
-		href = append(href, "type/"...)
-		href = append(href, prim...)
-		href = append(href, ".html"...)
+		h = append(h, baseURL...)
+		h = append(h, "type/"...)
+		h = append(h, prim...)
+		h = append(h, ".html"...)
 		if len(sec) > 0 {
-			href = append(href, "#member-"...)
-			href = append(href, sec...)
+			h = append(h, "#member-"...)
+			h = append(h, sec...)
 		}
 	case "Enum":
 		content = text
-		href = append(href, baseURL...)
-		href = append(href, "enum/"...)
-		href = append(href, prim...)
-		href = append(href, ".html"...)
+		h = append(h, baseURL...)
+		h = append(h, "enum/"...)
+		h = append(h, prim...)
+		h = append(h, ".html"...)
 	case "Global":
 		content = text[len(prim)+1:]
-		href = append(href, "https://create.roblox.com/docs/reference/engine/globals/"...)
-		href = append(href, prim...)
-		href = append(href, "#"...)
-		href = append(href, sec...)
+		h = append(h, "https://create.roblox.com/docs/reference/engine/globals/"...)
+		h = append(h, prim...)
+		h = append(h, "#"...)
+		h = append(h, sec...)
 	case "Library":
 		content = text
-		href = append(href, "https://create.roblox.com/docs/reference/engine/libraries/"...)
-		href = append(href, prim...)
-		href = append(href, "#"...)
-		href = append(href, sec...)
+		h = append(h, "https://create.roblox.com/docs/reference/engine/libraries/"...)
+		h = append(h, prim...)
+		h = append(h, "#"...)
+		h = append(h, sec...)
 	}
 	if len(sub) > 0 {
 		content = sub
 	}
-	return content, href
+	return content, string(h)
 }
 
-func (t docCodeSpanTransformer) transformCodeSpan(n *ast.CodeSpan, reader text.Reader) ast.Node {
-	if n.ChildCount() != 1 {
-		return nil
-	}
-	textNode, ok := n.FirstChild().(*ast.Text)
-	if !ok {
-		return nil
-	}
-	text := reader.Value(textNode.Segment)
-	content, href := t.transformText(text)
-	if len(href) == 0 {
-		return nil
-	} else if string(href) == "no-link" {
-		codeNode := ast.NewCodeSpan()
-		contentNode := ast.NewString(content)
-		codeNode.AppendChild(codeNode, contentNode)
-		return codeNode
-	}
+var matchCodeSpan = cascadia.MustCompile(":not(pre) > code")
 
-	linkNode := ast.NewLink()
-	linkNode.Destination = href
-	contentNode := ast.NewString(content)
-	linkNode.AppendChild(linkNode, contentNode)
-	return linkNode
-}
-
-func (t docCodeSpanTransformer) Transform(node *ast.Document, reader text.Reader, pc parser.Context) {
-	var replacements [][2]ast.Node
-	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
-		if !entering {
-			return ast.WalkContinue, nil
+func (t docCodeSpanTransformer) Transform(s *goquery.Selection) {
+	s.FindMatcher(matchCodeSpan).Each(func(i int, s *goquery.Selection) {
+		text := s.Text()
+		if strings.Index(text, "\n") > -1 {
+			return
 		}
-		switch n := n.(type) {
-		case *ast.CodeSpan:
-			newNode := t.transformCodeSpan(n, reader)
-			if newNode == nil {
-				return ast.WalkContinue, nil
-			}
-			replacements = append(replacements, [2]ast.Node{n, newNode})
-			return ast.WalkSkipChildren, nil
+		content, href := t.transformText(text)
+		if href == "" {
+			return
 		}
-		return ast.WalkContinue, nil
+		if href == "no-link" {
+			s.SetText(content)
+			return
+		}
+		link := &html.Node{
+			Type: html.ElementNode,
+			Data: "a",
+			Attr: []html.Attribute{{Key: "href", Val: href}},
+			FirstChild: &html.Node{
+				Type: html.TextNode,
+				Data: content,
+			},
+		}
+		s.ReplaceWithNodes(link)
 	})
-	for _, rep := range replacements {
-		parent := rep[0].Parent()
-		parent.ReplaceChild(parent, rep[0], rep[1])
-	}
 }

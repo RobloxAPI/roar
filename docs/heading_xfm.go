@@ -1,48 +1,63 @@
 package docs
 
 import (
-	"github.com/yuin/goldmark/ast"
-	"github.com/yuin/goldmark/parser"
-	"github.com/yuin/goldmark/text"
+	"strconv"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/andybalholm/cascadia"
 )
 
 type docHeadingTransformer struct {
 	SectionLevel int
 }
 
-func (t docHeadingTransformer) Transform(node *ast.Document, reader text.Reader, pc parser.Context) {
+var matchHeading = cascadia.MustCompile("h1,h2,h3,h4,h5,h6")
+
+func headingLevel(s *goquery.Selection) int {
+	tag := s.Nodes[0].Data
+	if len(tag) == 0 || tag[0] != 'h' {
+		return 0
+	}
+	level, err := strconv.ParseUint(tag[1:], 10, 8)
+	if err != nil || level < 1 || level > 6 {
+		return 0
+	}
+	return int(level)
+}
+
+func setHeadingLevel(s *goquery.Selection, level int) {
+	if level < 1 || level > 6 {
+		return
+	}
+	s.Nodes[0].Data = "h" + strconv.Itoa(level)
+}
+
+func (t docHeadingTransformer) Transform(s *goquery.Selection) {
 	if t.SectionLevel == 0 {
 		return
 	}
 	var topLevel int = 10000
-	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
-		if !entering {
-			return ast.WalkContinue, nil
+	s.FindMatcher(matchHeading).Each(func(i int, s *goquery.Selection) {
+		level := headingLevel(s)
+		if level <= 0 {
+			return
 		}
-		switch n := n.(type) {
-		case *ast.Heading:
-			if n.Level < topLevel {
-				topLevel = n.Level
-			}
-			return ast.WalkSkipChildren, nil
+		if level < topLevel {
+			topLevel = level
 		}
-		return ast.WalkContinue, nil
 	})
 	if topLevel >= 10000 {
 		return
 	}
-	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
-		if !entering {
-			return ast.WalkContinue, nil
+	s.FindMatcher(matchHeading).Each(func(i int, s *goquery.Selection) {
+		level := headingLevel(s)
+		if level <= 0 {
+			return
 		}
-		switch n := n.(type) {
-		case *ast.Heading:
-			n.Level += t.SectionLevel - topLevel + 1
-			if n.Level > 6 {
-				n.Level = 6
-			}
-			return ast.WalkSkipChildren, nil
+		level += t.SectionLevel - topLevel + 1
+		if level > 6 {
+			level = 6
 		}
-		return ast.WalkContinue, nil
+		setHeadingLevel(s, level)
 	})
 }
