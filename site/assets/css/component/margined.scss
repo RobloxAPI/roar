@@ -2,6 +2,9 @@
 p, ul, ol, dl, table {
 	margin: var(--baseline) 0;
 }
+figure {
+	margin: var(--halfbase);
+}
 ul, ol, dd {
 	padding-left: var(--indent);
 }
