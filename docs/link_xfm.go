@@ -49,7 +49,7 @@ func (t docLinkTransformer) transformLink(link string, image bool) (string, bool
 }
 
 var matchLink = cascadia.MustCompile("a[href]")
-var matchImage = cascadia.MustCompile("img[src]")
+var matchMedia = cascadia.MustCompile("img[src],video[src]")
 
 func (t docLinkTransformer) Transform(s *goquery.Selection) {
 	s.FindMatcher(matchLink).Each(func(i int, s *goquery.Selection) {
@@ -59,7 +59,7 @@ func (t docLinkTransformer) Transform(s *goquery.Selection) {
 		}
 		s.SetAttr("href", href)
 	})
-	s.FindMatcher(matchImage).Each(func(i int, s *goquery.Selection) {
+	s.FindMatcher(matchMedia).Each(func(i int, s *goquery.Selection) {
 		src, ok := t.transformLink(s.AttrOr("src", ""), true)
 		if !ok {
 			return
