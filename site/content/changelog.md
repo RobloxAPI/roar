@@ -7,8 +7,12 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
-## Pending
-- Move status list to appear below description on class and enum pages.
+## 2024-09-13
+- **Implement documentation for classes and enums.**
+- Engine documentation is retrieved from the [creator-docs][creator-docs]
+  repository and included directly within class and enum pages.
+
+[creator-docs]: https://github.com/Roblox/creator-docs
 
 <!---->
 
