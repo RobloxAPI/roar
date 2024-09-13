@@ -1,4 +1,4 @@
-:not(pre) > code {
+:not(pre) > code, samp {
 	background-color: var(--theme-object);
 	padding: 0.125em 0.25em;
 	border-radius: 0.25em;
