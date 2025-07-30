@@ -10,7 +10,7 @@
 <nav class="runner-item">
 	{{- range site.Sections }}
 		{{- if or (not site.Params.IncludeSections) (in site.Params.IncludeSections .Type) }}
-			<a class="runner-hover" href="{{.RelPermalink}}">{{.Title}}</a>
+			<a class="runner-hover" href="{{.RelPermalink}}">{{.Title | pluralize | title }}</a>
 		{{- end }}
 	{{- end }}
 </nav>

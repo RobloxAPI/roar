@@ -58,6 +58,21 @@ func generatePageType[T any](rootPath, typ string, pages Pages, m map[string]T) 
 	os.MkdirAll(basePath, 0755)
 	pages.Remove(basePath)
 	var buf bytes.Buffer
+
+	// Generate index page for section, so that an alias can be configured.
+	fmt.Fprintf(&buf,
+		`+++
+title = %[1]q
+aliases = ['../%[1]s.html']
++++
+`, typ)
+	filePath := filepath.Join(basePath, "_index.md")
+	if err := os.WriteFile(filePath, buf.Bytes(), 0666); err != nil {
+		fmt.Printf("generate page _index.md: %s\n", err)
+	} else {
+		pages.Remove(filePath)
+	}
+
 	for name := range m {
 		buf.Reset()
 		fmt.Fprintf(&buf, PageTemplate, name)
