@@ -1072,13 +1072,16 @@ function initSearchInput() {
 	searchResults.style.display = "none";
 	main.insertAdjacentElement("beforebegin", searchResults);
 
-	const heading = element("h2", "Search results")
+	const heading = element("h2", "Search results");
 	searchResults.appendChild(heading);
+
+	const searchQuery = element("div", "");
+	searchResults.appendChild(searchQuery);
 
 	// Render search results. If falsy, results are hidden. If a string, it is
 	// displayed as a message. Otherwise, must be an array of search results.
-	function renderResults(results) {
-		searchResults.replaceChildren(heading);
+	function renderResults(results, query) {
+		searchResults.replaceChildren(heading, searchQuery);
 
 		if (!results) {
 			// Hide results.
@@ -1090,7 +1093,11 @@ function initSearchInput() {
 		// Show results.
 		main.style.display = "none";
 		searchResults.style.display = "";
-		heading.textContent = `Search results`
+		heading.textContent = `Search results`;
+		searchQuery.textContent = "";
+		if (query) {
+			searchQuery.textContent = query;
+		}
 
 		switch (true) {
 		case typeof results === "string":
@@ -1118,7 +1125,7 @@ function initSearchInput() {
 			return;
 		};
 		console.log("SEARCHING", query);
-		render("Searching...");
+		render("Searching...", query);
 		getDatabase()
 			.then(function([DB, F, M]) {
 				if (!parseQuery) {
@@ -1134,13 +1141,13 @@ function initSearchInput() {
 					expr = parseQuery(query, "main");
 					console.log("EXPR", expr);
 					if (!expr) {
-						render(`Error parsing query.`);
+						render(`Error parsing query.`, query);
 						return;
 					} else if (expr instanceof grammar.Error) {
-						render(`Error parsing query: line ${expr.line}, column ${expr.column}: ${expr.error}`);
+						render(`Error parsing query: line ${expr.line}, column ${expr.column}: ${expr.error}`, query);
 						return;
 					};
-					render(statusFilter(search(DB, expr)));
+					render(statusFilter(search(DB, expr)), query);
 				} else {
 					try {
 						expr = parseQuery(query, "main", "debug");
@@ -1166,10 +1173,10 @@ function initSearchInput() {
 						};
 					};
 					try {
-						render(statusFilter(search(DB, expr)));
+						render(statusFilter(search(DB, expr)), query);
 					} catch (error) {
 						console.log("SEARCH ERROR", error);
-						render("An error occurred.");
+						render("An error occurred.", query);
 					};
 				};
 			})
@@ -1288,7 +1295,7 @@ function initSearchInput() {
 					go = "hub";
 				};
 				if (!go) {
-					renderResults(results);
+					renderResults(results, q);
 					return;
 				};
 				// Automatically redirect to external site.
@@ -1298,7 +1305,7 @@ function initSearchInput() {
 				};
 				let a = entityLink(first.row, go, "simple");
 				if (a.href === "") {
-					renderResults(results);
+					renderResults(results, q);
 					return;
 				};
 				document.location = a.href;

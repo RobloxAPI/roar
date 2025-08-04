@@ -7,6 +7,11 @@ outputs = ["html", "rss"]
 
 This page lists changes to the website itself.
 
+## Pending
+- Display search query with search result.
+
+<!---->
+
 ## 2024-09-13
 - **Implement documentation for classes and enums.**
 - Engine documentation is retrieved from the [creator-docs][creator-docs]
