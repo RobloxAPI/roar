@@ -9,7 +9,9 @@
 		<h2>Engine API</h2>
 		<ul>
 			{{- range site.Sections }}
-				<li><a href="{{.RelPermalink}}">{{.Title}}</a></li>
+				{{- if or (not site.Params.IncludeSections) (in site.Params.IncludeSections .Type) }}
+					<li><a href="{{.RelPermalink}}">{{.Title | pluralize | title }}</a></li>
+				{{- end }}
 			{{- end }}
 		</ul>
 		<h2>Website</h2>

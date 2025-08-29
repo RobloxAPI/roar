@@ -9,6 +9,7 @@ This page lists changes to the website itself.
 
 ## Pending
 - Display search query with search result.
+- Fix section links in navigation panel for smaller layouts.
 
 <!---->
 
